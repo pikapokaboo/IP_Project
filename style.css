@@ -1,113 +1,149 @@
 /* ---------- GLOBAL ---------- */
 * {
-    box-sizing: border-box;
-    font-family: "Georgia", serif;
+  box-sizing: border-box;
+  font-family: "Georgia", serif;
 }
 
 body {
-    margin: 0;
-    background: black;
-    color: white;
-    overflow: hidden;
+  margin: 0;
+  background: black;
+  color: white;
+  overflow: hidden;
 }
 
 /* ---------- SCENES ---------- */
 .scene {
-    position: absolute;
-    inset: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    opacity: 0;
-    transition: opacity 1.5s ease;
+  position: absolute;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 1.5s ease;
 }
 
 .scene.show {
-    opacity: 1;
+  opacity: 1;
+  pointer-events: auto;
 }
 
 .scene.hide {
-    opacity: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* ---------- PANEL ---------- */
+.panel {
+  width: min(92vw, 420px);
+  height: 100vh;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  padding: 24px 18px;
+}
+
+/* centers the login/signup content while allowing bottom buttons */
+.content {
+  margin: auto 0;
+  width: 100%;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+
+  padding-top: 60px;   /* 👈 lowers login block */
 }
 
 /* ---------- DISCLAIMER ---------- */
-#disclaimer {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
 .disclaimer-text {
-    text-align: center;
-    font-size: 1.2rem;
-    line-height: 1.6;
-    max-width: 70%;
+  text-align: center;
+  font-size: 1.2rem;
+  line-height: 1.6;
+  max-width: 70%;
 }
-
 
 /* ---------- LOGOS ---------- */
 .logo {
-    max-width: 70%;
-    max-height: 40%;
+  max-width: min(70%, 520px);
+  max-height: 40vh;
 }
 
 #logo2.move-up {
-    transform: translateY(-200px);
-    transition: transform 1.5s ease;
+  transform: translateY(-225px);
+  transition: transform 1.5s ease;
 }
 
-/* ---------- LOGIN ---------- */
-#loginScreen {
-    flex-direction: column;
-    gap: 14px;
-}
-
+/* ---------- LOGIN + SIGNUP ---------- */
 .login-label {
-    font-size: 0.9rem;
-    opacity: 0.8;
+  font-size: 0.95rem;
+  opacity: 0.85;
 }
 
 .input-box {
-    width: 260px;
-    padding: 12px;
-    border-radius: 8px;
-    border: 2px solid #7a0000;
-    background: #f4f4f4;
-    font-size: 1rem;
+  width: 100%;
+  padding: 12px;
+  border-radius: 8px;
+  border: 2px solid #7a0000;
+  background: #f4f4f4;
+  font-size: 1rem;
 }
 
 .login-btn {
-    margin-top: 10px;
-    width: 120px;
-    height: 42px;
-    border-radius: 10px;
-    border: none;
-    background: #7a0000;
-    color: white;
-    font-size: 1.1rem;
-    cursor: pointer;
+  margin-top: 25px;
+  width: 140px;
+  height: 44px;
+  border-radius: 10px;
+  border: none;
+  background: #7a0000;
+  color: white;
+  font-size: 1.1rem;
+  cursor: pointer;
 }
 
 .login-btn:hover {
-    background: #9c0000;
+  background: #9c0000;
 }
 
+/* ---------- BOTTOM BUTTONS (fixed at bottom, single row, shrink on mobile) ---------- */
 .bottom-buttons {
-    position: absolute;
-    bottom: 30px;
-    display: flex;
-    gap: 20px;
+  margin-top: 0;
+  margin-bottom: 24px;
+
+  width: 100%;
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+
+  flex-wrap: nowrap; /* never drop to a second row */
 }
 
-.bottom-buttons button {
-    padding: 10px 18px;
-    border-radius: 10px;
-    border: none;
-    background: #7a0000;
-    color: white;
-    cursor: pointer;
+.bottom-buttons button,
+.nav-btn {
+  flex: 1 1 0;
+
+  padding: clamp(8px, 2.5vw, 10px) clamp(10px, 3vw, 16px);
+  font-size: clamp(0.7rem, 2.5vw, 0.9rem);
+
+  border-radius: 10px;
+  border: none;
+  background: #7a0000;
+  color: white;
+  cursor: pointer;
+
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  white-space: nowrap;
 }
 
-.bottom-buttons button:hover {
-    background: #9c0000;
+.bottom-buttons button:hover,
+.nav-btn:hover {
+  background: #9c0000;
 }
