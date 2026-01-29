@@ -32,11 +32,18 @@ body {
 
 /* ---------- DISCLAIMER ---------- */
 #disclaimer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.disclaimer-text {
     text-align: center;
     font-size: 1.2rem;
     line-height: 1.6;
-    max-width: 80%;
+    max-width: 70%;
 }
+
 
 /* ---------- LOGOS ---------- */
 .logo {
@@ -53,11 +60,6 @@ body {
 #loginScreen {
     flex-direction: column;
     gap: 14px;
-}
-
-.title {
-    font-size: 2.8rem;
-    margin-bottom: 10px;
 }
 
 .login-label {
