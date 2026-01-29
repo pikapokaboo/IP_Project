@@ -52,7 +52,7 @@ body {
 }
 
 #logo2.move-up {
-    transform: translateY(-140px);
+    transform: translateY(-200px);
     transition: transform 1.5s ease;
 }
 
