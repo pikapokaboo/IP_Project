@@ -1,0 +1,111 @@
+/* ---------- GLOBAL ---------- */
+* {
+    box-sizing: border-box;
+    font-family: "Georgia", serif;
+}
+
+body {
+    margin: 0;
+    background: black;
+    color: white;
+    overflow: hidden;
+}
+
+/* ---------- SCENES ---------- */
+.scene {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    transition: opacity 1.5s ease;
+}
+
+.scene.show {
+    opacity: 1;
+}
+
+.scene.hide {
+    opacity: 0;
+}
+
+/* ---------- DISCLAIMER ---------- */
+#disclaimer {
+    text-align: center;
+    font-size: 1.2rem;
+    line-height: 1.6;
+    max-width: 80%;
+}
+
+/* ---------- LOGOS ---------- */
+.logo {
+    max-width: 70%;
+    max-height: 40%;
+}
+
+#logo2.move-up {
+    transform: translateY(-140px);
+    transition: transform 1.5s ease;
+}
+
+/* ---------- LOGIN ---------- */
+#loginScreen {
+    flex-direction: column;
+    gap: 14px;
+}
+
+.title {
+    font-size: 2.8rem;
+    margin-bottom: 10px;
+}
+
+.login-label {
+    font-size: 0.9rem;
+    opacity: 0.8;
+}
+
+.input-box {
+    width: 260px;
+    padding: 12px;
+    border-radius: 8px;
+    border: 2px solid #7a0000;
+    background: #f4f4f4;
+    font-size: 1rem;
+}
+
+.login-btn {
+    margin-top: 10px;
+    width: 120px;
+    height: 42px;
+    border-radius: 10px;
+    border: none;
+    background: #7a0000;
+    color: white;
+    font-size: 1.1rem;
+    cursor: pointer;
+}
+
+.login-btn:hover {
+    background: #9c0000;
+}
+
+.bottom-buttons {
+    position: absolute;
+    bottom: 30px;
+    display: flex;
+    gap: 20px;
+}
+
+.bottom-buttons button {
+    padding: 10px 18px;
+    border-radius: 10px;
+    border: none;
+    background: #7a0000;
+    color: white;
+    cursor: pointer;
+}
+
+.bottom-buttons button:hover {
+    background: #9c0000;
+}
