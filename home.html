@@ -24,7 +24,6 @@
           Select a record to begin investigation.
         </p>
 
-        <!-- placeholder button -->
         <button class="login-btn" type="button">
           Enter Archive
         </button>
@@ -38,18 +37,15 @@
   </div>
 
   <script>
-    // show logged-in username
     const user = localStorage.getItem("currentUser");
     const welcome = document.getElementById("welcomeUser");
 
     if (!user) {
-      // not logged in → kick back to login
       window.location.href = "index.html";
     } else {
       welcome.textContent = `Archivist ${user}`;
     }
 
-    // logout
     document.getElementById("logoutBtn").addEventListener("click", () => {
       localStorage.removeItem("currentUser");
       window.location.href = "index.html";

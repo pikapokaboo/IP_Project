@@ -56,7 +56,7 @@ body {
   align-items: center;
   gap: 14px;
 
-  padding-top: 60px;   /* 👈 lowers login block */
+  padding-top: 60px;
 }
 
 /* ---------- DISCLAIMER ---------- */
@@ -71,6 +71,11 @@ body {
 .logo {
   max-width: min(70%, 520px);
   max-height: 40vh;
+}
+
+/* ensure logo2 starts centered before move-up */
+#logo2 {
+  transform: translateY(0);
 }
 
 #logo2.move-up {
@@ -109,7 +114,7 @@ body {
   background: #9c0000;
 }
 
-/* ---------- BOTTOM BUTTONS (fixed at bottom, single row, shrink on mobile) ---------- */
+/* ---------- BOTTOM BUTTONS ---------- */
 .bottom-buttons {
   margin-top: 0;
   margin-bottom: 24px;
@@ -119,7 +124,7 @@ body {
   gap: 10px;
   justify-content: center;
 
-  flex-wrap: nowrap; /* never drop to a second row */
+  flex-wrap: nowrap;
 }
 
 .bottom-buttons button,

@@ -8,9 +8,7 @@ const goToSignup = document.getElementById("goToSignup");
 const backToLogin = document.getElementById("backToLogin");
 
 const RESTDB_BASE = "https://thearchive-6738.restdb.io/rest";
-
 const COLLECTION = "accounts";
-
 const CORS_API_KEY = "697c47bc53d66e17391956ea";
 
 const loginUser = document.getElementById("loginUser");
@@ -22,7 +20,6 @@ const signupPass = document.getElementById("signupPass");
 const signupPass2 = document.getElementById("signupPass2");
 const signupSubmit = document.getElementById("signupSubmit");
 
-
 function show(el) {
   el.classList.add("show");
   el.classList.remove("hide");
@@ -33,27 +30,56 @@ function hide(el) {
   el.classList.remove("show");
 }
 
-// Make sure ONLY disclaimer is visible at first
+// --- SKIP INTRO (Support/Credits return) ---
+const params = new URLSearchParams(window.location.search);
+const skipIntro = params.get("skipIntro") === "1";
+
+// Always start hidden
+hide(disclaimer);
 hide(logo1);
 hide(logo2);
 hide(login);
 hide(signup);
-show(disclaimer);
 
-// SEQUENCE
-setTimeout(() => show(disclaimer), 500);
-setTimeout(() => hide(disclaimer), 4500);
+// Always reset logo2 position (so it starts centered when shown)
+logo2.classList.remove("move-up");
 
-setTimeout(() => show(logo1), 6000);
-setTimeout(() => hide(logo1), 10000);
+if (skipIntro) {
+  // Mini-intro: Logo2 fades in center, then moves up, then show login
 
-setTimeout(() => show(logo2), 11500);
-setTimeout(() => logo2.classList.add("move-up"), 15500);
+  show(logo2);
 
-setTimeout(() => {
-  show(login);
-  hide(signup);
-}, 16500);
+  // wait 4 seconds (change to 3000-5000 if you want)
+  setTimeout(() => {
+    logo2.classList.add("move-up");
+  }, 4000);
+
+  // after move-up transition (1.5s), show login
+  setTimeout(() => {
+    show(login);
+    hide(signup);
+  }, 4000 + 1500);
+
+  // Remove the ?skipIntro=1 so a reload plays full cutscene again
+  window.history.replaceState({}, document.title, window.location.pathname);
+
+} else {
+  // Full cutscene normally
+  show(disclaimer);
+
+  setTimeout(() => hide(disclaimer), 4500);
+
+  setTimeout(() => show(logo1), 6000);
+  setTimeout(() => hide(logo1), 10000);
+
+  setTimeout(() => show(logo2), 11500);
+  setTimeout(() => logo2.classList.add("move-up"), 15500);
+
+  setTimeout(() => {
+    show(login);
+    hide(signup);
+  }, 16500);
+}
 
 // Switch to signup
 goToSignup.addEventListener("click", () => {
@@ -166,7 +192,6 @@ loginSubmit.addEventListener("click", async () => {
       return;
     }
 
-    localStorage.setItem("currentUser", account.username);
     localStorage.setItem("currentUser", account.username);
     window.location.href = "home.html";
 
