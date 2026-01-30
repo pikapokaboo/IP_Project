@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>The Archivist — Home</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+
+  <div class="scene show" style="position: relative;">
+    <div class="panel">
+
+      <div class="content">
+        <div class="login-label">Welcome</div>
+
+        <h2 id="welcomeUser" style="margin: 0; font-weight: normal;">
+          Archivist
+        </h2>
+
+        <p style="opacity: 0.75; text-align: center; max-width: 320px;">
+          The archive awaits your attention.<br />
+          Select a record to begin investigation.
+        </p>
+
+        <!-- placeholder button -->
+        <button class="login-btn" type="button">
+          Enter Archive
+        </button>
+      </div>
+
+      <div class="bottom-buttons">
+        <button id="logoutBtn" type="button">Log Out</button>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    // show logged-in username
+    const user = localStorage.getItem("currentUser");
+    const welcome = document.getElementById("welcomeUser");
+
+    if (!user) {
+      // not logged in → kick back to login
+      window.location.href = "index.html";
+    } else {
+      welcome.textContent = `Archivist ${user}`;
+    }
+
+    // logout
+    document.getElementById("logoutBtn").addEventListener("click", () => {
+      localStorage.removeItem("currentUser");
+      window.location.href = "index.html";
+    });
+  </script>
+
+</body>
+</html>
