@@ -20,53 +20,22 @@ const signupPass = document.getElementById("signupPass");
 const signupPass2 = document.getElementById("signupPass2");
 const signupSubmit = document.getElementById("signupSubmit");
 
-function show(el) {
-  el.classList.add("show");
-  el.classList.remove("hide");
-}
+function show(el) { el.classList.add("show"); el.classList.remove("hide"); }
+function hide(el) { el.classList.add("hide"); el.classList.remove("show"); }
 
-function hide(el) {
-  el.classList.add("hide");
-  el.classList.remove("show");
-}
-
-// --- SKIP INTRO (Support/Credits return) ---
 const params = new URLSearchParams(window.location.search);
 const skipIntro = params.get("skipIntro") === "1";
 
-// Always start hidden
-hide(disclaimer);
-hide(logo1);
-hide(logo2);
-hide(login);
-hide(signup);
-
-// Always reset logo2 position (so it starts centered when shown)
+hide(disclaimer); hide(logo1); hide(logo2); hide(login); hide(signup);
 logo2.classList.remove("move-up");
 
 if (skipIntro) {
-  // Mini-intro: Logo2 fades in center, then moves up, then show login
-
   show(logo2);
-
-  // wait 4 seconds (change to 3000-5000 if you want)
-  setTimeout(() => {
-    logo2.classList.add("move-up");
-  }, 4000);
-
-  // after move-up transition (1.5s), show login
-  setTimeout(() => {
-    show(login);
-    hide(signup);
-  }, 4000 + 1500);
-
-  // Remove the ?skipIntro=1 so a reload plays full cutscene again
+  setTimeout(() => logo2.classList.add("move-up"), 4000);
+  setTimeout(() => { show(login); hide(signup); }, 5500);
   window.history.replaceState({}, document.title, window.location.pathname);
-
 } else {
-  // Full cutscene normally
   show(disclaimer);
-
   setTimeout(() => hide(disclaimer), 4500);
 
   setTimeout(() => show(logo1), 6000);
@@ -75,23 +44,11 @@ if (skipIntro) {
   setTimeout(() => show(logo2), 11500);
   setTimeout(() => logo2.classList.add("move-up"), 15500);
 
-  setTimeout(() => {
-    show(login);
-    hide(signup);
-  }, 16500);
+  setTimeout(() => { show(login); hide(signup); }, 16500);
 }
 
-// Switch to signup
-goToSignup.addEventListener("click", () => {
-  hide(login);
-  show(signup);
-});
-
-// Back to login
-backToLogin.addEventListener("click", () => {
-  hide(signup);
-  show(login);
-});
+goToSignup.addEventListener("click", () => { hide(login); show(signup); });
+backToLogin.addEventListener("click", () => { hide(signup); show(login); });
 
 async function sha256(text) {
   const data = new TextEncoder().encode(text);
@@ -102,7 +59,6 @@ async function sha256(text) {
 
 async function restdbFetch(path, options = {}) {
   const url = `${RESTDB_BASE}/${path}`;
-
   const res = await fetch(url, {
     ...options,
     headers: {
@@ -115,10 +71,7 @@ async function restdbFetch(path, options = {}) {
   const text = await res.text();
   let data;
   try { data = text ? JSON.parse(text) : null; } catch { data = text; }
-
-  if (!res.ok) {
-    throw new Error((data && data.message) ? data.message : `Request failed (${res.status})`);
-  }
+  if (!res.ok) throw new Error((data && data.message) ? data.message : `Request failed (${res.status})`);
   return data;
 }
 
@@ -128,73 +81,46 @@ async function findAccount(username) {
   return Array.isArray(results) && results.length ? results[0] : null;
 }
 
-// SIGNUP
 signupSubmit.addEventListener("click", async () => {
   const username = signupUser.value.trim();
   const pass = signupPass.value;
   const pass2 = signupPass2.value;
 
-  if (!username || !pass || !pass2) {
-    alert("Please fill in all fields.");
-    return;
-  }
-  if (pass !== pass2) {
-    alert("Passwords do not match.");
-    return;
-  }
+  if (!username || !pass || !pass2) return alert("Please fill in all fields.");
+  if (pass !== pass2) return alert("Passwords do not match.");
 
   try {
     const existing = await findAccount(username);
-    if (existing) {
-      alert("That username is already taken.");
-      return;
-    }
+    if (existing) return alert("That username is already taken.");
 
     const passwordHash = await sha256(pass);
-
     await restdbFetch(COLLECTION, {
       method: "POST",
-      body: JSON.stringify({
-        username,
-        passwordHash,
-        createdAt: new Date().toISOString()
-      })
+      body: JSON.stringify({ username, passwordHash, createdAt: new Date().toISOString() })
     });
 
     alert("Signup successful! Please login.");
-    hide(signup);
-    show(login);
+    hide(signup); show(login);
   } catch (err) {
     alert(err.message);
   }
 });
 
-// LOGIN
 loginSubmit.addEventListener("click", async () => {
   const username = loginUser.value.trim();
   const pass = loginPass.value;
 
-  if (!username || !pass) {
-    alert("Please enter username and password.");
-    return;
-  }
+  if (!username || !pass) return alert("Please enter username and password.");
 
   try {
     const account = await findAccount(username);
-    if (!account) {
-      alert("Account not found.");
-      return;
-    }
+    if (!account) return alert("Account not found.");
 
     const passwordHash = await sha256(pass);
-    if (passwordHash !== account.passwordHash) {
-      alert("Wrong password.");
-      return;
-    }
+    if (passwordHash !== account.passwordHash) return alert("Wrong password.");
 
     localStorage.setItem("currentUser", account.username);
     window.location.href = "home.html";
-
   } catch (err) {
     alert(err.message);
   }
