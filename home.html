@@ -8,49 +8,227 @@
 </head>
 
 <body>
+  <div class="home-wrap">
+    <div id="letterOverlay" class="letter-overlay">
+      <div class="letter-frame">
+        <div class="letter-card">
+          <div class="letter-top">
+            <div class="letter-stamp">
+              <img src="Images/stamp.png" alt="" onerror="this.style.display='none';">
+            </div>
+            <div style="font-size:0.65rem; letter-spacing:0.1em; opacity:0.85;">
+              CENTRAL ARCHIVAL COMMITTEE
+            </div>
+            <div class="letter-divider"></div>
+          </div>
 
-  <div class="scene show" style="position: relative;">
-    <div class="panel">
+          <div class="letter-body">
+            <div style="font-size:0.6rem; opacity:0.75; letter-spacing:0.08em;">
+              OFFICIAL DIRECTIVE · REF: CAC-32/A7
+            </div>
 
-      <div class="content">
-        <div class="login-label">Welcome</div>
+            <div class="title-line">
+              <span id="archivistName">Archivist’s Name</span>,
+            </div>
 
-        <h2 id="welcomeUser" style="margin: 0; font-weight: normal;">
-          Archivist
-        </h2>
+            <p>
+              By authority of the Central Archival Committee, you are hereby appointed to active investigative duty
+              under Archival Mandate 14-C, concerning anomalous specimens recovered during the most recent expedition
+              to <strong>Site 32</strong>.
+            </p>
 
-        <p style="opacity: 0.75; text-align: center; max-width: 320px;">
-          The archive awaits your attention.<br />
-          Select a record to begin investigation.
-        </p>
+            <p>
+              Preliminary field documentation indicates irregular behavioral patterns, unstable physical properties,
+              and incomplete classification records. Your role is to observe, document, and complete the archival
+              record where prior data has proven insufficient.
+            </p>
 
-        <button class="login-btn" type="button">
-          Enter Archive
-        </button>
+            <p>
+              You are granted provisional clearance to interact with authorized materials strictly within designated
+              containment environments. All observations, visual records, and written analyses must be logged in
+              accordance with Archival Protocol 7-B.
+            </p>
+
+            <p>
+              Be advised that containment integrity cannot be guaranteed. Prior incidents include hostile reactions,
+              environmental contamination, and psychological trauma. Adherence to all issued safety procedures is mandatory.
+            </p>
+
+            <p>
+              Failure to comply with documentation standards, containment instructions, or confidentiality requirements
+              will result in immediate revocation of clearance and may warrant further disciplinary action.
+            </p>
+
+            <p>
+              Upon arrival, report to the on-site terminal and authenticate your credentials to receive your briefing
+              and access to the active archive.
+            </p>
+
+            <p>
+              This document constitutes a binding operational directive.<br>
+              <span style="opacity:0.85;">— Central Archival Committee</span>
+            </p>
+          </div>
+
+          <div class="signature-area">
+            <div class="signature-row" id="signatureRow">
+              <img id="signatureImg" class="signature-img" src="Images/signature.png" alt="Signature" />
+              <div id="pen" class="pen" aria-label="Drag pen to sign">
+                <img src="Images/pen.png" alt="Pen" />
+              </div>
+
+              <div class="sig-line" id="sigLine"></div>
+              <div class="sig-label">AUTHORIZED SIGNATURE</div>
+            </div>
+          </div>
+        </div>
       </div>
+    </div>
 
-      <div class="bottom-buttons">
-        <button id="logoutBtn" type="button">Log Out</button>
+    <div class="scene show" style="position: relative;">
+      <div class="panel">
+        <div class="content">
+          <div class="login-label">Welcome</div>
+          <h2 id="welcomeUser" style="margin: 0; font-weight: normal;">Archivist</h2>
+
+          <p style="opacity: 0.75; text-align: center; max-width: 320px;">
+            The archive awaits your attention.<br>
+            Select a record to begin investigation.
+          </p>
+
+          <button class="login-btn" type="button">Enter Archive</button>
+        </div>
+
+        <div class="bottom-buttons">
+          <button id="logoutBtn" type="button">Log Out</button>
+        </div>
       </div>
-
     </div>
   </div>
 
   <script>
     const user = localStorage.getItem("currentUser");
-    const welcome = document.getElementById("welcomeUser");
+    if (!user) window.location.href = "index.html";
 
-    if (!user) {
-      window.location.href = "index.html";
-    } else {
-      welcome.textContent = `Archivist ${user}`;
-    }
+    document.getElementById("welcomeUser").textContent = `Archivist ${user}`;
+    document.getElementById("archivistName").textContent = user;
 
     document.getElementById("logoutBtn").addEventListener("click", () => {
       localStorage.removeItem("currentUser");
       window.location.href = "index.html";
     });
-  </script>
 
+    const overlay = document.getElementById("letterOverlay");
+    const pen = document.getElementById("pen");
+    const sigImg = document.getElementById("signatureImg");
+    const sigLine = document.getElementById("sigLine");
+
+    let dragging = false;
+    let startX = 0;
+    let penStartTx = 0;
+    let currentTx = 0;
+    let signed = false;
+    let bounds = { minTx: 0, maxTx: 0 };
+
+    function setPenX(x) {
+      pen.style.setProperty("--pen-x", `${x}px`);
+    }
+
+    function setSignatureProgress(p) {
+      const v = Math.min(1, Math.max(0, p));
+      sigImg.style.opacity = v;
+      sigImg.style.transform = `translateY(${6 - v * 6}px)`;
+    }
+
+    function computeBounds() {
+      const prev = pen.style.getPropertyValue("--pen-x");
+      setPenX(0);
+
+      const lineRect = sigLine.getBoundingClientRect();
+      const penRect = pen.getBoundingClientRect();
+
+      const minTx = lineRect.left - penRect.left;
+      const maxTx = lineRect.right - penRect.right;
+
+      setPenX(parseFloat(prev) || 0);
+
+      bounds.minTx = Math.min(minTx, maxTx);
+      bounds.maxTx = Math.max(minTx, maxTx);
+    }
+
+    function range() {
+      return Math.max(1, bounds.maxTx - bounds.minTx);
+    }
+
+    function finish() {
+      if (signed) return;
+      signed = true;
+
+      setPenX(bounds.maxTx);
+      setSignatureProgress(1);
+
+      setTimeout(() => {
+        overlay.classList.add("dismiss");
+        setTimeout(() => overlay.style.display = "none", 900);
+      }, 2500);
+    }
+
+    setTimeout(() => {
+      pen.classList.add("visible");
+      computeBounds();
+      setPenX(bounds.minTx);
+      setSignatureProgress(0);
+    }, 2000);
+
+    window.addEventListener("resize", () => {
+      if (!pen.classList.contains("visible") || signed) return;
+      computeBounds();
+      currentTx = Math.min(bounds.maxTx, Math.max(bounds.minTx, currentTx));
+      setPenX(currentTx);
+      setSignatureProgress((currentTx - bounds.minTx) / range());
+    });
+
+    pen.addEventListener("pointerdown", (e) => {
+      if (!pen.classList.contains("visible") || signed) return;
+      dragging = true;
+      startX = e.clientX;
+      penStartTx = currentTx;
+      pen.setPointerCapture?.(e.pointerId);
+    });
+
+    window.addEventListener("pointermove", (e) => {
+      if (!dragging || signed) return;
+
+      const dx = e.clientX - startX;
+      currentTx = Math.min(bounds.maxTx, Math.max(bounds.minTx, penStartTx + dx));
+
+      setPenX(currentTx);
+      setSignatureProgress((currentTx - bounds.minTx) / range());
+
+      if (((currentTx - bounds.minTx) / range()) > 0.98) {
+        dragging = false;
+        finish();
+      }
+    });
+
+    window.addEventListener("pointerup", () => {
+      if (!dragging || signed) return;
+      dragging = false;
+
+      pen.style.transition = "transform 0.25s ease, opacity 0.6s ease";
+      sigImg.style.transition = "opacity 0.25s ease, transform 0.25s ease";
+
+      currentTx = bounds.minTx;
+      setPenX(currentTx);
+      setSignatureProgress(0);
+
+      setTimeout(() => {
+        pen.style.transition = "";
+        sigImg.style.transition = "";
+      }, 260);
+    });
+
+    sigImg.addEventListener("error", () => sigImg.style.display = "none");
+  </script>
 </body>
 </html>

@@ -1,8 +1,4 @@
-/* ---------- GLOBAL ---------- */
-* {
-  box-sizing: border-box;
-  font-family: "Georgia", serif;
-}
+* { box-sizing: border-box; font-family: "Georgia", serif; }
 
 body {
   margin: 0;
@@ -11,55 +7,42 @@ body {
   overflow: hidden;
 }
 
-/* ---------- SCENES ---------- */
+/* scenes */
 .scene {
   position: absolute;
   inset: 0;
   display: flex;
   justify-content: center;
   align-items: center;
-
   opacity: 0;
   pointer-events: none;
   transition: opacity 1.5s ease;
 }
 
-.scene.show {
-  opacity: 1;
-  pointer-events: auto;
-}
+.scene.show { opacity: 1; pointer-events: auto; }
+.scene.hide { opacity: 0; pointer-events: none; }
 
-.scene.hide {
-  opacity: 0;
-  pointer-events: none;
-}
-
-/* ---------- PANEL ---------- */
+/* panel */
 .panel {
   width: min(92vw, 420px);
   height: 100vh;
-
   display: flex;
   flex-direction: column;
   align-items: center;
-
   padding: 24px 18px;
 }
 
-/* centers the login/signup content while allowing bottom buttons */
 .content {
   margin: auto 0;
   width: 100%;
-
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 14px;
-
   padding-top: 60px;
 }
 
-/* ---------- DISCLAIMER ---------- */
+/* disclaimer */
 .disclaimer-text {
   text-align: center;
   font-size: 1.2rem;
@@ -67,27 +50,17 @@ body {
   max-width: 70%;
 }
 
-/* ---------- LOGOS ---------- */
+/* logos */
 .logo {
   max-width: min(70%, 520px);
   max-height: 40vh;
 }
 
-/* ensure logo2 starts centered before move-up */
-#logo2 {
-  transform: translateY(0);
-}
+#logo2 { transform: translateY(0); }
+#logo2.move-up { transform: translateY(-225px); transition: transform 1.5s ease; }
 
-#logo2.move-up {
-  transform: translateY(-225px);
-  transition: transform 1.5s ease;
-}
-
-/* ---------- LOGIN + SIGNUP ---------- */
-.login-label {
-  font-size: 0.95rem;
-  opacity: 0.85;
-}
+/* login + signup */
+.login-label { font-size: 0.95rem; opacity: 0.85; }
 
 .input-box {
   width: 100%;
@@ -110,50 +83,39 @@ body {
   cursor: pointer;
 }
 
-.login-btn:hover {
-  background: #9c0000;
-}
+.login-btn:hover { background: #9c0000; }
 
-/* ---------- BOTTOM BUTTONS ---------- */
+/* bottom buttons */
 .bottom-buttons {
-  margin-top: 0;
   margin-bottom: 24px;
-
   width: 100%;
   display: flex;
   gap: 10px;
   justify-content: center;
-
   flex-wrap: nowrap;
 }
 
 .bottom-buttons button,
 .nav-btn {
   flex: 1 1 0;
-
   padding: clamp(8px, 2.5vw, 10px) clamp(10px, 3vw, 16px);
   font-size: clamp(0.7rem, 2.5vw, 0.9rem);
-
   border-radius: 10px;
   border: none;
   background: #7a0000;
   color: white;
   cursor: pointer;
-
   text-decoration: none;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-
   white-space: nowrap;
 }
 
 .bottom-buttons button:hover,
-.nav-btn:hover {
-  background: #9c0000;
-}
+.nav-btn:hover { background: #9c0000; }
 
-/* ---------- MENU PAGES (Support/Credits) ---------- */
+/* menu pages */
 .menu-header {
   width: 100%;
   display: flex;
@@ -163,35 +125,13 @@ body {
   margin-top: 10px;
 }
 
-.menu-title {
-  margin: 0;
-  font-weight: normal;
-  letter-spacing: 0.06em;
-}
+.menu-title { margin: 0; font-weight: normal; letter-spacing: 0.06em; }
 
 .menu-subtitle {
   margin: 6px 0 0 0;
   opacity: 0.75;
   font-size: 0.9rem;
   line-height: 1.5;
-}
-
-.logo-badge {
-  width: 56px;
-  height: 56px;
-  border-radius: 14px;
-  border: 1px solid rgba(122, 0, 0, 0.8);
-  background: rgba(122, 0, 0, 0.15);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  user-select: none;
-}
-
-.logo-badge span {
-  font-size: 0.75rem;
-  opacity: 0.9;
-  letter-spacing: 0.08em;
 }
 
 .menu-card {
@@ -210,19 +150,9 @@ body {
   opacity: 0.95;
 }
 
-.menu-card p {
-  margin: 0;
-  opacity: 0.78;
-  line-height: 1.6;
-  font-size: 0.95rem;
-}
+.menu-card p { margin: 0; opacity: 0.78; line-height: 1.6; font-size: 0.95rem; }
 
-.menu-links {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
+.menu-links { width: 100%; display: flex; flex-direction: column; gap: 10px; }
 
 .menu-link {
   width: 100%;
@@ -232,53 +162,162 @@ body {
   padding: 12px 12px;
   text-decoration: none;
   color: white;
-
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
 }
 
-.menu-link:hover {
-  background: rgba(156, 0, 0, 0.22);
-}
+.menu-link:hover { background: rgba(156, 0, 0, 0.22); }
+.menu-link small { opacity: 0.7; font-size: 0.85rem; }
 
-.menu-link small {
-  opacity: 0.7;
-  font-size: 0.85rem;
-}
+.menu-divider { width: 100%; height: 1px; background: rgba(122, 0, 0, 0.45); margin: 8px 0; }
 
-.menu-divider {
-  width: 100%;
-  height: 1px;
-  background: rgba(122, 0, 0, 0.45);
-  margin: 8px 0;
-}
-
-/* ---------- MENU IMAGES ---------- */
+/* menu images (border removed) */
 .menu-banner {
   width: 100%;
   border-radius: 14px;
-  border: 1px solid rgba(122, 0, 0, 0.6);
+  border: none;
   overflow: hidden;
   margin-bottom: 10px;
 }
 
-.menu-banner img {
+.menu-banner img { width: 100%; display: block; opacity: 0.9; }
+.menu-link img { width: 22px; height: 22px; object-fit: contain; opacity: 0.9; }
+
+/* home letter overlay */
+.home-wrap { position: relative; min-height: 100vh; background: #000; overflow: hidden; }
+
+.letter-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 24px 14px;
+  background: radial-gradient(circle at 50% 40%, rgba(255, 255, 255, 0.08), rgba(0, 0, 0, 0.92) 65%);
+  transition: opacity 0.8s ease;
+  z-index: 10;
+}
+
+.letter-overlay.dismiss { opacity: 0; pointer-events: none; }
+
+.letter-frame { width: min(92vw, 420px); aspect-ratio: 9 / 16; display: flex; }
+
+.letter-card {
+  flex: 1;
+  background: #f3e2a8;
+  color: #1b140b;
+  border-radius: 6px;
+  box-shadow: 0 18px 60px rgba(0, 0, 0, 0.55);
+  padding: 16px 14px;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.letter-top {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.letter-stamp {
+  width: 34px;
+  height: 34px;
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.6);
+  overflow: hidden;
+}
+
+.letter-stamp img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+.letter-divider { width: 76%; height: 1px; background: rgba(0, 0, 0, 0.55); }
+
+.letter-body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding-right: 6px;
+  margin-top: 6px;
+  font-size: clamp(0.68rem, 2.7vw, 0.78rem);
+  line-height: 1.6;
+}
+
+.letter-body p { margin: 0 0 8px 0; }
+.letter-body .title-line { margin: 2px 0 10px 0; }
+
+.signature-area { margin-top: 8px; padding-top: 10px; position: relative; }
+
+.signature-row {
+  position: relative;
+  min-height: 64px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+}
+
+.sig-line {
+  position: absolute;
+  right: 16px;
+  bottom: 16px;
+  width: 44%;
+  height: 1px;
+  background: rgba(0, 0, 0, 0.55);
+}
+
+.sig-label {
+  position: absolute;
+  right: 16px;
+  bottom: 4px;
+  font-size: 0.62rem;
+  letter-spacing: 0.06em;
+  opacity: 0.9;
+}
+
+.signature-img {
+  position: absolute;
+  right: 18px;
+  bottom: 18px;
+  width: 38%;
+  max-width: 170px;
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity 0.35s ease, transform 0.35s ease;
+  pointer-events: none;
+}
+
+/* pen: use CSS variables so X drag + Y fade don't conflict */
+.pen {
+  height: 72px;
+  width: 42px;
+
+  --pen-x: 0px;
+  --pen-y: 6px;
+
+  opacity: 0;
+  transform: translate(var(--pen-x), var(--pen-y));
+  transition: opacity 0.6s ease, transform 0.6s ease;
+
+  user-select: none;
+  touch-action: none;
+  cursor: grab;
+
+  margin-right: clamp(80px, 18vw, 130px);
+}
+
+.pen.visible {
+  opacity: 1;
+  --pen-y: 0px;
+}
+
+.pen:active { cursor: grabbing; }
+
+.pen img {
   width: 100%;
+  height: 100%;
+  object-fit: contain;
   display: block;
-  opacity: 0.9;
-}
-
-.menu-logo {
-  width: 56px;
-  height: 56px;
-  object-fit: contain;
-}
-
-.menu-link img {
-  width: 22px;
-  height: 22px;
-  object-fit: contain;
-  opacity: 0.9;
+  filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.35));
 }
