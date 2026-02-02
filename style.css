@@ -152,3 +152,133 @@ body {
 .nav-btn:hover {
   background: #9c0000;
 }
+
+/* ---------- MENU PAGES (Support/Credits) ---------- */
+.menu-header {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  margin-top: 10px;
+}
+
+.menu-title {
+  margin: 0;
+  font-weight: normal;
+  letter-spacing: 0.06em;
+}
+
+.menu-subtitle {
+  margin: 6px 0 0 0;
+  opacity: 0.75;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.logo-badge {
+  width: 56px;
+  height: 56px;
+  border-radius: 14px;
+  border: 1px solid rgba(122, 0, 0, 0.8);
+  background: rgba(122, 0, 0, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+}
+
+.logo-badge span {
+  font-size: 0.75rem;
+  opacity: 0.9;
+  letter-spacing: 0.08em;
+}
+
+.menu-card {
+  width: 100%;
+  border-radius: 16px;
+  border: 1px solid rgba(122, 0, 0, 0.65);
+  background: rgba(255, 255, 255, 0.04);
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.4) inset;
+  padding: 16px 14px;
+}
+
+.menu-card h3 {
+  margin: 0 0 10px 0;
+  font-weight: normal;
+  letter-spacing: 0.04em;
+  opacity: 0.95;
+}
+
+.menu-card p {
+  margin: 0;
+  opacity: 0.78;
+  line-height: 1.6;
+  font-size: 0.95rem;
+}
+
+.menu-links {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.menu-link {
+  width: 100%;
+  border-radius: 12px;
+  border: 1px solid rgba(122, 0, 0, 0.65);
+  background: rgba(122, 0, 0, 0.18);
+  padding: 12px 12px;
+  text-decoration: none;
+  color: white;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.menu-link:hover {
+  background: rgba(156, 0, 0, 0.22);
+}
+
+.menu-link small {
+  opacity: 0.7;
+  font-size: 0.85rem;
+}
+
+.menu-divider {
+  width: 100%;
+  height: 1px;
+  background: rgba(122, 0, 0, 0.45);
+  margin: 8px 0;
+}
+
+/* ---------- MENU IMAGES ---------- */
+.menu-banner {
+  width: 100%;
+  border-radius: 14px;
+  border: 1px solid rgba(122, 0, 0, 0.6);
+  overflow: hidden;
+  margin-bottom: 10px;
+}
+
+.menu-banner img {
+  width: 100%;
+  display: block;
+  opacity: 0.9;
+}
+
+.menu-logo {
+  width: 56px;
+  height: 56px;
+  object-fit: contain;
+}
+
+.menu-link img {
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+  opacity: 0.9;
+}
