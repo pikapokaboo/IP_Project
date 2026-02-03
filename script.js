@@ -2,6 +2,7 @@
 const disclaimer = document.getElementById("disclaimer");
 const logo1 = document.getElementById("logo1");
 const logo2 = document.getElementById("logo2");
+const artwork = document.getElementById("artwork");
 const login = document.getElementById("loginScreen");
 const signup = document.getElementById("signupScreen");
 const goToSignup = document.getElementById("goToSignup");
@@ -13,6 +14,7 @@ const signupUser = document.getElementById("signupUser");
 const signupPass = document.getElementById("signupPass");
 const signupPass2 = document.getElementById("signupPass2");
 const signupSubmit = document.getElementById("signupSubmit");
+const loadingOverlay = document.getElementById("loadingOverlay");
 
 /* ===== Dev (no RestDB) ===== */
 const DEV_MODE = true;
@@ -39,15 +41,26 @@ function setBusy(isBusy) {
 const params = new URLSearchParams(window.location.search);
 const skipIntro = params.get("skipIntro") === "1";
 
-const scenes = [disclaimer, logo1, logo2, login, signup];
+const scenes = [disclaimer, logo1, logo2, artwork, login, signup];
 scenes.forEach(hide);
 logo2.classList.remove("move-up");
+
+const desktopMedia = window.matchMedia("(min-width: 900px)");
+function triggerDesktopSplit() {
+  if (!desktopMedia.matches) return;
+  document.body.classList.add("desktop-split");
+  show(artwork);
+}
 
 if (skipIntro) {
   // Skip directly to logo2 + login, then clean the URL
   show(logo2);
   setTimeout(() => logo2.classList.add("move-up"), 4000);
-  setTimeout(() => { show(login); hide(signup); }, 5500);
+  setTimeout(() => {
+    show(login);
+    hide(signup);
+    setTimeout(triggerDesktopSplit, 600);
+  }, 5500);
   window.history.replaceState({}, document.title, window.location.pathname);
 } else {
   // Full intro sequence: disclaimer -> logo1 -> logo2 -> login
@@ -60,7 +73,11 @@ if (skipIntro) {
   setTimeout(() => show(logo2), 11500);
   setTimeout(() => logo2.classList.add("move-up"), 15500);
 
-  setTimeout(() => { show(login); hide(signup); }, 16500);
+  setTimeout(() => {
+    show(login);
+    hide(signup);
+    setTimeout(triggerDesktopSplit, 1000);
+  }, 16500);
 }
 
 /* ===== Screen switching ===== */
@@ -81,7 +98,14 @@ async function sha256(text) {
 // Local-only login for testing (no network)
 function devLogin(username) {
   localStorage.setItem("currentUser", username);
-  window.location.href = "home.html";
+  playLoadingThenRedirect();
+}
+
+function playLoadingThenRedirect() {
+  if (loadingOverlay) loadingOverlay.classList.add("show");
+  setTimeout(() => {
+    window.location.href = "home.html";
+  }, 3000);
 }
 
 /* ===== RestDB helpers ===== */
@@ -180,7 +204,7 @@ loginSubmit.addEventListener("click", async () => {
     if (passwordHash !== account.passwordHash) return alert("Wrong password.");
 
     localStorage.setItem("currentUser", account.username);
-    window.location.href = "home.html";
+    playLoadingThenRedirect();
   } catch (err) {
     alert(err.message);
   } finally {
