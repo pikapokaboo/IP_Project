@@ -9,7 +9,7 @@ const backToLogin = document.getElementById("backToLogin");
 
 const RESTDB_BASE = "https://thearchive-6738.restdb.io/rest";
 const COLLECTION = "accounts";
-const CORS_API_KEY = "697c47bc53d66e17391956ea";
+const CORS_API_KEY = "698167a3bf4bccff6a53e43f";
 
 const loginUser = document.getElementById("loginUser");
 const loginPass = document.getElementById("loginPass");
