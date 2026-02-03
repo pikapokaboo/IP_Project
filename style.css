@@ -1,3 +1,4 @@
+/* ===== Base ===== */
 * { box-sizing: border-box; font-family: "Georgia", serif; }
 
 body {
@@ -7,7 +8,7 @@ body {
   overflow: hidden;
 }
 
-/* scenes */
+/* ===== Scenes (full-screen panels) ===== */
 .scene {
   position: absolute;
   inset: 0;
@@ -22,7 +23,7 @@ body {
 .scene.show { opacity: 1; pointer-events: auto; }
 .scene.hide { opacity: 0; pointer-events: none; }
 
-/* panel */
+/* ===== Panel layout ===== */
 .panel {
   width: min(92vw, 420px);
   height: 100vh;
@@ -42,7 +43,7 @@ body {
   padding-top: 60px;
 }
 
-/* disclaimer */
+/* ===== Disclaimer ===== */
 .disclaimer-text {
   text-align: center;
   font-size: 1.2rem;
@@ -50,7 +51,7 @@ body {
   max-width: 70%;
 }
 
-/* logos */
+/* ===== Logos ===== */
 .logo {
   max-width: min(70%, 520px);
   max-height: 40vh;
@@ -59,7 +60,7 @@ body {
 #logo2 { transform: translateY(0); }
 #logo2.move-up { transform: translateY(-225px); transition: transform 1.5s ease; }
 
-/* login + signup */
+/* ===== Login + Signup ===== */
 .login-label { font-size: 0.95rem; opacity: 0.85; }
 
 .input-box {
@@ -85,7 +86,7 @@ body {
 
 .login-btn:hover { background: #9c0000; }
 
-/* bottom buttons */
+/* ===== Bottom buttons ===== */
 .bottom-buttons {
   margin-bottom: 24px;
   width: 100%;
@@ -115,7 +116,7 @@ body {
 .bottom-buttons button:hover,
 .nav-btn:hover { background: #9c0000; }
 
-/* menu pages */
+/* ===== Menu pages (support / credits) ===== */
 .menu-header {
   width: 100%;
   display: flex;
@@ -173,7 +174,7 @@ body {
 
 .menu-divider { width: 100%; height: 1px; background: rgba(122, 0, 0, 0.45); margin: 8px 0; }
 
-/* menu images (border removed) */
+/* ===== Menu images ===== */
 .menu-banner {
   width: 100%;
   border-radius: 14px;
@@ -185,7 +186,7 @@ body {
 .menu-banner img { width: 100%; display: block; opacity: 0.9; }
 .menu-link img { width: 22px; height: 22px; object-fit: contain; opacity: 0.9; }
 
-/* home letter overlay */
+/* ===== Home letter overlay ===== */
 .home-wrap { position: relative; min-height: 100vh; background: #000; overflow: hidden; }
 
 .letter-overlay {
@@ -288,7 +289,7 @@ body {
   pointer-events: none;
 }
 
-/* pen: use CSS variables so X drag + Y fade don't conflict */
+/* Pen: use CSS variables so X drag + Y fade don't conflict */
 .pen {
   height: 72px;
   width: 42px;

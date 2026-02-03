@@ -1,3 +1,4 @@
+// ===== DOM references =====
 const disclaimer = document.getElementById("disclaimer");
 const logo1 = document.getElementById("logo1");
 const logo2 = document.getElementById("logo2");
@@ -26,6 +27,7 @@ const CORS_API_KEY = "698167a3bf4bccff6a53e43f";
 function show(el) { el.classList.add("show"); el.classList.remove("hide"); }
 function hide(el) { el.classList.add("hide"); el.classList.remove("show"); }
 
+// Disable UI while async operations are in flight
 function setBusy(isBusy) {
   loginSubmit.disabled = isBusy;
   signupSubmit.disabled = isBusy;
@@ -37,15 +39,18 @@ function setBusy(isBusy) {
 const params = new URLSearchParams(window.location.search);
 const skipIntro = params.get("skipIntro") === "1";
 
-hide(disclaimer); hide(logo1); hide(logo2); hide(login); hide(signup);
+const scenes = [disclaimer, logo1, logo2, login, signup];
+scenes.forEach(hide);
 logo2.classList.remove("move-up");
 
 if (skipIntro) {
+  // Skip directly to logo2 + login, then clean the URL
   show(logo2);
   setTimeout(() => logo2.classList.add("move-up"), 4000);
   setTimeout(() => { show(login); hide(signup); }, 5500);
   window.history.replaceState({}, document.title, window.location.pathname);
 } else {
+  // Full intro sequence: disclaimer -> logo1 -> logo2 -> login
   show(disclaimer);
   setTimeout(() => hide(disclaimer), 4500);
 
@@ -59,10 +64,12 @@ if (skipIntro) {
 }
 
 /* ===== Screen switching ===== */
+// Toggle between login and signup panels
 goToSignup.addEventListener("click", () => { hide(login); show(signup); });
 backToLogin.addEventListener("click", () => { hide(signup); show(login); });
 
 /* ===== Crypto ===== */
+// Hash password client-side before sending to RestDB
 async function sha256(text) {
   const data = new TextEncoder().encode(text);
   const hashBuffer = await crypto.subtle.digest("SHA-256", data);
@@ -71,12 +78,14 @@ async function sha256(text) {
 }
 
 /* ===== Dev login ===== */
+// Local-only login for testing (no network)
 function devLogin(username) {
   localStorage.setItem("currentUser", username);
   window.location.href = "home.html";
 }
 
 /* ===== RestDB helpers ===== */
+// Wrap RestDB requests with consistent headers and error handling
 async function restdbFetch(path, options = {}) {
   const url = `${RESTDB_BASE}/${path}`;
 
@@ -124,9 +133,11 @@ signupSubmit.addEventListener("click", async () => {
   try {
     setBusy(true);
 
+    // Ensure unique username
     const existing = await findAccount(username);
     if (existing) return alert("That username is already taken.");
 
+    // Store hashed password only
     const passwordHash = await sha256(pass);
     await restdbFetch(COLLECTION, {
       method: "POST",
