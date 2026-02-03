@@ -5,6 +5,7 @@
   <title>The Archivist</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="style.css" />
+  <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
 </head>
 
 <body>
@@ -24,6 +25,11 @@
 
   <div id="logo2" class="scene">
     <img src="Images/logo2.png" alt="Logo 2" class="logo" />
+  </div>
+
+  <!-- Artwork (desktop-only) -->
+  <div id="artwork" class="scene artwork">
+    <img src="Images/artwork.png" alt="Artwork" />
   </div>
 
   <!-- Login screen -->
@@ -65,6 +71,17 @@
         <a class="nav-btn" href="credits.html">Credits</a>
       </div>
     </div>
+  </div>
+
+  <!-- Loading overlay -->
+  <div id="loadingOverlay" class="loading-overlay">
+    <lottie-player
+      src="json/lottie.json"
+      style="width: 280px; height: 280px; background: transparent"
+      background="transparent"
+      autoplay
+      loop
+    ></lottie-player>
   </div>
 
   <!-- Shared scripts -->
