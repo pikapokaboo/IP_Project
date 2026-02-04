@@ -15,6 +15,8 @@ const signupPass = document.getElementById("signupPass");
 const signupPass2 = document.getElementById("signupPass2");
 const signupSubmit = document.getElementById("signupSubmit");
 const loadingOverlay = document.getElementById("loadingOverlay");
+const introAudio = document.getElementById("introAudio");
+const loginAudio = document.getElementById("loginAudio");
 
 /* ===== Dev (no RestDB) ===== */
 const DEV_MODE = true;
@@ -37,6 +39,127 @@ function setBusy(isBusy) {
   backToLogin.disabled = isBusy;
 }
 
+/* ===== Audio helpers ===== */
+let audioReady = false;
+const INTRO_FADE_MS = 1200;
+const SWITCH_FADE_MS = 800;
+const LOGIN_VOLUME = 0.5;
+const LOGIN_FADE_IN_MS = 800;
+const LOGIN_FADE_OUT_MS = 700;
+let loginAudioStarted = false;
+
+function safePlay(audioEl) {
+  if (!audioEl) return;
+  const attempt = audioEl.play();
+  if (attempt && typeof attempt.catch === "function") {
+    attempt.catch(() => { audioReady = false; });
+  }
+}
+
+function stopAudio(audioEl) {
+  if (!audioEl) return;
+  audioEl.pause();
+  audioEl.currentTime = 0;
+}
+
+function fadeTo(audioEl, targetVolume, durationMs, onDone) {
+  if (!audioEl) return;
+  const startVolume = audioEl.volume;
+  const delta = targetVolume - startVolume;
+  if (durationMs <= 0 || Math.abs(delta) < 0.001) {
+    audioEl.volume = targetVolume;
+    if (onDone) onDone();
+    return;
+  }
+
+  const startTime = performance.now();
+  function step(now) {
+    const t = Math.min((now - startTime) / durationMs, 1);
+    audioEl.volume = startVolume + delta * t;
+    if (t < 1) {
+      requestAnimationFrame(step);
+    } else if (onDone) {
+      onDone();
+    }
+  }
+  requestAnimationFrame(step);
+}
+
+function fadeIn(audioEl, durationMs, targetVolume = 1) {
+  if (!audioEl) return;
+  audioEl.volume = 0;
+  safePlay(audioEl);
+  fadeTo(audioEl, targetVolume, durationMs);
+}
+
+function fadeOut(audioEl, durationMs, onDone) {
+  if (!audioEl) return;
+  fadeTo(audioEl, 0, durationMs, () => {
+    audioEl.pause();
+    audioEl.currentTime = 0;
+    if (onDone) onDone();
+  });
+}
+
+function playIntroAudio() {
+  if (!introAudio) return;
+  if (loginAudio) loginAudio.pause();
+  fadeIn(introAudio, INTRO_FADE_MS);
+}
+
+function playLoginLoop() {
+  if (!loginAudio) return;
+  if (introAudio && !introAudio.paused) {
+    fadeOut(introAudio, SWITCH_FADE_MS, () => {
+      loginAudio.volume = 0;
+      safePlay(loginAudio);
+      if (!loginAudioStarted) {
+        loginAudioStarted = true;
+        fadeTo(loginAudio, LOGIN_VOLUME, LOGIN_FADE_IN_MS);
+      } else {
+        loginAudio.volume = LOGIN_VOLUME;
+      }
+    });
+    return;
+  }
+  if (!loginAudioStarted) {
+    loginAudioStarted = true;
+    fadeIn(loginAudio, LOGIN_FADE_IN_MS, LOGIN_VOLUME);
+    return;
+  }
+  loginAudio.volume = LOGIN_VOLUME;
+  safePlay(loginAudio);
+}
+
+function stopAllAudio() {
+  stopAudio(introAudio);
+  stopAudio(loginAudio);
+}
+
+function primeAudio() {
+  if (audioReady) return;
+  audioReady = true;
+  const loginVisible = login.classList.contains("show");
+  const logo2Visible = logo2.classList.contains("show");
+  if (skipIntro || loginVisible || logo2Visible) {
+    playLoginLoop();
+    return;
+  }
+  playIntroAudio();
+}
+
+document.addEventListener("pointerdown", primeAudio, { once: true });
+document.addEventListener("touchstart", primeAudio, { once: true, passive: true });
+document.addEventListener("touchend", primeAudio, { once: true, passive: true });
+document.addEventListener("mousedown", primeAudio, { once: true });
+document.addEventListener("click", primeAudio, { once: true });
+document.addEventListener("keydown", primeAudio, { once: true });
+
+window.addEventListener("load", () => {
+  if (introAudio) introAudio.load();
+  if (loginAudio) loginAudio.load();
+});
+
 /* ===== Cutscene / skipIntro ===== */
 const params = new URLSearchParams(window.location.search);
 const skipIntro = params.get("skipIntro") === "1";
@@ -52,25 +175,33 @@ function triggerDesktopSplit() {
   show(artwork);
 }
 
-if (skipIntro) {
-  // Skip directly to logo2 + login, then clean the URL
-  show(logo2);
-  setTimeout(() => logo2.classList.add("move-up"), 4000);
-  setTimeout(() => {
-    show(login);
-    hide(signup);
-    setTimeout(triggerDesktopSplit, 600);
-  }, 5500);
-  window.history.replaceState({}, document.title, window.location.pathname);
-} else {
-  // Full intro sequence: disclaimer -> logo1 -> logo2 -> login
+let introStarted = false;
+function startIntroSequence() {
+  if (introStarted) return;
+  introStarted = true;
+
+  if (skipIntro) {
+    show(logo2);
+    playLoginLoop();
+    setTimeout(() => logo2.classList.add("move-up"), 4000);
+    setTimeout(() => {
+      show(login);
+      hide(signup);
+      setTimeout(triggerDesktopSplit, 600);
+    }, 5500);
+    window.history.replaceState({}, document.title, window.location.pathname);
+    return;
+  }
+
   show(disclaimer);
+  playIntroAudio();
   setTimeout(() => hide(disclaimer), 4500);
 
   setTimeout(() => show(logo1), 6000);
   setTimeout(() => hide(logo1), 10000);
 
   setTimeout(() => show(logo2), 11500);
+  setTimeout(() => playLoginLoop(), 11500);
   setTimeout(() => logo2.classList.add("move-up"), 15500);
 
   setTimeout(() => {
@@ -80,10 +211,77 @@ if (skipIntro) {
   }, 16500);
 }
 
+if (skipIntro) {
+  startIntroSequence();
+} else {
+  show(disclaimer);
+  const startOnUser = () => {
+    hide(disclaimer);
+    startIntroSequence();
+  };
+  disclaimer.addEventListener("click", startOnUser, { once: true });
+  disclaimer.addEventListener("touchstart", startOnUser, { once: true, passive: true });
+}
+
 /* ===== Screen switching ===== */
 // Toggle between login and signup panels
 goToSignup.addEventListener("click", () => { hide(login); show(signup); });
 backToLogin.addEventListener("click", () => { hide(signup); show(login); });
+
+/* ===== Modals (support / credits) ===== */
+const modalOpenButtons = document.querySelectorAll(".modal-open");
+const modalCloseButtons = document.querySelectorAll(".modal-close");
+const modalOverlays = document.querySelectorAll(".modal-overlay");
+
+function openModal(modalId) {
+  const modal = document.getElementById(modalId);
+  if (!modal) return;
+  modal.classList.add("show");
+  modal.setAttribute("aria-hidden", "false");
+  document.body.classList.add("modal-open");
+  const modalContent = modal.querySelector(".modal-content");
+  if (modalContent) {
+    modalContent.scrollTop = 0;
+    requestAnimationFrame(() => { modalContent.scrollTop = 0; });
+  }
+}
+
+function closeModal(modal) {
+  if (!modal) return;
+  const active = document.activeElement;
+  if (active && modal.contains(active)) active.blur();
+  modal.classList.remove("show");
+  modal.setAttribute("aria-hidden", "true");
+  const anyOpen = Array.from(modalOverlays).some((el) => el.classList.contains("show"));
+  if (!anyOpen) document.body.classList.remove("modal-open");
+}
+
+modalOpenButtons.forEach((btn) => {
+  btn.addEventListener("click", () => {
+    const target = btn.getAttribute("data-modal");
+    openModal(target);
+  });
+});
+
+modalCloseButtons.forEach((btn) => {
+  btn.addEventListener("click", () => {
+    const modal = btn.closest(".modal-overlay");
+    closeModal(modal);
+  });
+});
+
+modalOverlays.forEach((overlay) => {
+  overlay.addEventListener("click", (event) => {
+    if (event.target === overlay) closeModal(overlay);
+  });
+});
+
+document.addEventListener("keydown", (event) => {
+  if (event.key !== "Escape") return;
+  modalOverlays.forEach((overlay) => {
+    if (overlay.classList.contains("show")) closeModal(overlay);
+  });
+});
 
 /* ===== Crypto ===== */
 // Hash password client-side before sending to RestDB
@@ -102,7 +300,17 @@ function devLogin(username) {
 }
 
 function playLoadingThenRedirect() {
+  if (loginAudio && !loginAudio.paused) {
+    fadeOut(loginAudio, LOGIN_FADE_OUT_MS, () => {
+      if (loadingOverlay) loadingOverlay.classList.add("show");
+      setTimeout(() => {
+        window.location.href = "home.html";
+      }, 3000);
+    });
+    return;
+  }
   if (loadingOverlay) loadingOverlay.classList.add("show");
+  stopAllAudio();
   setTimeout(() => {
     window.location.href = "home.html";
   }, 3000);
