@@ -11,10 +11,14 @@
 <body>
   <!-- Content warning / intro -->
   <div id="disclaimer" class="scene">
-    <div class="disclaimer-text">
-      The following content may contain:<br />
-      Blood, mention of deaths<br /><br />
-      Please be cautious
+    <div class="disclaimer-box" role="dialog" aria-modal="true" aria-labelledby="warningTitle">
+      <div id="warningTitle" class="disclaimer-title">WARNING</div>
+      <div class="disclaimer-text">
+        This game contains flashing lights, loud noises, and jumpscares.<br /><br />
+        The creator of this game assumes no responsibility for any adverse reactions or effects imparted by playing this game.<br /><br />
+        <strong>You have been warned.</strong>
+      </div>
+      <div class="disclaimer-cta">Click anywhere to continue.</div>
     </div>
   </div>
 
@@ -46,8 +50,8 @@
 
       <div class="bottom-buttons">
         <button id="goToSignup" type="button">Sign Up</button>
-        <a class="nav-btn" href="support.html">Support Us!</a>
-        <a class="nav-btn" href="credits.html">Credits</a>
+        <button class="nav-btn modal-open" data-modal="supportModal" type="button">Support Us!</button>
+        <button class="nav-btn modal-open" data-modal="creditsModal" type="button">Credits</button>
       </div>
     </div>
   </div>
@@ -67,8 +71,8 @@
 
       <div class="bottom-buttons">
         <button id="backToLogin" type="button">Login</button>
-        <a class="nav-btn" href="support.html">Support Us!</a>
-        <a class="nav-btn" href="credits.html">Credits</a>
+        <button class="nav-btn modal-open" data-modal="supportModal" type="button">Support Us!</button>
+        <button class="nav-btn modal-open" data-modal="creditsModal" type="button">Credits</button>
       </div>
     </div>
   </div>
@@ -83,6 +87,114 @@
       loop
     ></lottie-player>
   </div>
+
+  <!-- Support modal -->
+  <div id="supportModal" class="modal-overlay" aria-hidden="true">
+    <div class="modal-panel">
+      <div class="panel">
+        <div class="content modal-content">
+          <div class="menu-banner support-banner">
+            <img src="Images/support_banner.png" alt="Support The Archivist">
+          </div>
+
+          <div class="menu-header">
+            <div>
+              <h2 class="menu-title">Support</h2>
+              <p class="menu-subtitle">
+                Help keep the archive running. Every contribution supports development.
+              </p>
+            </div>
+          </div>
+
+          <div class="menu-divider"></div>
+
+          <div class="menu-grid">
+            <div class="menu-card">
+              <h3>Why support?</h3>
+              <p>
+                Your support helps fund art, sound design, and new cases added to the archive.
+              </p>
+            </div>
+
+            <div class="menu-card">
+              <h3>Support options</h3>
+              <div class="menu-links">
+                <a class="menu-link" href="#"><span>Patreon</span><img src="Images/patreon_icon.png" alt=""></a>
+                <a class="menu-link" href="#"><span>Ko-fi</span><img src="Images/kofi_icon.png" alt=""></a>
+                <a class="menu-link" href="#"><span>Itch.io</span><img src="Images/itch_icon.png" alt=""></a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="bottom-buttons">
+          <button class="nav-btn modal-close" type="button">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Credits modal -->
+  <div id="creditsModal" class="modal-overlay" aria-hidden="true">
+    <div class="modal-panel">
+      <div class="panel">
+        <div class="content modal-content">
+          <div class="menu-banner credits-banner">
+            <img src="Images/credits_banner.png" alt="Credits" loading="eager" decoding="async" fetchpriority="high">
+          </div>
+
+          <div class="menu-header">
+            <div>
+              <h2 class="menu-title">Credits</h2>
+              <p class="menu-subtitle">
+                A record of those responsible for maintaining the archive.
+              </p>
+            </div>
+          </div>
+
+          <div class="menu-divider"></div>
+
+          <div class="menu-grid">
+            <div class="menu-card">
+              <h3>Development</h3>
+              <p>
+                Creator / Design: NonAttention<br>
+                Programming: Reyner Chye<br>
+                UI / Visual Direction: See Xing Yi<br>
+                Writing / Narrative:  Reyner Chye & See Xing Yi
+              </p>
+            </div>
+
+            <div class="menu-card">
+              <h3>Art & Audio</h3>
+              <p>
+                Key Art / Assets: See Xing Yi<br>
+                Music: Reyner Chye<br>
+                Sound Effects: Reyner Chye
+              </p>
+            </div>
+
+            <div class="menu-card span-2">
+              <h3>Special Thanks</h3>
+              <p>
+                Instructor: Our Np Teachers :D<br>
+                Playtesters: , , <br>
+                Tools & Libraries:
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="bottom-buttons">
+          <button class="nav-btn modal-close" type="button">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Cutscene audio -->
+  <audio id="introAudio" src="audio/intro.mp3" preload="auto"></audio>
+  <audio id="loginAudio" src="audio/login.mp3" preload="auto" loop></audio>
 
   <!-- Shared scripts -->
   <script src="script.js"></script>

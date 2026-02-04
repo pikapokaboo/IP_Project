@@ -9,6 +9,7 @@
 
 <body class="page">
   <div class="home-wrap">
+
     <!-- Intro letter overlay (dismisses after signing) -->
     <div id="letterOverlay" class="letter-overlay">
       <div class="letter-frame">
@@ -209,6 +210,7 @@
       startX = e.clientX;
       penStartTx = currentTx;
       pen.setPointerCapture?.(e.pointerId);
+
     });
 
     // Drag to "sign"
@@ -244,6 +246,7 @@
         sigImg.style.transition = "";
       }, 260);
     });
+
 
     // Hide signature image if asset fails to load
     sigImg.addEventListener("error", () => sigImg.style.display = "none");
