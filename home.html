@@ -101,7 +101,7 @@
             Select a record to begin investigation.
           </p>
 
-          <button class="login-btn" type="button">Enter Archive</button>
+          <button id="playBtn" class="login-btn" type="button">Enter Archive</button>
         </div>
 
         <div class="bottom-buttons">
@@ -124,6 +124,11 @@
     document.getElementById("logoutBtn").addEventListener("click", () => {
       localStorage.removeItem("currentUser");
       window.location.href = "index.html";
+    });
+
+    // Play button goes to game page
+    document.getElementById("playBtn")?.addEventListener("click", () => {
+      window.location.href = "game.html";
     });
 
     // Signature interaction elements
