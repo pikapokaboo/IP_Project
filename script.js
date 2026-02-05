@@ -25,10 +25,8 @@ const loginAudio = document.getElementById("loginAudio");
 const DEV_MODE = true;
 const DEV_ACCOUNT = { username: "dev", password: "dev123" };
 
-// RestDB config (used only when DEV_MODE is false)
-const RESTDB_BASE = "https://thearchive-6738.restdb.io/rest";
-const COLLECTION = "accounts";
-const CORS_API_KEY = "698167a3bf4bccff6a53e43f";
+// Let other pages know whether DEV_MODE is active.
+localStorage.setItem("devMode", DEV_MODE ? "true" : "false");
 
 function show(el) { el.classList.add("show"); el.classList.remove("hide"); }
 function hide(el) { el.classList.add("hide"); el.classList.remove("show"); }

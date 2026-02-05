@@ -10,7 +10,7 @@
 <body class="page">
   <div class="home-wrap">
 
-    <div id="letterOverlay" class="letter-overlay">
+    <div id="letterOverlay" class="letter-overlay" style="display: none;">
       <div class="letter-frame">
         <div class="letter-card">
           <div class="letter-top">
@@ -88,7 +88,7 @@
       </div>
     </div>
 
-    <div class="scene show" style="position: relative;">
+  <div class="scene show" style="position: relative;">
       <div class="panel">
         <div class="content">
           <div class="login-label">Welcome</div>
@@ -109,6 +109,7 @@
     </div>
   </div>
 
+  <script src="restdb-config.js"></script>
   <script>
     const user = localStorage.getItem("currentUser");
     if (!user) window.location.href = "index.html";
@@ -129,6 +130,7 @@
     const pen = document.getElementById("pen");
     const sigImg = document.getElementById("signatureImg");
     const sigLine = document.getElementById("sigLine");
+    const devMode = localStorage.getItem("devMode") === "true";
 
     let dragging = false;
     let startX = 0;
@@ -136,6 +138,106 @@
     let currentTx = 0;
     let signed = false;
     let bounds = { minTx: 0, maxTx: 0 };
+    let skipLetter = false;
+    let accountId = null;
+    let accountCache = null;
+    let letterStarted = false;
+
+    overlay.style.display = "none";
+
+    async function restdbFetch(path, options = {}) {
+      if (devMode) {
+        throw new Error("DEV_MODE is ON. RestDB requests are disabled.");
+      }
+      const url = `${RESTDB_BASE}/${path}`;
+
+      const res = await fetch(url, {
+        ...options,
+        headers: {
+          "Content-Type": "application/json",
+          "x-apikey": CORS_API_KEY,
+          ...(options.headers || {})
+        }
+      });
+
+      const text = await res.text();
+      let data;
+      try { data = text ? JSON.parse(text) : null; } catch { data = text; }
+
+      if (!res.ok) {
+        const msg = (data && (data.msg || data.message)) ? (data.msg || data.message) : `Request failed (${res.status})`;
+        throw new Error(msg);
+      }
+
+      return data;
+    }
+
+    async function findAccount(username) {
+      const q = encodeURIComponent(JSON.stringify({ username }));
+      const results = await restdbFetch(`${COLLECTION}?q=${q}`, { method: "GET" });
+      return Array.isArray(results) && results.length ? results[0] : null;
+    }
+
+    async function loadLetterState(username) {
+      if (devMode) return;
+      try {
+        const account = await findAccount(username);
+        accountCache = account;
+        accountId = account?._id || null;
+        if (account && account.letterSigned == null) {
+          try {
+            await restdbFetch(`${COLLECTION}/${accountId}`, {
+              method: "PATCH",
+              body: JSON.stringify({ letterSigned: false })
+            });
+          } catch (err) {
+            console.warn("RestDB PATCH failed while initializing letterSigned:", err);
+          }
+        }
+        if (account && account.letterSigned) {
+          skipLetter = true;
+          signed = true;
+          overlay.classList.add("dismiss");
+          overlay.style.display = "none";
+          return;
+        }
+        startLetter();
+      } catch {
+        // If RestDB fails, keep the interaction visible.
+        startLetter();
+      }
+    }
+
+    async function markLetterSigned() {
+      if (devMode) return;
+      try {
+        if (!accountId && user) {
+          const account = await findAccount(user);
+          accountCache = account;
+          accountId = account?._id || null;
+        }
+        if (!accountId) return;
+
+        try {
+          await restdbFetch(`${COLLECTION}/${accountId}`, {
+            method: "PATCH",
+            body: JSON.stringify({ letterSigned: true })
+          });
+        } catch (err) {
+          console.warn("RestDB PATCH failed while marking letterSigned:", err);
+          if (accountCache) {
+            const updated = { ...accountCache, letterSigned: true };
+            delete updated._id;
+            await restdbFetch(`${COLLECTION}/${accountId}`, {
+              method: "PUT",
+              body: JSON.stringify(updated)
+            });
+          }
+        }
+      } catch {
+        // Best-effort only.
+      }
+    }
 
     function setPenX(x) {
       pen.style.setProperty("--pen-x", `${x}px`);
@@ -173,6 +275,7 @@
 
       setPenX(bounds.maxTx);
       setSignatureProgress(1);
+      markLetterSigned();
 
       setTimeout(() => {
         overlay.classList.add("dismiss");
@@ -180,12 +283,23 @@
       }, 2500);
     }
 
-    setTimeout(() => {
-      pen.classList.add("visible");
-      computeBounds();
-      setPenX(bounds.minTx);
-      setSignatureProgress(0);
-    }, 2000);
+    function startLetter() {
+      if (letterStarted || skipLetter) return;
+      letterStarted = true;
+      overlay.style.display = "flex";
+
+      setTimeout(() => {
+        if (skipLetter) return;
+        pen.classList.add("visible");
+        computeBounds();
+        currentTx = bounds.minTx;
+        setPenX(currentTx);
+        setSignatureProgress(0);
+      }, 2000);
+    }
+
+    loadLetterState(user);
+    if (devMode) startLetter();
 
     window.addEventListener("resize", () => {
       if (!pen.classList.contains("visible") || signed) return;
@@ -223,8 +337,8 @@
       if (!dragging || signed) return;
       dragging = false;
 
-      pen.style.transition = "transform 0.25s ease, opacity 0.6s ease";
-      sigImg.style.transition = "opacity 0.25s ease, transform 0.25s ease";
+      pen.style.transition = "transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1.15), opacity 0.6s ease";
+      sigImg.style.transition = "opacity 0.3s ease, transform 0.3s ease";
 
       currentTx = bounds.minTx;
       setPenX(currentTx);
@@ -233,7 +347,7 @@
       setTimeout(() => {
         pen.style.transition = "";
         sigImg.style.transition = "";
-      }, 260);
+      }, 360);
     });
 
 
