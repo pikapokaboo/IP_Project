@@ -8,9 +8,7 @@ html, body {
 
 body {
   margin: 0;
-  background: radial-gradient(1200px 800px at 15% 20%, rgba(120, 10, 18, 0.18), rgba(0, 0, 0, 0) 60%),
-              radial-gradient(900px 700px at 80% 70%, rgba(10, 60, 40, 0.18), rgba(0, 0, 0, 0) 55%),
-              #050506;
+  background: var(--page-bg);
   color: white;
   overflow: hidden;
 }
@@ -96,7 +94,13 @@ body::before {
 .scene.show { opacity: 1; pointer-events: auto; }
 .scene.hide { opacity: 0; pointer-events: none; }
 
-:root { --panel-w: min(92vw, 520px); }
+:root {
+  --panel-w: min(92vw, 520px);
+  --page-bg: radial-gradient(1200px 800px at 15% 20%, rgba(120, 10, 18, 0.18), rgba(0, 0, 0, 0) 60%),
+             radial-gradient(900px 700px at 80% 70%, rgba(10, 60, 40, 0.18), rgba(0, 0, 0, 0) 55%),
+             #050506;
+}
+
 
 .panel {
   width: var(--panel-w);
@@ -712,9 +716,7 @@ body::before {
 
 /* ===== Terminal Game ===== */
 body.terminal-page {
-  background: radial-gradient(1200px 900px at 15% 20%, rgba(90, 8, 16, 0.42), rgba(5, 2, 3, 0) 60%),
-              radial-gradient(1000px 900px at 85% 70%, rgba(60, 6, 12, 0.5), rgba(5, 2, 3, 0) 65%),
-              #050203;
+  background: var(--page-bg);
   color: #f2b2b2;
   font-family: "JetBrains Mono", "Fira Code", "IBM Plex Mono", "Consolas", "Courier New", monospace;
   display: flex;
