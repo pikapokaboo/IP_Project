@@ -152,12 +152,10 @@ function primeAudio() {
   playIntroAudio();
 }
 
-document.addEventListener("pointerdown", primeAudio, { once: true });
-document.addEventListener("touchstart", primeAudio, { once: true, passive: true });
-document.addEventListener("touchend", primeAudio, { once: true, passive: true });
-document.addEventListener("mousedown", primeAudio, { once: true });
-document.addEventListener("click", primeAudio, { once: true });
-document.addEventListener("keydown", primeAudio, { once: true });
+["pointerdown", "touchstart", "touchend", "mousedown", "click", "keydown"].forEach((eventName) => {
+  const opts = eventName.startsWith("touch") ? { once: true, passive: true } : { once: true };
+  document.addEventListener(eventName, primeAudio, opts);
+});
 
 window.addEventListener("load", () => {
   if (introAudio) introAudio.load();
