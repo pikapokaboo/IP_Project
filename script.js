@@ -22,7 +22,7 @@ const introAudio = document.getElementById("introAudio");
 const loginAudio = document.getElementById("loginAudio");
 
 // Toggle: set DEV_MODE true to bypass RestDB and use DEV_ACCOUNT
-const DEV_MODE = false;
+const DEV_MODE = true;
 const DEV_ACCOUNT = { username: "dev", password: "dev123" };
 
 // RestDB config (used only when DEV_MODE is false)
