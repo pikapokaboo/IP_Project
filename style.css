@@ -556,6 +556,18 @@ body::before {
 /* Home letter overlay */
 .home-wrap { position: relative; min-height: 100vh; background: #000; overflow: hidden; }
 
+.terminal-stage {
+  display: none;
+  width: 100%;
+  min-height: 100vh;
+  align-items: center;
+  justify-content: center;
+}
+
+.home-wrap.terminal-active .terminal-stage {
+  display: flex;
+}
+
 .letter-overlay {
   position: absolute;
   inset: 0;
@@ -738,6 +750,7 @@ body.terminal-page {
   padding: 12px;
   position: relative;
   z-index: 1;
+  height: min(88vh, 920px);
 }
 
 .terminal-frame {
@@ -747,10 +760,14 @@ body.terminal-page {
   border-radius: 18px;
   box-shadow: 0 0 40px rgba(180, 30, 30, 0.25), inset 0 0 35px rgba(120, 16, 22, 0.2);
   overflow: hidden;
+  height: 100%;
 }
 
 .terminal-content {
   position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 
 .terminal-frame::before,
@@ -833,6 +850,8 @@ body.terminal-page {
   display: grid;
   grid-template-columns: 280px 1fr;
   min-height: 70vh;
+  flex: 1;
+  min-height: 0;
 }
 
 .terminal-sidebar,
@@ -845,12 +864,15 @@ body.terminal-page {
   display: flex;
   flex-direction: column;
   gap: 16px;
+  overflow-y: auto;
 }
 
 .terminal-main {
   display: flex;
   flex-direction: column;
   gap: 18px;
+  min-height: 0;
+  overflow: hidden;
 }
 
 .terminal-panel {
@@ -859,6 +881,10 @@ body.terminal-page {
   border-radius: 14px;
   padding: 14px;
   box-shadow: inset 0 0 18px rgba(120, 16, 22, 0.2);
+}
+
+.terminal-quick-actions {
+  padding-bottom: 22px;
 }
 
 .terminal-panel h3 {
@@ -1288,8 +1314,33 @@ body.terminal-page .terminal-achievement-icon {
   gap: 16px;
 }
 
+.terminal-tab {
+  min-height: 60vh;
+  padding-bottom: 0;
+  flex: 1;
+  overflow-y: auto;
+}
+
 .terminal-tab.active {
   display: flex;
+}
+
+#tab-archive {
+  overflow: hidden;
+}
+
+#tab-archive .terminal-grid {
+  flex: 1;
+  min-height: 0;
+}
+
+#tab-archive .terminal-doc {
+  min-height: 0;
+}
+
+#tab-archive .terminal-doc-body {
+  max-height: none;
+  height: 100%;
 }
 
 @media (max-width: 980px) {
