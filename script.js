@@ -1,4 +1,3 @@
-// ===== DOM references =====
 const disclaimer = document.getElementById("disclaimer");
 const logo1 = document.getElementById("logo1");
 const logo2 = document.getElementById("logo2");
@@ -15,37 +14,42 @@ const signupPass = document.getElementById("signupPass");
 const signupPass2 = document.getElementById("signupPass2");
 const signupSubmit = document.getElementById("signupSubmit");
 const loadingOverlay = document.getElementById("loadingOverlay");
+const feedbackModal = document.getElementById("feedbackModal");
+const feedbackText = document.getElementById("feedbackText");
+const feedbackTitle = document.getElementById("feedbackTitle");
+const feedbackClose = document.getElementById("feedbackClose");
 const introAudio = document.getElementById("introAudio");
 const loginAudio = document.getElementById("loginAudio");
 
-/* ===== Dev (no RestDB) ===== */
-const DEV_MODE = true;
+// Toggle: set DEV_MODE true to bypass RestDB and use DEV_ACCOUNT
+const DEV_MODE = false;
 const DEV_ACCOUNT = { username: "dev", password: "dev123" };
 
-/* ===== RestDB (only used when DEV_MODE=false) ===== */
+// RestDB config (used only when DEV_MODE is false)
 const RESTDB_BASE = "https://thearchive-6738.restdb.io/rest";
 const COLLECTION = "accounts";
 const CORS_API_KEY = "698167a3bf4bccff6a53e43f";
 
-/* ===== UI helpers ===== */
 function show(el) { el.classList.add("show"); el.classList.remove("hide"); }
 function hide(el) { el.classList.add("hide"); el.classList.remove("show"); }
 
-// Disable UI while async operations are in flight
 function setBusy(isBusy) {
   loginSubmit.disabled = isBusy;
   signupSubmit.disabled = isBusy;
   goToSignup.disabled = isBusy;
   backToLogin.disabled = isBusy;
+  if (loadingOverlay) {
+    loadingOverlay.classList.toggle("show", isBusy);
+  }
 }
 
-/* ===== Audio helpers ===== */
 let audioReady = false;
 const INTRO_FADE_MS = 1200;
+const INTRO_VOLUME = 0.1;
 const SWITCH_FADE_MS = 800;
-const LOGIN_VOLUME = 0.5;
+const LOGIN_VOLUME = 0.4;
 const LOGIN_FADE_IN_MS = 800;
-const LOGIN_FADE_OUT_MS = 700;
+const LOGIN_FADE_OUT_MS = 1400;
 let loginAudioStarted = false;
 
 function safePlay(audioEl) {
@@ -104,7 +108,7 @@ function fadeOut(audioEl, durationMs, onDone) {
 function playIntroAudio() {
   if (!introAudio) return;
   if (loginAudio) loginAudio.pause();
-  fadeIn(introAudio, INTRO_FADE_MS);
+  fadeIn(introAudio, INTRO_FADE_MS, INTRO_VOLUME);
 }
 
 function playLoginLoop() {
@@ -160,7 +164,7 @@ window.addEventListener("load", () => {
   if (loginAudio) loginAudio.load();
 });
 
-/* ===== Cutscene / skipIntro ===== */
+// Toggle: add ?skipIntro=1 to jump straight to the login sequence
 const params = new URLSearchParams(window.location.search);
 const skipIntro = params.get("skipIntro") === "1";
 
@@ -223,12 +227,9 @@ if (skipIntro) {
   disclaimer.addEventListener("touchstart", startOnUser, { once: true, passive: true });
 }
 
-/* ===== Screen switching ===== */
-// Toggle between login and signup panels
 goToSignup.addEventListener("click", () => { hide(login); show(signup); });
 backToLogin.addEventListener("click", () => { hide(signup); show(login); });
 
-/* ===== Modals (support / credits) ===== */
 const modalOpenButtons = document.querySelectorAll(".modal-open");
 const modalCloseButtons = document.querySelectorAll(".modal-close");
 const modalOverlays = document.querySelectorAll(".modal-overlay");
@@ -256,6 +257,13 @@ function closeModal(modal) {
   if (!anyOpen) document.body.classList.remove("modal-open");
 }
 
+function showFeedback(message, title = "Notice") {
+  if (!feedbackModal) return;
+  if (feedbackTitle) feedbackTitle.textContent = title;
+  if (feedbackText) feedbackText.textContent = message;
+  openModal("feedbackModal");
+}
+
 modalOpenButtons.forEach((btn) => {
   btn.addEventListener("click", () => {
     const target = btn.getAttribute("data-modal");
@@ -276,6 +284,10 @@ modalOverlays.forEach((overlay) => {
   });
 });
 
+if (feedbackClose) {
+  feedbackClose.addEventListener("click", () => closeModal(feedbackModal));
+}
+
 document.addEventListener("keydown", (event) => {
   if (event.key !== "Escape") return;
   modalOverlays.forEach((overlay) => {
@@ -283,7 +295,6 @@ document.addEventListener("keydown", (event) => {
   });
 });
 
-/* ===== Crypto ===== */
 // Hash password client-side before sending to RestDB
 async function sha256(text) {
   const data = new TextEncoder().encode(text);
@@ -292,8 +303,6 @@ async function sha256(text) {
   return hashArray.map(b => b.toString(16).padStart(2, "0")).join("");
 }
 
-/* ===== Dev login ===== */
-// Local-only login for testing (no network)
 function devLogin(username) {
   localStorage.setItem("currentUser", username);
   playLoadingThenRedirect();
@@ -316,8 +325,6 @@ function playLoadingThenRedirect() {
   }, 3000);
 }
 
-/* ===== RestDB helpers ===== */
-// Wrap RestDB requests with consistent headers and error handling
 async function restdbFetch(path, options = {}) {
   const url = `${RESTDB_BASE}/${path}`;
 
@@ -348,74 +355,69 @@ async function findAccount(username) {
   return Array.isArray(results) && results.length ? results[0] : null;
 }
 
-/* ===== Signup ===== */
 signupSubmit.addEventListener("click", async () => {
   const username = signupUser.value.trim();
   const pass = signupPass.value;
   const pass2 = signupPass2.value;
 
-  if (!username || !pass || !pass2) return alert("Please fill in all fields.");
-  if (pass !== pass2) return alert("Passwords do not match.");
+  if (!username || !pass || !pass2) return showFeedback("Please fill in all fields.");
+  if (pass !== pass2) return showFeedback("Passwords do not match.");
 
-  // Dev mode: block RestDB entirely
   if (DEV_MODE) {
-    return alert("DEV_MODE is ON.\nSignup is disabled to save API quota.\nUse dev / dev123 to login.");
+    return showFeedback("DEV_MODE is ON.\nSignup is disabled to save API quota.\nUse dev / dev123 to login.");
   }
 
   try {
     setBusy(true);
 
-    // Ensure unique username
     const existing = await findAccount(username);
-    if (existing) return alert("That username is already taken.");
+    if (existing) return showFeedback("That username is already taken.");
 
-    // Store hashed password only
     const passwordHash = await sha256(pass);
     await restdbFetch(COLLECTION, {
       method: "POST",
       body: JSON.stringify({ username, passwordHash, createdAt: new Date().toISOString() })
     });
 
-    alert("Signup successful! Please login.");
+    showFeedback("Signup successful! Please login.");
     hide(signup); show(login);
   } catch (err) {
-    alert(err.message);
+    showFeedback(err.message);
   } finally {
     setBusy(false);
   }
 });
 
-/* ===== Login ===== */
 loginSubmit.addEventListener("click", async () => {
   const username = loginUser.value.trim();
   const pass = loginPass.value;
+  let shouldReleaseBusy = true;
 
-  if (!username || !pass) return alert("Please enter username and password.");
+  if (!username || !pass) return showFeedback("Please enter username and password.");
 
-  // Dev login: no RestDB calls
   if (DEV_MODE && username === DEV_ACCOUNT.username && pass === DEV_ACCOUNT.password) {
     return devLogin(username);
   }
 
-  // Dev mode: block RestDB entirely
   if (DEV_MODE) {
-    return alert("DEV_MODE is ON.\nUse dev / dev123 to login (no RestDB).");
+    return showFeedback("DEV_MODE is ON.\nUse dev / dev123 to login (no RestDB).");
   }
 
   try {
     setBusy(true);
 
     const account = await findAccount(username);
-    if (!account) return alert("Account not found.");
+    if (!account) return showFeedback("Account not found.");
 
     const passwordHash = await sha256(pass);
-    if (passwordHash !== account.passwordHash) return alert("Wrong password.");
+    if (passwordHash !== account.passwordHash) return showFeedback("Wrong password.");
 
     localStorage.setItem("currentUser", account.username);
+    shouldReleaseBusy = false;
     playLoadingThenRedirect();
   } catch (err) {
-    alert(err.message);
+    showFeedback(err.message);
   } finally {
-    setBusy(false);
+    if (shouldReleaseBusy) setBusy(false);
   }
 });
