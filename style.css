@@ -571,18 +571,18 @@ body::before {
 .letter-overlay.dismiss { opacity: 0; pointer-events: none; }
 
 .letter-frame {
-  width: min(92vw, 420px, calc((100vh - 24px) * 9 / 16));
+  width: min(92vw, 520px, calc((100vh - 24px) * 210 / 297));
   height: auto;
-  aspect-ratio: 9 / 16;
+  aspect-ratio: 210 / 297;
   display: flex;
 }
 
 @media (min-width: 900px) {
-  .letter-frame { width: min(80vw, 520px, calc((100vh - 24px) * 9 / 16)); }
+  .letter-frame { width: min(80vw, 600px, calc((100vh - 24px) * 210 / 297)); }
 }
 
 @media (max-width: 899px) {
-  .letter-frame { width: min(92vw, calc((100vh - 24px) * 9 / 16)); }
+  .letter-frame { width: min(92vw, calc((100vh - 24px) * 210 / 297)); }
 }
 
 .letter-card {
@@ -648,13 +648,16 @@ body::before {
   display: flex;
   align-items: flex-end;
   justify-content: flex-end;
+  --sig-right: 18px;
+  --sig-width: min(38%, 170px);
 }
 
 .sig-line {
   position: absolute;
-  right: 16px;
+  right: var(--sig-right);
   bottom: 16px;
-  width: 44%;
+  width: var(--sig-width);
+  min-width: 48px;
   height: 1px;
   background: rgba(0, 0, 0, 0.55);
 }
@@ -670,9 +673,10 @@ body::before {
 
 .signature-img {
   position: absolute;
-  right: 18px;
+  right: var(--sig-right);
   bottom: 18px;
-  width: 38%;
+  width: var(--sig-width);
+  min-width: 48px;
   max-width: 170px;
   opacity: 0;
   transform: translateY(6px);
@@ -682,6 +686,9 @@ body::before {
 
 /* Pen: use CSS variables so X drag + Y fade don't conflict */
 .pen {
+  position: absolute;
+  right: var(--sig-right);
+  bottom: 6px;
   height: 72px;
   width: 42px;
 
@@ -696,7 +703,7 @@ body::before {
   touch-action: none;
   cursor: grab;
 
-  margin-right: clamp(80px, 18vw, 130px);
+  margin-right: 0;
 }
 
 .pen.visible {
