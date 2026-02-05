@@ -717,11 +717,15 @@ body.terminal-page {
               #050203;
   color: #f2b2b2;
   font-family: "JetBrains Mono", "Fira Code", "IBM Plex Mono", "Consolas", "Courier New", monospace;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
 }
 
 .terminal-shell {
   width: min(92vw, 1200px);
-  margin: 24px auto;
+  margin: 0;
   padding: 12px;
   position: relative;
   z-index: 1;
@@ -960,6 +964,7 @@ body.terminal-page {
   grid-template-columns: 280px 1fr;
   gap: 16px;
   align-items: stretch;
+  min-height: 60vh;
 }
 
 .terminal-list {
@@ -1123,13 +1128,20 @@ body.terminal-page ::-webkit-scrollbar-thumb:hover {
 .terminal-object-tags span {
   padding-left: 10px;
   position: relative;
+  padding-bottom: 6px;
+  border-bottom: 1px solid rgba(255, 92, 92, 0.18);
 }
 
 .terminal-object-tags span::before {
-  content: "�";
+  content: "*";
   position: absolute;
   left: 0;
   color: rgba(255, 120, 120, 0.8);
+}
+
+.terminal-object-tags span:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
 }
 
 .terminal-start-btn {
@@ -1150,16 +1162,6 @@ body.terminal-page ::-webkit-scrollbar-thumb:hover {
 
 .terminal-start-btn:hover {
   background: rgba(120, 16, 22, 0.85);
-}
-
-#tab-objects .terminal-list,
-#tab-objects .terminal-console {
-  min-height: 68vh;
-}
-
-#tab-objects .terminal-grid {
-  min-height: 72vh;
-  align-items: stretch;
 }
 
 #tab-objects .terminal-console {
@@ -1251,6 +1253,7 @@ body.terminal-page .terminal-achievement p {
 body.terminal-page .terminal-achievement-icon {
   width: 54px;
   height: 54px;
+  object-fit: contain;
 }
 
 .terminal-achievement.locked {
