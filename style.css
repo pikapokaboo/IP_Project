@@ -622,7 +622,7 @@ body::before {
   color: #1b140b;
   border-radius: 6px;
   box-shadow: 0 18px 60px rgba(0, 0, 0, 0.55);
-  padding: 18px 18px;
+  padding: 18px 18px 20px;
   display: flex;
   flex-direction: column;
   min-height: 0;
@@ -633,17 +633,32 @@ body::before {
   flex-direction: column;
   align-items: center;
   gap: 8px;
+  text-align: center;
 }
 
 .letter-stamp {
-  width: 34px;
-  height: 34px;
-  border-radius: 4px;
-  background: rgba(0, 0, 0, 0.6);
+  width: 52px;
+  height: 52px;
+  border-radius: 6px;
+  background: transparent;
   overflow: hidden;
 }
 
-.letter-stamp img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.letter-stamp img { width: 100%; height: 100%; object-fit: contain; display: block; }
+
+.letter-title {
+  font-size: 0.7rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  opacity: 0.9;
+}
+
+.letter-subtitle {
+  font-size: 0.62rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  opacity: 0.8;
+}
 
 .letter-divider { width: 76%; height: 1px; background: rgba(0, 0, 0, 0.55); }
 
@@ -652,26 +667,66 @@ body::before {
   min-height: 0;
   overflow-y: auto;
   padding-right: 6px;
-  margin-top: 14px;
-  font-size: clamp(0.66rem, 1.2vw, 0.78rem);
-  line-height: 1.65;
+  margin-top: 10px;
+  font-size: clamp(0.62rem, 0.95vw, 0.76rem);
+  line-height: 1.55;
   letter-spacing: 0.01em;
+}
+
+.letter-ref {
+  font-size: 0.6rem;
+  opacity: 0.75;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.letter-lede {
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.letter-section-title {
+  margin: 10px 0 4px 0;
+  font-size: 0.62rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  opacity: 0.8;
+}
+
+.letter-list {
+  margin: 0 0 6px 14px;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.letter-list li {
+  margin: 0;
 }
 
 .letter-body > div:first-child {
   margin-bottom: 10px;
 }
 
-.letter-body p { margin: 0 0 8px 0; }
+.letter-body p { margin: 0 0 6px 0; }
 .letter-body .title-line {
-  margin: 10px 0 16px 0;
+  margin: 6px 0 10px 0;
   font-weight: 600;
   letter-spacing: 0.04em;
 }
 
 .letter-body strong { font-weight: 600; }
 
-.signature-area { margin-top: 22px; padding-top: 20px; position: relative; }
+.letter-signature {
+  display: inline-block;
+  margin-top: 6px;
+  opacity: 0.85;
+  letter-spacing: 0.05em;
+}
+
+.signature-area { margin-top: 14px; padding-top: 14px; position: relative; border-top: 1px solid rgba(0, 0, 0, 0.15); }
 
 .signature-row {
   position: relative;
