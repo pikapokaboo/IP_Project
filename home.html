@@ -368,12 +368,21 @@ When the screen goes dark, it starts to look for somewhere else to live.
         <span>CCC Terminal Build 0.8.2</span>
         <span>Research Integrity: 78%</span>
         <span>Press TAB to cycle panels</span>
+        <label class="terminal-audio-control">
+          <span>Music Volume</span>
+          <input id="homeMusicVolume" type="range" min="0" max="1" step="0.01" value="0.4" aria-label="Music Volume">
+        </label>
         </footer>
       </div>
     </div>
   </div>
     </div>
   </div>
+
+  <audio id="homeLoadingAudio" src="audio/loading.mp3" preload="auto" loop></audio>
+  <audio id="homeBootupAudio" src="audio/bootup.mp3" preload="auto"></audio>
+  <audio id="homeMusicAudio" src="audio/home.mp3" preload="auto" loop></audio>
+  <audio id="terminalClickAudio" src="audio/click.mp3" preload="auto"></audio>
 
   <script src="restdb-config.js"></script>
   <script>
@@ -385,25 +394,89 @@ When the screen goes dark, it starts to look for somewhere else to live.
 
     const homeWrap = document.querySelector(".home-wrap");
     const terminalScene = document.getElementById("terminalScene");
+    const homeLoadingAudio = document.getElementById("homeLoadingAudio");
+    const homeBootupAudio = document.getElementById("homeBootupAudio");
+    const homeMusicAudio = document.getElementById("homeMusicAudio");
+    const terminalClickAudio = document.getElementById("terminalClickAudio");
+    const homeMusicVolume = document.getElementById("homeMusicVolume");
 
     let terminalInitialized = false;
     let terminalBooted = false;
+    const DEFAULT_MUSIC_VOLUME = 0.4;
+
+    function safePlay(audioEl) {
+      if (!audioEl) return;
+      const attempt = audioEl.play();
+      if (attempt && typeof attempt.catch === "function") {
+        attempt.catch(() => {});
+      }
+    }
+
+    function stopAudio(audioEl) {
+      if (!audioEl) return;
+      audioEl.pause();
+      audioEl.currentTime = 0;
+    }
+
+    function playClickSound() {
+      if (!terminalClickAudio) return;
+      terminalClickAudio.currentTime = 0;
+      safePlay(terminalClickAudio);
+    }
+
+    function applyMusicVolume(value) {
+      if (!homeMusicAudio) return;
+      const v = Math.min(1, Math.max(0, Number(value)));
+      homeMusicAudio.volume = Number.isFinite(v) ? v : DEFAULT_MUSIC_VOLUME;
+    }
+
+    const savedMusicVolume = localStorage.getItem("homeMusicVolume");
+    const initialMusicVolume = savedMusicVolume !== null ? Number(savedMusicVolume) : DEFAULT_MUSIC_VOLUME;
+    if (homeMusicVolume) homeMusicVolume.value = String(Number.isFinite(initialMusicVolume) ? initialMusicVolume : DEFAULT_MUSIC_VOLUME);
+    applyMusicVolume(initialMusicVolume);
+
+    if (homeMusicVolume) {
+      homeMusicVolume.addEventListener("input", () => {
+        applyMusicVolume(homeMusicVolume.value);
+        localStorage.setItem("homeMusicVolume", homeMusicVolume.value);
+      });
+    }
+
+    function primeHomeAudio() {
+      safePlay(homeMusicAudio);
+    }
+
+    ["pointerdown", "touchstart", "mousedown", "click", "keydown"].forEach((eventName) => {
+      document.addEventListener(eventName, primeHomeAudio, { once: true, passive: true });
+    });
 
     const showTerminal = () => {
       if (!terminalScene) return;
       terminalScene.style.display = "flex";
+      terminalScene.classList.remove("terminal-fade-in");
       document.body.classList.add("terminal-page");
       homeWrap?.classList.add("terminal-active");
 
       if (!terminalInitialized) {
         document.body.classList.add("terminal-loading");
         document.body.classList.remove("terminal-loaded");
+        safePlay(homeMusicAudio);
         initTerminal();
+        requestAnimationFrame(() => terminalScene.classList.add("terminal-fade-in"));
       } else if (terminalBooted) {
         document.body.classList.add("terminal-loaded");
         document.body.classList.remove("terminal-loading");
+        requestAnimationFrame(() => terminalScene.classList.add("terminal-fade-in"));
       }
     };
+
+    if (terminalScene) {
+      terminalScene.addEventListener("click", (event) => {
+        const button = event.target.closest("button");
+        if (!button || !terminalScene.contains(button)) return;
+        playClickSound();
+      });
+    }
 
     const overlay = document.getElementById("letterOverlay");
     const pen = document.getElementById("pen");
@@ -558,10 +631,13 @@ When the screen goes dark, it starts to look for somewhere else to live.
       markLetterSigned();
 
       setTimeout(() => {
-        overlay.classList.add("dismiss");
+        overlay.classList.add("slide-out");
         setTimeout(() => {
-          overlay.style.display = "none";
-          showTerminal();
+          overlay.classList.add("dismiss");
+          setTimeout(() => {
+            overlay.style.display = "none";
+            showTerminal();
+          }, 400);
         }, 900);
       }, 2500);
     }
@@ -932,6 +1008,7 @@ By the time they are observed, reality is no longer waiting to be decided.`
       bootLog.textContent = lines.join("\n");
     }, 40) : null;
 
+    safePlay(homeLoadingAudio);
     const loadingInterval = setInterval(() => {
       progress = Math.min(100, progress + Math.floor(Math.random() * 7) + 4);
       if (loadingPercent) loadingPercent.textContent = `${progress}%`;
@@ -943,6 +1020,8 @@ By the time they are observed, reality is no longer waiting to be decided.`
         bodyEl.classList.remove("terminal-loading");
         bodyEl.classList.add("terminal-loaded");
         terminalBooted = true;
+        stopAudio(homeLoadingAudio);
+        safePlay(homeBootupAudio);
       }
     }, 120);
     }
