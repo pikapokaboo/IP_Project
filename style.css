@@ -562,10 +562,16 @@ body::before {
   min-height: 100vh;
   align-items: center;
   justify-content: center;
+  opacity: 0;
+  transition: opacity 0.9s ease;
 }
 
 .home-wrap.terminal-active .terminal-stage {
   display: flex;
+}
+
+.terminal-stage.terminal-fade-in {
+  opacity: 1;
 }
 
 .letter-overlay {
@@ -581,6 +587,19 @@ body::before {
 }
 
 .letter-overlay.dismiss { opacity: 0; pointer-events: none; }
+
+.letter-overlay.slide-out {
+  pointer-events: none;
+}
+
+.letter-overlay.slide-out .letter-frame {
+  animation: letter-slide-out 0.9s cubic-bezier(0.22, 0.78, 0.22, 1) forwards;
+}
+
+@keyframes letter-slide-out {
+  0% { transform: translateX(0) rotate(0deg); opacity: 1; }
+  100% { transform: translateX(120vw) rotate(6deg); opacity: 0; }
+}
 
 .letter-frame {
   width: min(92vw, 520px, calc((100vh - 24px) * 210 / 297));
@@ -745,12 +764,12 @@ body.terminal-page {
 }
 
 .terminal-shell {
-  width: min(92vw, 1200px);
+  width: min(96vw, 1400px);
   margin: 0;
   padding: 12px;
   position: relative;
   z-index: 1;
-  height: min(88vh, 920px);
+  height: min(90vh, 980px);
 }
 
 .terminal-frame {
@@ -1306,6 +1325,18 @@ body.terminal-page .terminal-achievement-icon {
   text-transform: uppercase;
   letter-spacing: 0.2em;
   opacity: 0.6;
+}
+
+.terminal-audio-control {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  letter-spacing: 0.08em;
+}
+
+.terminal-audio-control input[type="range"] {
+  width: 120px;
+  accent-color: rgba(255, 92, 92, 0.85);
 }
 
 .terminal-tab {
