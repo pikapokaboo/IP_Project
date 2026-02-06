@@ -720,20 +720,34 @@ When the screen goes dark, it starts to look for somewhere else to live.
 const tabButtons = document.querySelectorAll(".terminal-tab-btn");
     const tabs = document.querySelectorAll(".terminal-tab");
 
-    tabButtons.forEach((button) => {
-      button.addEventListener("click", () => {
-        const target = button.getAttribute("data-tab");
+    function setActiveTabByIndex(index) {
+      if (!tabButtons.length) return;
+      const safeIndex = ((index % tabButtons.length) + tabButtons.length) % tabButtons.length;
+      const button = tabButtons[safeIndex];
+      const target = button.getAttribute("data-tab");
 
-        tabButtons.forEach((btn) => {
-          const isActive = btn === button;
-          btn.classList.toggle("active", isActive);
-          btn.setAttribute("aria-selected", isActive ? "true" : "false");
-        });
-
-        tabs.forEach((tab) => {
-          tab.classList.toggle("active", tab.id === `tab-${target}`);
-        });
+      tabButtons.forEach((btn) => {
+        const isActive = btn === button;
+        btn.classList.toggle("active", isActive);
+        btn.setAttribute("aria-selected", isActive ? "true" : "false");
       });
+
+      tabs.forEach((tab) => {
+        tab.classList.toggle("active", tab.id === `tab-${target}`);
+      });
+    }
+
+    tabButtons.forEach((button, index) => {
+      button.addEventListener("click", () => setActiveTabByIndex(index));
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key !== "Tab") return;
+      if (document.body.classList.contains("modal-open")) return;
+      event.preventDefault();
+      const activeIndex = Array.from(tabButtons).findIndex((btn) => btn.classList.contains("active"));
+      const nextIndex = event.shiftKey ? activeIndex - 1 : activeIndex + 1;
+      setActiveTabByIndex(nextIndex);
     });
 
     const achievementCount = document.getElementById("achievementCount");
