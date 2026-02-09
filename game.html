@@ -34,6 +34,7 @@
       };
       const MAX_TEST = 4;
       const TEST_PROGRESS_KEY = "testProgress";
+      const FAIL_PROGRESS_KEY = "failProgress";
       const ACHIEVEMENTS_KEY = "achievementsProgress";
 
       function loadProgress() {
@@ -47,6 +48,19 @@
 
       function saveProgress(progress) {
         localStorage.setItem(TEST_PROGRESS_KEY, JSON.stringify(progress));
+      }
+
+      function loadFailProgress() {
+        try {
+          const stored = localStorage.getItem(FAIL_PROGRESS_KEY);
+          return stored ? JSON.parse(stored) : {};
+        } catch {
+          return {};
+        }
+      }
+
+      function saveFailProgress(failProgress) {
+        localStorage.setItem(FAIL_PROGRESS_KEY, JSON.stringify(failProgress));
       }
 
       function loadAchievements() {
@@ -120,6 +134,12 @@
         failBtn.addEventListener("click", () => {
           progress[objectKey] = testNumber;
           saveProgress(progress);
+          const failProgress = loadFailProgress();
+          const objectFails = failProgress[objectKey] || {};
+          const currentFails = Number(objectFails[testNumber]) || 0;
+          objectFails[testNumber] = Math.min(5, currentFails + 1);
+          failProgress[objectKey] = objectFails;
+          saveFailProgress(failProgress);
           updateAchievementsOnFail(objectKey);
           goHome();
         });

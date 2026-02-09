@@ -502,6 +502,7 @@
       if (resetProgressBtn) {
         resetProgressBtn.addEventListener("click", () => {
           localStorage.removeItem("testProgress");
+          localStorage.removeItem("failProgress");
           localStorage.removeItem("achievementsProgress");
           sessionStorage.removeItem("prevAchievements");
           window.location.reload();
@@ -939,132 +940,89 @@
         updateSessionTime();
         setInterval(updateSessionTime, 1000);
       }
-
       const archiveTitle = document.getElementById("archiveTitle");
       const archiveMeta = document.getElementById("archiveMeta");
       const archiveBody = document.getElementById("archiveBody");
+      const archiveCompletionTag = document.getElementById("archiveCompletionTag");
 
-      const archiveData = {
+      const archiveCases = {
         "b04-312": {
           title: "CAC-B04-312: Contained CRT Entity",
-          meta: "Classification: Contained Bio-Mechanical Entity | Location: Site 9 — Media Anomaly Storage",
-          body: `CENTRAL ARCHIVAL COMMITTEE — FILE ACCESS
-  ITEM ID: CAC-B04-312
-  CLASSIFICATION: Contained Bio-Mechanical Entity
-  ASSIGNED FACILITY: Site 9 — Media Anomaly Storage
-  STATUS: Active / Contained
-  ------------------------------------------------------------
-  CONTAINMENT PROTOCOL
-  - House the unit in a dimly lit media containment room.
-  - No direct sunlight. No active audio equipment beyond the monitor.
-  - Maintain continuous power. Power loss beyond 30 seconds triggers aggressive activity.
-  - Approved use: testing and administrative tasks only.
-  - Prohibited: touching the display surface, striking the casing, or attempting to open it.
-  - Approved offerings: processed sugars, raw meat, distilled water placed near ventilation slits.
-  ------------------------------------------------------------
-  ARTIFACT DESCRIPTION
-  CAC-B04-312 is a CRT monitor of unknown manufacture. The casing resembles late‑1990s consumer hardware; internal components do not match known designs. The device is significantly heavier than expected and functions normally when connected to compatible systems.
-
-  Inside the casing resides a living organism.
-  ------------------------------------------------------------
-  CONTAINED ORGANISM DESCRIPTION
-  A soft‑bodied, tentacled entity occupies the internal structure of the monitor, consistent with hermit‑crab‑like habitation behavior. Appendages are intermittently visible through ventilation gaps and, rarely, beneath the display glass. Internal scans show the organism has integrated around key components, rerouting circuitry through its own tissue without disrupting functionality.
-
-  The monitor is not alive. The organism is.
-  ------------------------------------------------------------
-  BEHAVIORAL NOTES
-  Positive response to:
-  - Food placement near the casing
-  - Gentle tapping on the monitor frame
-  - Continuous power supply
-  - Static images or low‑motion visuals
-
-  Negative response to:
-  - Attempts to open or damage the casing
-  - Hands placed against the display surface
-  - Sudden loss of power
-  - Prolonged display of its own reflection
-
-  Agitation manifests as visible tentacle movement beneath the glass, image warping, and localized heat buildup.
-  ------------------------------------------------------------
-  INCIDENT REPORT 9-61
-  A technician placed a palm against the active display surface. The screen showed a distorted reflection followed by internal movement inconsistent with electrical interference. The technician was later found with severe neurological trauma and internal hemorrhaging localized to the contact arm. No external wounds were observed. Review indicates defensive appendage extension through the display’s electromagnetic field. Direct contact with the screen is now classified as lethal.
-  ------------------------------------------------------------
-  ADDITIONAL OBSERVATIONS
-  - When powered down for extended periods, faint internal movement is audible.
-  - If left unplugged for longer than 30 seconds, appendages attempt to exit through ventilation openings.
-  - Re‑powering causes immediate retreat.
-  ------------------------------------------------------------
-  ARCHIVAL NOTE
-  The monitor is not haunted. It is occupied.
-  The organism does not understand what a monitor is—only that it is safe, warm, and full of moving light.
-  When the screen is on, the creature is calm.
-  When the screen goes dark, it starts to look for somewhere else to live.`
+          meta: "Classification: Contained Bio-Mechanical Entity | Location: Site 9 - Media Anomaly Storage",
+          folder: "object1"
         },
         "a17-049": {
           title: "CAC-A17-049: Temporal Camcorder",
-          meta: "Classification: High Risk Temporal Artifact | Location: Site 14 — Temporal Observation Wing",
-          body: `CENTRAL ARCHIVAL COMMITTEE — FILE ACCESS
-  ITEM ID: CAC-A17-049
-  CLASSIFICATION: High Risk Temporal Artifact
-  ASSIGNED FACILITY: Site 14 — Temporal Observation Wing
-  STATUS: Active / Contained
-  ------------------------------------------------------------
-  CONTAINMENT PROTOCOL
-  - Store the unit in a sound-insulated archival locker constructed from non-reflective composite material.
-  - Device must remain powered off unless an observation cycle is formally approved by the Site 14 Oversight Panel.
-  - Minimum of two observers required for all interactions. No solo operation permitted.
-  - At least one independent real-time recording device must be active during use.
-  - Prohibited: aiming the unit at reflective surfaces, live monitors, or its own playback screen.
-  - If displayed footage diverges from observed reality by more than 8 seconds, abort the cycle immediately and return the device to containment.
-  ------------------------------------------------------------
-  ARTIFACT DESCRIPTION
-  CAC-A17-049 is a handheld consumer camcorder of indeterminate origin. The casing shows cosmetic wear consistent with prolonged personal use. Internal components do not correspond to any known manufacturer, and no serial numbers, firmware identifiers, or recoverable metadata have been identified.
-
-  When powered on, the device displays and records events that have not yet occurred.
-  ------------------------------------------------------------
-  ANOMALOUS PROPERTIES
-  The camcorder’s viewfinder presents reality between 3 and 7 seconds ahead of the present moment. Audio is synchronized with the displayed footage. The effect resembles a delayed live feed, as though upcoming events are preloaded before occurring.
-
-  The temporal offset is variable. During periods of rapid movement, emotional stress, or imminent bodily harm, the delay has extended to as much as 12 seconds.
-
-  The device does not generate hypothetical outcomes. All recorded footage represents events that will occur exactly as shown.
-  ------------------------------------------------------------
-  BEHAVIORAL NOTES
-  - Once an individual observes an event through the device’s display, the recorded outcome becomes unavoidable.
-  - Attempts to prevent or alter recorded events consistently fail through indirect means such as involuntary physical response, mechanical malfunction, or coincidental environmental interference.
-  - Subjects report a growing sensation of detachment with prolonged viewing, commonly described as “lagging behind reality.”
-  - CAC-A17-049 has never displayed footage in which it is destroyed, disabled, or rendered inoperable.
-  ------------------------------------------------------------
-  INCIDENT REPORT 14-77
-  During a controlled test, CAC-A17-049 was positioned facing a sealed observation door. Playback footage showed the door opening, followed by the camcorder falling forward and impacting the floor lens-first.
-
-  Personnel attempted to terminate the observation remotely prior to the recorded timestamp. The device continued operating despite being disconnected from its power source.
-
-  At the recorded moment, the door opened. No personnel entered the room. The camcorder fell regardless.
-
-  Frame-by-frame analysis revealed a brief reflection in the camcorder lens immediately before impact. The angle indicates the device was already on the floor, recording upward—an impossible perspective given its placement at the time.
-
-  Testing involving closed doors was suspended.
-  ------------------------------------------------------------
-  ADDITIONAL OBSERVATIONS
-  - When activated in empty rooms, the device frequently displays an individual entering frame shortly before the unit is powered off.
-  - Individuals shown in these recordings are consistently the personnel assigned to end the observation cycle.
-  - No verified instance exists of the device displaying an event that failed to occur.
-  ------------------------------------------------------------
-  ARCHIVAL NOTE
-  CAC-A17-049 does not predict the future.
-  It displays events that have already committed to occurring.
-  By the time they are observed, reality is no longer waiting to be decided.`
+          meta: "Classification: High Risk Temporal Artifact | Location: Site 14 - Temporal Observation Wing",
+          folder: "object2"
         }
       };
 
-      const setArchiveCase = (caseId) => {
-        const data = archiveData[caseId];
+      function loadTestProgress() {
+        try {
+          const stored = localStorage.getItem("testProgress");
+          return stored ? JSON.parse(stored) : {};
+        } catch {
+          return {};
+        }
+      }
+
+      function loadFailProgress() {
+        try {
+          const stored = localStorage.getItem("failProgress");
+          return stored ? JSON.parse(stored) : {};
+        } catch {
+          return {};
+        }
+      }
+
+      function getArchivePercent(progressValue, failCount) {
+        const testValue = Number(progressValue) || 1;
+        const completed = Math.min(MAX_TEST, Math.max(0, testValue - 1));
+        const base = Math.round((completed / MAX_TEST) * 100);
+        const extra = Math.min(5, Number(failCount) || 0) * 5;
+        return Math.min(100, base + extra);
+      }
+
+      let activeArchiveCase = null;
+
+      async function loadArchiveFile(caseId, percent) {
+        if (!archiveBody) return;
+        const data = archiveCases[caseId];
         if (!data) return;
+        const fileName = `${percent}%.txt`;
+        const url = `archive/${data.folder}/${encodeURIComponent(fileName)}`;
+        archiveBody.textContent = "Loading archive...";
+        try {
+          const response = await fetch(url, { cache: "no-store" });
+          if (!response.ok) throw new Error("missing");
+          const text = await response.text();
+          if (activeArchiveCase !== caseId) return;
+          archiveBody.textContent = text;
+        } catch {
+          if (activeArchiveCase !== caseId) return;
+          archiveBody.textContent = "Archive file unavailable.";
+        }
+      }
+
+      const setArchiveCase = (caseId) => {
+        const data = archiveCases[caseId];
+        if (!data) return;
+        activeArchiveCase = caseId;
         if (archiveTitle) archiveTitle.textContent = data.title;
         if (archiveMeta) archiveMeta.textContent = data.meta;
-        if (archiveBody) archiveBody.textContent = data.body;
+
+        const progress = loadTestProgress();
+        const failProgress = loadFailProgress();
+        const currentTest = Math.min(MAX_TEST, Number(progress[caseId]) || 1);
+        const failCount = failProgress[caseId]?.[currentTest] || 0;
+        const percent = getArchivePercent(progress[caseId], failCount);
+        const roundedPercent = Math.round(percent / 5) * 5;
+
+        if (archiveCompletionTag) {
+          archiveCompletionTag.textContent = `Completion: ${percent}%`;
+        }
+        loadArchiveFile(caseId, roundedPercent);
       };
 
       const archiveButtons = document.querySelectorAll("#tab-archive .terminal-list-item");
@@ -1077,19 +1035,19 @@
       });
 
       function updateArchiveAvailability() {
-        let progress = {};
-        try {
-          const stored = localStorage.getItem("testProgress");
-          progress = stored ? JSON.parse(stored) : {};
-        } catch {
-          progress = {};
-        }
-
+        const progress = loadTestProgress();
+        const failProgress = loadFailProgress();
         const object1Test = Number(progress["b04-312"]) || 1;
         const object2Unlocked = object1Test >= 4;
 
         archiveButtons.forEach((btn) => {
           const caseId = btn.getAttribute("data-case");
+          const currentTest = Math.min(MAX_TEST, Number(progress[caseId]) || 1);
+          const failCount = failProgress[caseId]?.[currentTest] || 0;
+          const percent = getArchivePercent(progress[caseId], failCount);
+          const small = btn.querySelector("small");
+          if (small) small.textContent = `Completion: ${percent}%`;
+
           const isLocked = caseId === "a17-049" && !object2Unlocked;
           if (isLocked) {
             btn.style.display = "none";
@@ -1105,6 +1063,8 @@
           archiveButtons.forEach((b) => b.classList.remove("active"));
           visible[0].classList.add("active");
           setArchiveCase(visible[0].getAttribute("data-case"));
+        } else if (activeVisible) {
+          setArchiveCase(activeVisible.getAttribute("data-case"));
         }
       }
 
