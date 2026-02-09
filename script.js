@@ -1122,7 +1122,8 @@
         const data = objectData[caseId];
         const archiveCase = archiveCases[caseId];
         if (!data || !archiveCase) {
-          objectDesc.textContent = data?.desc || "";
+          const fallback = data?.desc || "";
+          objectDesc.textContent = fallback;
           return;
         }
 
@@ -1136,9 +1137,11 @@
           const text = await response.text();
           if (activeObjectCase != caseId) return;
           const desc = extractArtifactDescription(text);
-          objectDesc.textContent = desc || data.desc || "";
+          const finalDesc = desc || data.desc || "";
+          objectDesc.textContent = finalDesc;
         } catch {
-          objectDesc.textContent = data.desc || "";
+          const fallback = data.desc || "";
+          objectDesc.textContent = fallback;
         }
       }
 

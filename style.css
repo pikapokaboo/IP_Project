@@ -1257,6 +1257,24 @@ body.terminal-page ::-webkit-scrollbar-thumb:hover {
   opacity: 0.55;
 }
 
+.terminal-object-desc-box {
+  border: 1px solid rgba(255, 92, 92, 0.22);
+  background: rgba(8, 2, 4, 0.86);
+  border-radius: 12px;
+  padding: 14px 14px;
+  width: 100%;
+  max-width: none;
+  align-self: stretch;
+  height: 100%;
+  overflow: auto;
+  margin: 10px 0;
+}
+
+.terminal-object-desc-box .terminal-object-desc-label {
+  margin-bottom: 8px;
+  display: block;
+}
+
 .terminal-object-meta {
   display: flex;
   flex-direction: column;
@@ -1308,9 +1326,11 @@ body.terminal-page ::-webkit-scrollbar-thumb:hover {
   justify-content: space-between;
   display: grid;
   grid-template-columns: 240px 1fr;
+  grid-template-rows: auto 1fr auto;
   align-items: start;
   column-gap: 20px;
-  row-gap: 0;
+  row-gap: 12px;
+  height: 100%;
 }
 
 #tab-objects .terminal-model {
@@ -1325,7 +1345,7 @@ body.terminal-page ::-webkit-scrollbar-thumb:hover {
   grid-column: 1 / -1;
 }
 
-#tab-objects .terminal-object-desc {
+#tab-objects .terminal-object-desc-box {
   grid-column: 1 / -1;
   margin-top: 0;
 }
