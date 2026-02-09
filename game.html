@@ -90,6 +90,7 @@
       }
 
       const objectKey = objectMap[rawObject] ? rawObject : "b04-312";
+      localStorage.setItem("lastTestedCase", objectKey);
       const progress = loadProgress();
       const testNumber = Number(progress[objectKey]) || 1;
       const objectName = objectMap[objectKey];

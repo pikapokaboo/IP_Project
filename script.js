@@ -937,6 +937,8 @@
       const archiveBody = document.getElementById("archiveBody");
       const archiveCompletionTag = document.getElementById("archiveCompletionTag");
       const activeCaseIntegrity = document.getElementById("activeCaseIntegrity");
+      const activeCaseBadge = document.getElementById("activeCaseBadge");
+      const researchIntegrity = document.getElementById("researchIntegrity");
 
       const archiveCases = {
         "b04-312": {
@@ -977,6 +979,29 @@
         return Math.min(100, base + extra);
       }
 
+      function updateLastTestedIndicators() {
+        const storedLast = localStorage.getItem("lastTestedCase");
+        const fallbackCase = activeArchiveCase || "b04-312";
+        const caseId = archiveCases[storedLast] ? storedLast : fallbackCase;
+        const data = archiveCases[caseId];
+        if (!data) return;
+
+        const progress = loadTestProgress();
+        const failProgress = loadFailProgress();
+        const currentTest = Math.min(MAX_TEST, Number(progress[caseId]) || 1);
+        const failCount = failProgress[caseId]?.[currentTest] || 0;
+        const percent = getArchivePercent(progress[caseId], failCount);
+        const badgeText = data.title.split(":")[0];
+
+        if (activeCaseBadge) activeCaseBadge.textContent = badgeText;
+        if (activeCaseIntegrity) {
+          activeCaseIntegrity.textContent = `File integrity ${percent}% restored. Continue research to expand operational clearance.`;
+        }
+        if (researchIntegrity) {
+          researchIntegrity.textContent = `Research Integrity: ${percent}%`;
+        }
+      }
+
       let activeArchiveCase = null;
 
       async function loadArchiveFile(caseId, percent) {
@@ -1014,9 +1039,6 @@
 
         if (archiveCompletionTag) {
           archiveCompletionTag.textContent = `Completion: ${percent}%`;
-        }
-        if (activeCaseIntegrity) {
-          activeCaseIntegrity.textContent = `File integrity ${percent}% restored. Continue research to expand operational clearance.`;
         }
         loadArchiveFile(caseId, roundedPercent);
       };
@@ -1062,6 +1084,8 @@
         } else if (activeVisible) {
           setArchiveCase(activeVisible.getAttribute("data-case"));
         }
+
+        updateLastTestedIndicators();
       }
 
       const objectTitle = document.getElementById("objectTitle");
@@ -1224,6 +1248,7 @@
       updateObjectAvailability();
       updateAchievementsUI();
       updateArchiveAvailability();
+      updateLastTestedIndicators();
 
       const loadingPercent = document.getElementById("loadingPercent");
       const loadingFill = document.getElementById("loadingFill");
