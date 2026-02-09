@@ -1,4 +1,3 @@
-// ===== Index/Login Page Logic =====
 (function initIndexPage() {
   const disclaimer = document.getElementById("disclaimer");
   if (!disclaimer) return;
@@ -24,11 +23,9 @@
   const introAudio = document.getElementById("introAudio");
   const loginAudio = document.getElementById("loginAudio");
   
-  // Toggle: set DEV_MODE true to bypass RestDB and use DEV_ACCOUNT
   const DEV_MODE = true;
   const DEV_ACCOUNT = { username: "dev", password: "dev123" };
   
-  // Let other pages know whether DEV_MODE is active.
   localStorage.setItem("devMode", DEV_MODE ? "true" : "false");
   
   function show(el) { el.classList.add("show"); el.classList.remove("hide"); }
@@ -163,7 +160,6 @@
     if (loginAudio) loginAudio.load();
   });
   
-  // Toggle: add ?skipIntro=1 to jump straight to the login sequence
   const params = new URLSearchParams(window.location.search);
   const skipIntro = params.get("skipIntro") === "1";
   
@@ -294,7 +290,6 @@
     });
   });
   
-  // Hash password client-side before sending to RestDB
   async function sha256(text) {
     const data = new TextEncoder().encode(text);
     const hashBuffer = await crypto.subtle.digest("SHA-256", data);
@@ -422,7 +417,6 @@
   });
 })();
 
-// ===== Home Page Logic =====
 (function initHomePage() {
   if (!document.getElementById("terminalScene")) return;
 
@@ -719,7 +713,6 @@
           }
           startLetter();
         } catch {
-          // If RestDB fails, keep the interaction visible.
           startLetter();
         }
       }
@@ -751,7 +744,6 @@
             }
           }
         } catch {
-          // Best-effort only.
         }
       }
 
@@ -1181,13 +1173,7 @@
       if (initialObject) setObjectCase(initialObject.getAttribute("data-case"));
 
       function updateObjectAvailability() {
-        let progress = {};
-        try {
-          const stored = localStorage.getItem("testProgress");
-          progress = stored ? JSON.parse(stored) : {};
-        } catch {
-          progress = {};
-        }
+        const progress = loadTestProgress();
 
         const object1Test = Number(progress["b04-312"]) || 1;
         const object2Unlocked = object1Test >= 4;
@@ -1225,9 +1211,7 @@
         startTestingBtn.addEventListener("click", () => {
           const activeObject = document.querySelector("#tab-objects .terminal-list-item.active");
           const caseId = activeObject?.getAttribute("data-case") || "b04-312";
-          const progressRaw = localStorage.getItem("testProgress");
-          let progress = {};
-          try { progress = progressRaw ? JSON.parse(progressRaw) : {}; } catch { progress = {}; }
+          const progress = loadTestProgress();
           const testNumber = Math.min(MAX_TEST, Number(progress[caseId]) || 1);
           window.location.href = `game.html?object=${encodeURIComponent(caseId)}&test=${testNumber}`;
         });
