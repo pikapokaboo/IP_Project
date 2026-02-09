@@ -13,7 +13,7 @@ CONTAINMENT PROTOCOL
 - Approved offerings: processed sugars, raw meat, distilled water ██████ ████ ███████████ █████.
 ------------------------------------------------------------
 ARTIFACT DESCRIPTION
-███-███-███ ██ █ ███ ███████ ██ ███████ ███████████. ███ ██████ █████████ ████-█████ ████████ ████████; ████████ ██████████ ██ ███ █████ █████ ███████. ███ ██████ ██ █████████████ ███████ ████ ████████ ███ █████████ ████████ ████ █████████ ██ ██████████ ███████.
+CAC-B04-312 is a CRT monitor of unknown manufacture. The casing resembles late-1990s consumer hardware; internal components do not match known designs. The device is significantly heavier than expected and functions normally when connected to compatible systems.
 
 Inside the casing resides a living organism.
 ------------------------------------------------------------

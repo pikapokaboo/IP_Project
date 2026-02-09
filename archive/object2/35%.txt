@@ -13,9 +13,9 @@ CONTAINMENT PROTOCOL
 - If displayed footage diverges from observed reality by more than 8 seconds, abort the cycle immediately and return the device to containment.
 ------------------------------------------------------------
 ARTIFACT DESCRIPTION
-███-███-███ is a handheld consumer camcorder of indeterminate origin. ███ ██████ █████ ████████ ████ ██████████ ████ █████████ ████████ ███. ████████ ██████████ ██ ███ ██████████ ██ ███ █████ ████████████, ███ ██ ██████ ███████, ████████ ███████████, ██ ███████████ ████████ ████ ████ ██████████.
+CAC-A17-049 is a handheld consumer camcorder of indeterminate origin. The casing shows cosmetic wear consistent with prolonged personal use. Internal components do not correspond to any known manufacturer, and no serial numbers, firmware identifiers, or recoverable metadata have been identified.
 
-████ ███████ ██, ███ ██████ ████████ ███ ███████ ██████ ████ ████ ███ ███ ████████.
+When powered on, the device displays and records events that have not yet occurred.
 ------------------------------------------------------------
 ANOMALOUS PROPERTIES
 ███ █████████’█ ██████████ ████████ ███████ ███████ █ ███ █ ███████ █████ ██ ███ ███████ ██████. █████ ██ ████████████ ████ ███ █████████ ███████. ███ ██████ █████████ █ ███████ ████ ████, ██ ██████ ████████ ██████ ███ █████████ ██████ █████████.
