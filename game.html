@@ -104,8 +104,12 @@
 
       if (passBtn) {
         passBtn.addEventListener("click", () => {
-          const next = Math.min(MAX_TEST, testNumber + 1);
-          progress[objectKey] = next;
+          if (testNumber >= MAX_TEST) {
+            progress[objectKey] = MAX_TEST + 1;
+          } else {
+            const next = Math.min(MAX_TEST, testNumber + 1);
+            progress[objectKey] = next;
+          }
           saveProgress(progress);
           updateAchievementsOnPass(testNumber, objectKey);
           goHome();

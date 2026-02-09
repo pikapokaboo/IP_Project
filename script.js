@@ -447,6 +447,8 @@
       const terminalClickAudio = document.getElementById("terminalClickAudio");
       const homeMusicVolume = document.getElementById("homeMusicVolume");
       const resetProgressBtn = document.getElementById("resetProgressBtn");
+      const testingQueueCount = document.getElementById("testingQueueCount");
+      const MAX_TEST = 4;
       const achievementAudio = document.getElementById("achievementAudio");
       const achievementPopup = document.getElementById("achievementPopup");
       const achievementPopupIcon = document.getElementById("achievementPopupIcon");
@@ -1074,6 +1076,38 @@
         });
       });
 
+      function updateArchiveAvailability() {
+        let progress = {};
+        try {
+          const stored = localStorage.getItem("testProgress");
+          progress = stored ? JSON.parse(stored) : {};
+        } catch {
+          progress = {};
+        }
+
+        const object1Test = Number(progress["b04-312"]) || 1;
+        const object2Unlocked = object1Test >= 4;
+
+        archiveButtons.forEach((btn) => {
+          const caseId = btn.getAttribute("data-case");
+          const isLocked = caseId === "a17-049" && !object2Unlocked;
+          if (isLocked) {
+            btn.style.display = "none";
+            btn.classList.remove("active");
+            return;
+          }
+          btn.style.display = "";
+        });
+
+        const visible = Array.from(archiveButtons).filter((btn) => btn.style.display !== "none");
+        const activeVisible = visible.find((btn) => btn.classList.contains("active"));
+        if (!activeVisible && visible.length) {
+          archiveButtons.forEach((b) => b.classList.remove("active"));
+          visible[0].classList.add("active");
+          setArchiveCase(visible[0].getAttribute("data-case"));
+        }
+      }
+
       const objectTitle = document.getElementById("objectTitle");
       const objectClass = document.getElementById("objectClass");
       const objectFacility = document.getElementById("objectFacility");
@@ -1124,6 +1158,46 @@
       const initialObject = document.querySelector("#tab-objects .terminal-list-item.active");
       if (initialObject) setObjectCase(initialObject.getAttribute("data-case"));
 
+      function updateObjectAvailability() {
+        let progress = {};
+        try {
+          const stored = localStorage.getItem("testProgress");
+          progress = stored ? JSON.parse(stored) : {};
+        } catch {
+          progress = {};
+        }
+
+        const object1Test = Number(progress["b04-312"]) || 1;
+        const object2Unlocked = object1Test >= 4;
+
+        objectButtons.forEach((btn) => {
+          const caseId = btn.getAttribute("data-case");
+          const testValue = Number(progress[caseId]) || 1;
+          const isCompleted = testValue > MAX_TEST;
+          const isLocked = caseId === "a17-049" && !object2Unlocked;
+
+          if (isCompleted || isLocked) {
+            btn.style.display = "none";
+            btn.classList.remove("active");
+            return;
+          }
+
+          btn.style.display = "";
+        });
+
+        const visibleButtons = Array.from(objectButtons).filter((btn) => btn.style.display !== "none");
+        const activeVisible = visibleButtons.find((btn) => btn.classList.contains("active"));
+        if (!activeVisible && visibleButtons.length) {
+          objectButtons.forEach((b) => b.classList.remove("active"));
+          visibleButtons[0].classList.add("active");
+          setObjectCase(visibleButtons[0].getAttribute("data-case"));
+        }
+
+        if (testingQueueCount) {
+          testingQueueCount.textContent = String(visibleButtons.length);
+        }
+      }
+
       const startTestingBtn = document.querySelector(".terminal-start-btn");
       if (startTestingBtn) {
         startTestingBtn.addEventListener("click", () => {
@@ -1132,12 +1206,14 @@
           const progressRaw = localStorage.getItem("testProgress");
           let progress = {};
           try { progress = progressRaw ? JSON.parse(progressRaw) : {}; } catch { progress = {}; }
-          const testNumber = Number(progress[caseId]) || 1;
+          const testNumber = Math.min(MAX_TEST, Number(progress[caseId]) || 1);
           window.location.href = `game.html?object=${encodeURIComponent(caseId)}&test=${testNumber}`;
         });
       }
 
+      updateObjectAvailability();
       updateAchievementsUI();
+      updateArchiveAvailability();
 
       const loadingPercent = document.getElementById("loadingPercent");
       const loadingFill = document.getElementById("loadingFill");
