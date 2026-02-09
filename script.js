@@ -429,6 +429,13 @@
       const user = localStorage.getItem("currentUser");
       if (!user) window.location.href = "index.html";
 
+      const homeParams = new URLSearchParams(window.location.search);
+      const skipHomeIntro = homeParams.get("skipHomeIntro") === "1" || sessionStorage.getItem("skipHomeIntro") === "true";
+      if (skipHomeIntro) {
+        sessionStorage.removeItem("skipHomeIntro");
+        window.history.replaceState({}, document.title, window.location.pathname);
+      }
+
       const archivistName = document.getElementById("archivistName");
       if (archivistName) archivistName.textContent = user;
 
@@ -439,6 +446,11 @@
       const homeMusicAudio = document.getElementById("homeMusicAudio");
       const terminalClickAudio = document.getElementById("terminalClickAudio");
       const homeMusicVolume = document.getElementById("homeMusicVolume");
+      const resetProgressBtn = document.getElementById("resetProgressBtn");
+      const achievementAudio = document.getElementById("achievementAudio");
+      const achievementPopup = document.getElementById("achievementPopup");
+      const achievementPopupIcon = document.getElementById("achievementPopupIcon");
+      const achievementPopupName = document.getElementById("achievementPopupName");
 
       let terminalInitialized = false;
       let terminalBooted = false;
@@ -483,6 +495,110 @@
           applyMasterVolume(homeMusicVolume.value);
           localStorage.setItem("homeMusicVolume", homeMusicVolume.value);
         });
+      }
+
+      if (resetProgressBtn) {
+        resetProgressBtn.addEventListener("click", () => {
+          localStorage.removeItem("testProgress");
+          localStorage.removeItem("achievementsProgress");
+          sessionStorage.removeItem("prevAchievements");
+          window.location.reload();
+        });
+      }
+
+      function getAchievementKeys() {
+        return [
+          "clockingOut",
+          "digitallyTraditional",
+          "rollCamera",
+          "stomachKnowledge",
+          "intoNewWorld",
+          "congratulations"
+        ];
+      }
+
+      function loadAchievements() {
+        try {
+          const stored = localStorage.getItem("achievementsProgress");
+          return stored ? JSON.parse(stored) : {};
+        } catch {
+          return {};
+        }
+      }
+
+      function saveAchievements(achievements) {
+        localStorage.setItem("achievementsProgress", JSON.stringify(achievements));
+      }
+
+      function getAchievementMeta(key) {
+        const card = document.querySelector(`.terminal-achievement[data-achievement="${key}"]`);
+        const name = card?.querySelector("h3")?.textContent?.trim() || "Achievement Unlocked";
+        const icon = card?.querySelector("img")?.getAttribute("src") || "";
+        return { name, icon };
+      }
+
+      let popupTimer = null;
+      let popupQueue = [];
+      let popupActive = false;
+
+      function dequeuePopup() {
+        if (popupActive || popupQueue.length === 0) return;
+        const nextKey = popupQueue.shift();
+        popupActive = true;
+        showAchievementPopup(nextKey);
+      }
+
+      function showAchievementPopup(key) {
+        if (!achievementPopup || !achievementPopupName) return;
+        const meta = getAchievementMeta(key);
+        achievementPopupName.textContent = meta.name;
+        if (achievementPopupIcon) {
+          achievementPopupIcon.src = meta.icon;
+          achievementPopupIcon.alt = `${meta.name} icon`;
+        }
+
+        if (achievementAudio) {
+          achievementAudio.currentTime = 0;
+          const attempt = achievementAudio.play();
+          if (attempt && typeof attempt.catch === "function") attempt.catch(() => {});
+        }
+
+        achievementPopup.classList.add("show");
+        if (popupTimer) clearTimeout(popupTimer);
+        popupTimer = setTimeout(() => {
+          achievementPopup.classList.remove("show");
+          popupActive = false;
+          setTimeout(dequeuePopup, 250);
+        }, 2500);
+      }
+
+      function updateAchievementsUI() {
+        const achievements = loadAchievements();
+        const cards = document.querySelectorAll(".terminal-achievement[data-achievement]");
+        cards.forEach((card) => {
+          const key = card.getAttribute("data-achievement");
+          const isUnlocked = Boolean(achievements[key]);
+          card.classList.toggle("locked", !isUnlocked);
+          const badge = card.querySelector(".terminal-badge");
+          if (badge) badge.textContent = isUnlocked ? "Unlocked" : "Locked";
+        });
+
+        const achievementCount = document.getElementById("achievementCount");
+        if (achievementCount) {
+          const total = cards.length;
+          const unlocked = Array.from(cards).filter((card) => !card.classList.contains("locked")).length;
+          achievementCount.textContent = `Unlocked: ${unlocked} / ${total}`;
+        }
+
+        const prevJson = sessionStorage.getItem("prevAchievements");
+        let prev = {};
+        try { prev = prevJson ? JSON.parse(prevJson) : {}; } catch { prev = {}; }
+        const newlyUnlocked = getAchievementKeys().filter((key) => achievements[key] && !prev[key]);
+        if (newlyUnlocked.length) {
+          popupQueue = popupQueue.concat(newlyUnlocked);
+          dequeuePopup();
+        }
+        sessionStorage.setItem("prevAchievements", JSON.stringify(achievements));
       }
 
       function primeHomeAudio() {
@@ -534,7 +650,7 @@
       let signed = false;
       let bounds = { minTx: 0, maxTx: 0 };
       const PEN_EXTRA_END_PX = 40;
-      let skipLetter = false;
+      let skipLetter = skipHomeIntro;
       let accountId = null;
       let accountCache = null;
       let letterStarted = false;
@@ -701,8 +817,14 @@
         }, 2000);
       }
 
-      loadLetterState(user);
-      if (devMode) startLetter();
+      if (skipHomeIntro) {
+        overlay.classList.add("dismiss");
+        overlay.style.display = "none";
+        showTerminal();
+      } else {
+        loadLetterState(user);
+        if (devMode) startLetter();
+      }
 
       window.addEventListener("resize", () => {
         if (!pen.classList.contains("visible") || signed) return;
@@ -1001,6 +1123,21 @@
       });
       const initialObject = document.querySelector("#tab-objects .terminal-list-item.active");
       if (initialObject) setObjectCase(initialObject.getAttribute("data-case"));
+
+      const startTestingBtn = document.querySelector(".terminal-start-btn");
+      if (startTestingBtn) {
+        startTestingBtn.addEventListener("click", () => {
+          const activeObject = document.querySelector("#tab-objects .terminal-list-item.active");
+          const caseId = activeObject?.getAttribute("data-case") || "b04-312";
+          const progressRaw = localStorage.getItem("testProgress");
+          let progress = {};
+          try { progress = progressRaw ? JSON.parse(progressRaw) : {}; } catch { progress = {}; }
+          const testNumber = Number(progress[caseId]) || 1;
+          window.location.href = `game.html?object=${encodeURIComponent(caseId)}&test=${testNumber}`;
+        });
+      }
+
+      updateAchievementsUI();
 
       const loadingPercent = document.getElementById("loadingPercent");
       const loadingFill = document.getElementById("loadingFill");

@@ -1659,3 +1659,131 @@ body.terminal-loaded .terminal-content {
   opacity: 1;
   transition: opacity 0.4s ease 0.1s;
 }
+
+.reset-progress-btn {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 92, 92, 0.35);
+  background: rgba(10, 3, 5, 0.7);
+  color: rgba(255, 208, 208, 0.85);
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  font-size: 0.65rem;
+  cursor: pointer;
+  z-index: 50;
+}
+
+.reset-progress-btn:hover {
+  background: rgba(30, 6, 10, 0.85);
+}
+
+.achievement-popup {
+  position: fixed;
+  left: 20px;
+  bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 92, 92, 0.35);
+  background: rgba(8, 2, 4, 0.9);
+  color: #ffdede;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.45);
+  transform: translateY(20px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  z-index: 60;
+}
+
+.achievement-popup.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.achievement-popup-icon {
+  width: 42px;
+  height: 42px;
+  object-fit: contain;
+}
+
+.achievement-popup-title {
+  font-size: 0.65rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  opacity: 0.7;
+}
+
+.achievement-popup-name {
+  font-size: 0.9rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.game-wrap {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+}
+
+.game-card {
+  background: rgba(12, 4, 6, 0.92);
+  border: 1px solid rgba(255, 92, 92, 0.2);
+  border-radius: 16px;
+  padding: 20px;
+  display: grid;
+  gap: 16px;
+  width: min(90vw, 420px);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
+}
+
+.game-meta {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 6px 12px;
+  align-items: baseline;
+}
+
+.game-label {
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  font-size: 0.65rem;
+  color: rgba(255, 208, 208, 0.7);
+}
+
+.game-value {
+  font-size: 1rem;
+  color: #fff2f2;
+}
+
+.game-actions {
+  display: grid;
+  gap: 10px;
+}
+
+.game-action {
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid transparent;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  font-size: 0.7rem;
+  cursor: pointer;
+}
+
+.game-pass {
+  border-color: rgba(138, 226, 131, 0.5);
+  background: rgba(12, 60, 24, 0.65);
+  color: #dcffe0;
+}
+
+.game-fail {
+  border-color: rgba(255, 92, 92, 0.5);
+  background: rgba(80, 10, 16, 0.65);
+  color: #ffd0d0;
+}

@@ -294,7 +294,7 @@ When the screen goes dark, it starts to look for somewhere else to live.
                   A late‑1990s CRT monitor housing a living organism within the casing. The entity is generally docile when undisturbed and responds to light, low‑motion visuals, and continuous power.
                 </p>
               </div>
-                <button class="terminal-start-btn">Start Testing</button>
+                <button class="terminal-start-btn" type="button">Start Testing</button>
               </div>
             </div>
           </section>
@@ -309,53 +309,53 @@ When the screen goes dark, it starts to look for somewhere else to live.
             </div>
 
             <div class="terminal-achievements">
-              <div class="terminal-panel terminal-achievement">
+              <div class="terminal-panel terminal-achievement locked" data-achievement="clockingOut">
                 <img class="terminal-achievement-icon" src="Images/Clockin’ Out.png" alt="Clockin’ Out icon" />
                 <div>
                   <h3>Clockin’ Out</h3>
                   <p>Complete one shift of observation.</p>
                 </div>
-                <span class="terminal-badge">Unlocked</span>
+                <span class="terminal-badge">Locked</span>
               </div>
-              <div class="terminal-panel terminal-achievement">
+              <div class="terminal-panel terminal-achievement locked" data-achievement="digitallyTraditional">
                 <img class="terminal-achievement-icon" src="Images/Digitally Traditional.png" alt="Digitally Traditional icon" />
                 <div>
                   <h3>Digitally Traditional</h3>
                   <p>Complete the archive of CAC-B04-312.</p>
                 </div>
-                <span class="terminal-badge">Unlocked</span>
+                <span class="terminal-badge">Locked</span>
               </div>
-              <div class="terminal-panel terminal-achievement">
+              <div class="terminal-panel terminal-achievement locked" data-achievement="rollCamera">
                 <img class="terminal-achievement-icon" src="Images/Roll the camera!.png" alt="Roll the camera! icon" />
                 <div>
                   <h3>Roll the camera!</h3>
                   <p>Complete the archive of CAC-A17-049.</p>
                 </div>
-                <span class="terminal-badge">Unlocked</span>
+                <span class="terminal-badge">Locked</span>
               </div>
-              <div class="terminal-panel terminal-achievement">
+              <div class="terminal-panel terminal-achievement locked" data-achievement="stomachKnowledge">
                 <img class="terminal-achievement-icon" src="Images/Stomach the knowledge.png" alt="Stomach the knowledge icon" />
                 <div>
                   <h3>Stomach the knowledge</h3>
                   <p>Die to CAC-B04-312.</p>
                 </div>
-                <span class="terminal-badge">Unlocked</span>
+                <span class="terminal-badge">Locked</span>
               </div>
-              <div class="terminal-panel terminal-achievement">
+              <div class="terminal-panel terminal-achievement locked" data-achievement="intoNewWorld">
                 <img class="terminal-achievement-icon" src="Images/Into a new world.png" alt="Into a new world icon" />
                 <div>
                   <h3>Into a new world</h3>
                   <p>Die to CAC-A17-049.</p>
                 </div>
-                <span class="terminal-badge">Unlocked</span>
+                <span class="terminal-badge">Locked</span>
               </div>
-              <div class="terminal-panel terminal-achievement">
+              <div class="terminal-panel terminal-achievement locked" data-achievement="congratulations">
                 <img class="terminal-achievement-icon" src="Images/Congratulations..png" alt="Congratulations icon" />
                 <div>
                   <h3>Congratulations</h3>
                   <p>Finish the demo.</p>
                 </div>
-                <span class="terminal-badge">Unlocked</span>
+                <span class="terminal-badge">Locked</span>
               </div>
             </div>
           </section>
@@ -381,6 +381,17 @@ When the screen goes dark, it starts to look for somewhere else to live.
   <audio id="homeBootupAudio" src="audio/bootup.mp3" preload="auto"></audio>
   <audio id="homeMusicAudio" src="audio/home.mp3" preload="auto" loop></audio>
   <audio id="terminalClickAudio" src="audio/click.mp3" preload="auto"></audio>
+  <audio id="achievementAudio" src="audio/achievement.mp3" preload="auto"></audio>
+
+  <button id="resetProgressBtn" class="reset-progress-btn" type="button">Reset Progress</button>
+
+  <div id="achievementPopup" class="achievement-popup" role="status" aria-live="polite" aria-atomic="true">
+    <img id="achievementPopupIcon" class="achievement-popup-icon" src="" alt="" />
+    <div class="achievement-popup-text">
+      <div class="achievement-popup-title">Achievement Unlocked</div>
+      <div id="achievementPopupName" class="achievement-popup-name"></div>
+    </div>
+  </div>
 
   <script src="restdb-config.js"></script>
   <script src="script.js"></script>
