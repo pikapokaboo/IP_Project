@@ -1187,6 +1187,8 @@ body.terminal-page ::-webkit-scrollbar-thumb:hover {
   border-radius: 12px;
   background: rgba(10, 3, 5, 0.8);
   height: 240px;
+  aspect-ratio: 1 / 1;
+  width: auto;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1201,6 +1203,8 @@ body.terminal-page ::-webkit-scrollbar-thumb:hover {
   display: flex;
   flex-direction: column;
   gap: 6px;
+  width: 100%;
+  height: 100%;
 }
 
 .terminal-model-placeholder span {
@@ -1209,41 +1213,63 @@ body.terminal-page ::-webkit-scrollbar-thumb:hover {
   letter-spacing: 0.08em;
 }
 
+.sketchfab-embed-wrapper {
+  width: 100%;
+  height: 100%;
+}
+
+.sketchfab-embed-wrapper iframe {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  display: block;
+}
+
 .terminal-object-meta h3 {
-  margin: 0 0 6px 0;
-  font-size: 1rem;
-  letter-spacing: 0.08em;
+  margin: 0 0 10px 0;
+  font-size: 1.6rem;
+  line-height: 1.15;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
 }
 
 .terminal-object-tags {
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  font-size: 0.8rem;
-  opacity: 0.75;
+  gap: 8px;
+  font-size: 0.9rem;
+  opacity: 0.8;
 }
 
 .terminal-object-desc {
-  margin: 16px 0 0 0;
-  font-size: 0.85rem;
-  line-height: 1.5;
-  opacity: 0.8;
-  max-width: 520px;
+  margin: 0;
+  font-size: 1.05rem;
+  line-height: 1.6;
+  opacity: 0.85;
+  max-width: 560px;
+}
+
+.terminal-object-desc-label {
+  margin: 0;
+  font-size: 0.75rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  opacity: 0.55;
 }
 
 .terminal-object-meta {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 10px;
   padding-top: 4px;
+  min-height: 240px;
 }
 
 .terminal-object-tags span {
-  padding-left: 10px;
+  padding-left: 12px;
   position: relative;
-  padding-bottom: 6px;
-  border-bottom: 1px solid rgba(255, 92, 92, 0.18);
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(255, 92, 92, 0.14);
 }
 
 .terminal-object-tags span::before {
@@ -1280,6 +1306,28 @@ body.terminal-page ::-webkit-scrollbar-thumb:hover {
 
 #tab-objects .terminal-console {
   justify-content: space-between;
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  align-items: start;
+  column-gap: 20px;
+  row-gap: 0;
+}
+
+#tab-objects .terminal-model {
+  grid-column: 1;
+}
+
+#tab-objects .terminal-object-meta {
+  grid-column: 2;
+}
+
+#tab-objects .terminal-start-btn {
+  grid-column: 1 / -1;
+}
+
+#tab-objects .terminal-object-desc {
+  grid-column: 1 / -1;
+  margin-top: 0;
 }
 
 .terminal-log {
@@ -1504,6 +1552,16 @@ body.terminal-page .terminal-achievement-icon {
 
   .terminal-grid {
     grid-template-columns: 1fr;
+  }
+
+  #tab-objects .terminal-console {
+    grid-template-columns: 1fr;
+  }
+
+  #tab-objects .terminal-model,
+  #tab-objects .terminal-object-meta,
+  #tab-objects .terminal-start-btn {
+    grid-column: 1;
   }
 }
 

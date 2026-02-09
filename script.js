@@ -1081,7 +1081,7 @@
           classification: "Classification: Contained Bio-Mechanical Entity",
           facility: "Facility: Site 9 — Media Anomaly Storage",
           status: "Status: Active / Contained",
-          desc: "A late‑1990s CRT monitor housing a living organism within the casing. The entity is generally docile when undisturbed and responds to light, low‑motion visuals, and continuous power.",
+          desc: "Description unavailable.",
           modelNote: "CAC-B04-312 turntable"
         },
         "a17-049": {
@@ -1089,21 +1089,80 @@
           classification: "Classification: High Risk Temporal Artifact",
           facility: "Facility: Site 14 — Temporal Observation Wing",
           status: "Status: Active / Contained",
-          desc: "A handheld camcorder that displays events several seconds before they occur. The feed is fixed and unavoidable once observed, with temporal offset increasing under stress.",
+          desc: "Description unavailable.",
           modelNote: "CAC-A17-049 turntable"
         }
       };
 
+
+      function getArchivePercentForCase(caseId) {
+        const progress = loadTestProgress();
+        const failProgress = loadFailProgress();
+        const currentTest = Math.min(MAX_TEST, Number(progress[caseId]) || 1);
+        const failCount = failProgress[caseId]?.[currentTest] || 0;
+        const percent = getArchivePercent(progress[caseId], failCount);
+        return Math.round(percent / 5) * 5;
+      }
+
+      function extractArtifactDescription(text) {
+        const marker = "ARTIFACT DESCRIPTION";
+        const start = text.indexOf(marker);
+        if (start == -1) return "";
+        const after = text.slice(start + marker.length);
+        const divider = "------------------------------------------------------------";
+        const end = after.indexOf(divider);
+        const block = end == -1 ? after : after.slice(0, end);
+        const lines = block.split(/\r?\n/).map((line) => line.trim()).filter(Boolean);
+        return lines.join(" ");
+      }
+
+      let activeObjectCase = null;
+      async function loadObjectDescription(caseId) {
+        if (!objectDesc) return;
+        const data = objectData[caseId];
+        const archiveCase = archiveCases[caseId];
+        if (!data || !archiveCase) {
+          objectDesc.textContent = data?.desc || "";
+          return;
+        }
+
+        const percent = getArchivePercentForCase(caseId);
+        const fileName = `${percent}%.txt`;
+        const url = `archive/${archiveCase.folder}/${encodeURIComponent(fileName)}`;
+        objectDesc.textContent = "Loading description...";
+        try {
+          const response = await fetch(url, { cache: "no-store" });
+          if (!response.ok) throw new Error("missing");
+          const text = await response.text();
+          if (activeObjectCase != caseId) return;
+          const desc = extractArtifactDescription(text);
+          objectDesc.textContent = desc || data.desc || "";
+        } catch {
+          objectDesc.textContent = data.desc || "";
+        }
+      }
+
       const setObjectCase = (caseId) => {
         const data = objectData[caseId];
         if (!data) return;
+        activeObjectCase = caseId;
         if (objectTitle) objectTitle.textContent = data.title;
         if (objectClass) objectClass.textContent = data.classification;
         if (objectFacility) objectFacility.textContent = data.facility;
         if (objectStatus) objectStatus.textContent = data.status;
-        if (objectDesc) objectDesc.textContent = data.desc;
+        loadObjectDescription(caseId);
         if (objectModelNote) {
-          objectModelNote.innerHTML = `3D Model Turntable<span>${data.modelNote}</span>`;
+          if (caseId === "b04-312") {
+            if (!objectModelNote.querySelector("iframe")) {
+              objectModelNote.innerHTML = `
+                <div class="sketchfab-embed-wrapper">
+                  <iframe title="CRT Monitor and Keyboard" frameborder="0" allowfullscreen mozallowfullscreen="true" webkitallowfullscreen="true" allow="autoplay; fullscreen; xr-spatial-tracking" xr-spatial-tracking execution-while-out-of-viewport execution-while-not-rendered web-share src="https://sketchfab.com/models/29476b2bb15246bfb9e5309a62097cf1/embed?autospin=1&autostart=1&camera=0&transparent=1&ui_theme=dark&ui_controls=0&ui_infos=0&ui_help=0&ui_hint=0&ui_settings=0&ui_stop=0&ui_watermark=0&ui_vr=0&ui_fullscreen=0&ui_annotations=0"></iframe>
+                </div>
+              `;
+            }
+          } else {
+            objectModelNote.innerHTML = `3D Model Turntable<span>${data.modelNote}</span>`;
+          }
         }
       };
 
