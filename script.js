@@ -936,6 +936,7 @@
       const archiveMeta = document.getElementById("archiveMeta");
       const archiveBody = document.getElementById("archiveBody");
       const archiveCompletionTag = document.getElementById("archiveCompletionTag");
+      const activeCaseIntegrity = document.getElementById("activeCaseIntegrity");
 
       const archiveCases = {
         "b04-312": {
@@ -1013,6 +1014,9 @@
 
         if (archiveCompletionTag) {
           archiveCompletionTag.textContent = `Completion: ${percent}%`;
+        }
+        if (activeCaseIntegrity) {
+          activeCaseIntegrity.textContent = `File integrity ${percent}% restored. Continue research to expand operational clearance.`;
         }
         loadArchiveFile(caseId, roundedPercent);
       };
