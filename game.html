@@ -8,53 +8,19 @@
 </head>
 
 <body class="page">
-  <div class="screen-canvas">
-    <div class="game-wrap">
-      <div class="game-shell">
-        <section class="game-visual" aria-hidden="true">
-          <div class="game-visual-frame">
-            <div class="game-visual-screen">
-              <div class="game-visual-glow"></div>
-              <img class="game-visual-image" src="Images/test.png" alt="Specimen view">
-              <div class="game-visual-tag">CAC VISUAL FEED</div>
-            </div>
-            <div class="game-visual-foot">
-              <span>Signal: Stable</span>
-              <span>Capture: Live</span>
-              <span>Noise: 2%</span>
-            </div>
-          </div>
-        </section>
-
-        <main class="game-card">
-          <div class="game-meta">
-            <div class="game-label">Object</div>
-            <div id="gameObjectName" class="game-value">CAC-B04-312</div>
-            <div class="game-label">Test</div>
-            <div id="gameTestNumber" class="game-value">1</div>
-          </div>
-
-          <div class="game-test">
-            <h2 id="gameTestTitle" class="game-title">TEST 1</h2>
-            <p id="gameTestFocus" class="game-focus">Focus:</p>
-          </div>
-
-          <div class="game-action-card">
-            <div class="game-action-meta">
-              <span id="gameActionIndex">Action 1 of 5</span>
-              <span id="gameActionUnlock">Unredacts:</span>
-            </div>
-            <p id="gameActionText" class="game-action-text">Action details</p>
-            <div class="game-actions">
-              <button id="gameGoodBtn" class="game-action game-pass" type="button">GOOD</button>
-              <button id="gameBadBtn" class="game-action game-fail" type="button">BAD</button>
-            </div>
-            <p id="gameBadResult" class="game-result">Result if BAD:</p>
-          </div>
-        </main>
-      </div>
+  <main class="game-card">
+    <div class="game-meta">
+      <div class="game-label">Object</div>
+      <div id="gameObjectName" class="game-value">CAC-B04-312</div>
+      <div class="game-label">Test</div>
+      <div id="gameTestNumber" class="game-value">1</div>
     </div>
-  </div>
+
+    <div class="game-actions">
+      <button id="gamePassBtn" class="game-action game-pass" type="button">PASS</button>
+      <button id="gameFailBtn" class="game-action game-fail" type="button">FAIL</button>
+    </div>
+  </main>
 
   <script src="script.js"></script>
   <script>
@@ -117,14 +83,8 @@
 
       const objectEl = document.getElementById("gameObjectName");
       const testEl = document.getElementById("gameTestNumber");
-      const testTitleEl = document.getElementById("gameTestTitle");
-      const testFocusEl = document.getElementById("gameTestFocus");
-      const actionIndexEl = document.getElementById("gameActionIndex");
-      const actionUnlockEl = document.getElementById("gameActionUnlock");
-      const actionTextEl = document.getElementById("gameActionText");
-      const badResultEl = document.getElementById("gameBadResult");
-      const goodBtn = document.getElementById("gameGoodBtn");
-      const badBtn = document.getElementById("gameBadBtn");
+      const passBtn = document.getElementById("gamePassBtn");
+      const failBtn = document.getElementById("gameFailBtn");
 
       if (objectEl) objectEl.textContent = objectName;
       if (testEl) testEl.textContent = String(testNumber);
@@ -156,319 +116,6 @@
         saveAchievements(achievements);
       }
 
-      const testData = {
-        "b04-312": [
-          {
-            title: "TEST 1 - ENVIRONMENTAL CONTAINMENT TRIAL",
-            focus: "Focus: How it must be housed and powered.",
-            sets: [
-              {
-                unredacts: "House the unit in a dimly lit media containment room.",
-                good: "Leave ambient lighting at minimum operational levels",
-                bad: "Turn on overhead room lights",
-                result: "Internal heat spike, faint movement behind glass confirms low-light requirement."
-              },
-              {
-                unredacts: "No direct sunlight.",
-                good: "Seal blackout shutters",
-                bad: "Open external window blinds",
-                result: "Screen brightness distorts, organism retracts from display edge."
-              },
-              {
-                unredacts: "No active audio equipment beyond the monitor.",
-                good: "Disable room speakers",
-                bad: "Play low-volume ambient audio",
-                result: "Image desynchronization and rhythmic internal motion."
-              },
-              {
-                unredacts: "Maintain continuous power.",
-                good: "Route power through uninterrupted supply",
-                bad: "Switch to manual breaker",
-                result: "Immediate agitation, tentacle silhouette visible."
-              },
-              {
-                unredacts: "Power loss beyond 30 seconds triggers aggressive activity.",
-                good: "Restore power within 10 seconds",
-                bad: "Allow outage to exceed 30 seconds",
-                result: "Appendage presses against ventilation slits."
-              }
-            ]
-          },
-          {
-            title: "TEST 2 - HANDLING AND INTERACTION PROTOCOL",
-            focus: "Focus: What you must never do to it.",
-            sets: [
-              {
-                unredacts: "Approved use: testing and administrative tasks only.",
-                good: "Log observational notes",
-                bad: "Attempt recreational interaction",
-                result: "Monitor output becomes erratic, UI desync."
-              },
-              {
-                unredacts: "Prohibited:",
-                good: "Request protocol list",
-                bad: "Ignore warning header",
-                result: "System flags escalation risk."
-              },
-              {
-                unredacts: "Touching the display surface.",
-                good: "Keep hands at minimum distance",
-                bad: "Place fingers against glass",
-                result: "Localized image distortion follows hand position."
-              },
-              {
-                unredacts: "Striking the casing.",
-                good: "Stabilize monitor frame",
-                bad: "Knock sharply on housing",
-                result: "Violent internal movement, temperature spike."
-              },
-              {
-                unredacts: "Attempting to open it.",
-                good: "Abort physical inspection",
-                bad: "Remove rear screws",
-                result: "Immediate breach attempt from ventilation ports."
-              }
-            ]
-          },
-          {
-            title: "TEST 3 - SUSTENANCE AND BIOLOGICAL CONFIRMATION",
-            focus: "Focus: What it is, and how it feeds.",
-            sets: [
-              {
-                unredacts: "Approved offerings:",
-                good: "Prepare external offering tray",
-                bad: "Insert object into vent",
-                result: "Appendage lashes outward defensively."
-              },
-              {
-                unredacts: "Processed sugars.",
-                good: "Place sealed sugar packets nearby",
-                bad: "Scatter sugar onto screen",
-                result: "Sugar slowly disappears toward vent openings."
-              },
-              {
-                unredacts: "Raw meat.",
-                good: "Leave meat near airflow vents",
-                bad: "Press meat against casing",
-                result: "Casing vibrates, internal movement accelerates."
-              },
-              {
-                unredacts: "Distilled water.",
-                good: "Place water dish externally",
-                bad: "Pour water into vent",
-                result: "Electrical flicker followed by organism recoil."
-              },
-              {
-                unredacts: "Inside the casing resides a living organism.",
-                good: "Update classification notes",
-                bad: "Deny biological presence",
-                result: "Slow, deliberate tentacle outline appears under glass."
-              }
-            ]
-          },
-          {
-            title: "TEST 4 - BEHAVIORAL AND LETHAL RESPONSE TRIAL",
-            focus: "Focus: Why this thing is dangerous.",
-            sets: [
-              {
-                unredacts: "A soft-bodied, tentacled entity occupies the internal structure.",
-                good: "Observe via external camera",
-                bad: "Attempt direct visual inspection",
-                result: "Reflection distortion mirrors observer face."
-              },
-              {
-                unredacts: "Appendages intermittently visible through ventilation gaps.",
-                good: "Monitor vents passively",
-                bad: "Shine flashlight into vents",
-                result: "Appendage presses outward briefly."
-              },
-              {
-                unredacts: "The monitor is not alive. The organism is.",
-                good: "Reclassify object-organism relationship",
-                bad: "Power down dead hardware",
-                result: "Immediate agitation, heat spike."
-              },
-              {
-                unredacts: "Direct contact with the screen is lethal.",
-                good: "Maintain safety distance",
-                bad: "Place palm on active display",
-                result: "Fatal outcome, test terminates."
-              },
-              {
-                unredacts: "Archival note (full philosophical context).",
-                good: "Leave screen active and unattended",
-                bad: "Turn screen off before exit",
-                result: "Movement toward vents begins."
-              }
-            ]
-          }
-        ],
-        "a17-049": [
-          {
-            title: "TEST 1 - CONTAINMENT AND OBSERVATION RULES",
-            focus: "Focus: Why this thing is locked down so hard.",
-            sets: [
-              {
-                unredacts: "Sound-insulated, non-reflective storage.",
-                good: "Place device in matte archival locker",
-                bad: "Store device in reflective steel cabinet",
-                result: "Viewfinder activates briefly despite power being off."
-              },
-              {
-                unredacts: "Powered off unless approved.",
-                good: "Submit observation request",
-                bad: "Power on the camcorder immediately",
-                result: "Footage begins rolling before operator input."
-              },
-              {
-                unredacts: "Two observers minimum.",
-                good: "Assign secondary observer",
-                bad: "Conduct test alone",
-                result: "Footage shows operator from a third-person angle."
-              },
-              {
-                unredacts: "Independent recording device required.",
-                good: "Activate external recorder",
-                bad: "Rely solely on camcorder playback",
-                result: "Recorded playback diverges from room observation."
-              },
-              {
-                unredacts: "Reflective surfaces prohibited.",
-                good: "Drape lens away from reflective objects",
-                bad: "Aim device at observation glass",
-                result: "Feedback loop begins in viewfinder."
-              }
-            ]
-          },
-          {
-            title: "TEST 2 - FUNCTION AND TEMPORAL OFFSET",
-            focus: "Focus: What it actually does.",
-            sets: [
-              {
-                unredacts: "Abort if divergence exceeds 8 seconds.",
-                good: "Compare live stopwatch to footage",
-                bad: "Ignore timestamp drift",
-                result: "Footage continues independently of present time."
-              },
-              {
-                unredacts: "Handheld consumer camcorder.",
-                good: "Log physical dimensions",
-                bad: "Attempt to identify manufacturer",
-                result: "Internal schematics loop infinitely."
-              },
-              {
-                unredacts: "No known internal components.",
-                good: "External-only inspection",
-                bad: "Open casing",
-                result: "Device already appears open in playback."
-              },
-              {
-                unredacts: "Displays events that have not occurred.",
-                good: "Observe neutral environment",
-                bad: "Point device at operator",
-                result: "Operator reacts to something not yet happening."
-              },
-              {
-                unredacts: "3 to 7 seconds ahead of reality.",
-                good: "Drop object and compare timing",
-                bad: "Try to beat the footage",
-                result: "Object is dropped involuntarily."
-              }
-            ]
-          },
-          {
-            title: "TEST 3 - DETERMINISM CONFIRMATION",
-            focus: "Focus: You cannot change what you see.",
-            sets: [
-              {
-                unredacts: "Temporal offset is variable.",
-                good: "Maintain calm environment",
-                bad: "Induce stress",
-                result: "Footage jumps further ahead."
-              },
-              {
-                unredacts: "Up to 12 seconds under threat.",
-                good: "Step back from device",
-                bad: "Simulate imminent harm",
-                result: "Footage shows impact before movement occurs."
-              },
-              {
-                unredacts: "No hypothetical outcomes.",
-                good: "Observe without intervention",
-                bad: "Attempt alternate action",
-                result: "Intervention fails via coincidence."
-              },
-              {
-                unredacts: "Observed events become unavoidable.",
-                good: "Record without commentary",
-                bad: "Warn subject of outcome",
-                result: "Warning causes the event to occur faster."
-              },
-              {
-                unredacts: "Attempts to prevent events fail.",
-                good: "End observation cycle",
-                bad: "Continue watching",
-                result: "Mechanical failure enforces outcome."
-              }
-            ]
-          },
-          {
-            title: "TEST 4 - INCIDENT AND PHILOSOPHICAL CLOSURE",
-            focus: "Focus: Why this thing should terrify you.",
-            sets: [
-              {
-                unredacts: "Detachment and lagging behind reality.",
-                good: "Rotate observers",
-                bad: "Prolonged solo viewing",
-                result: "Operator reacts late to real stimuli."
-              },
-              {
-                unredacts: "Device never shows its own destruction.",
-                good: "Power down calmly",
-                bad: "Attempt to destroy device",
-                result: "Destruction appears only after attempt fails."
-              },
-              {
-                unredacts: "Reflection anomaly in Incident 14-77.",
-                good: "Review footage frame-by-frame",
-                bad: "Recreate door test",
-                result: "Device appears already fallen."
-              },
-              {
-                unredacts: "Events never fail to occur.",
-                good: "Accept recorded outcome",
-                bad: "Delay observation termination",
-                result: "Personnel shown entering empty room."
-              },
-              {
-                unredacts: "Archival note - inevitability.",
-                good: "Power off without reviewing final frames",
-                bad: "Watch until the end",
-                result: "Footage shows the operator powering it off."
-              }
-            ]
-          }
-        ]
-      };
-
-      const testIndex = Math.max(0, Math.min(MAX_TEST - 1, testNumber - 1));
-      const activeTest = testData[objectKey]?.[testIndex];
-      let actionIndex = 0;
-
-      function renderAction() {
-        if (!activeTest) return;
-        const action = activeTest.sets[actionIndex];
-        if (!action) return;
-        if (testTitleEl) testTitleEl.textContent = activeTest.title;
-        if (testFocusEl) testFocusEl.textContent = activeTest.focus;
-        if (actionIndexEl) actionIndexEl.textContent = `Action ${actionIndex + 1} of 5`;
-        if (actionUnlockEl) actionUnlockEl.textContent = `Unredacts: ${action.unredacts}`;
-        if (actionTextEl) actionTextEl.textContent = action.good;
-        if (badResultEl) badResultEl.textContent = `Result if BAD: ${action.result}`;
-        if (goodBtn) goodBtn.textContent = `GOOD: ${action.good}`;
-        if (badBtn) badBtn.textContent = `BAD: ${action.bad}`;
-      }
-
       function passTest() {
         if (testNumber >= MAX_TEST) {
           progress[objectKey] = MAX_TEST + 1;
@@ -494,29 +141,21 @@
         goHome();
       }
 
-      if (goodBtn) {
-        goodBtn.addEventListener("click", () => {
-          actionIndex += 1;
-          if (actionIndex >= 5) {
-            passTest();
-            return;
-          }
-          renderAction();
+      if (passBtn) {
+        passBtn.addEventListener("click", () => {
+          passTest();
         });
       }
 
-      if (badBtn) {
-        badBtn.addEventListener("click", () => {
-          badBtn.disabled = true;
-          if (goodBtn) goodBtn.disabled = true;
-          if (badResultEl) badResultEl.classList.add("active");
+      if (failBtn) {
+        failBtn.addEventListener("click", () => {
+          failBtn.disabled = true;
+          if (passBtn) passBtn.disabled = true;
           setTimeout(() => {
             failTest();
-          }, 600);
+          }, 300);
         });
       }
-
-      renderAction();
     })();
   </script>
 </body>
