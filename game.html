@@ -8,35 +8,55 @@
 </head>
 
 <body class="page">
-  <div class="game-wrap">
-    <main class="game-card">
-      <div class="game-meta">
-        <div class="game-label">Object</div>
-        <div id="gameObjectName" class="game-value">CAC-B04-312</div>
-        <div class="game-label">Test</div>
-        <div id="gameTestNumber" class="game-value">1</div>
-      </div>
+  <div class="screen-canvas">
+    <div class="game-wrap">
+      <div class="game-shell">
+        <section class="game-visual" aria-hidden="true">
+          <div class="game-visual-frame">
+            <div class="game-visual-screen">
+              <div class="game-visual-glow"></div>
+              <img class="game-visual-image" src="Images/test.png" alt="Specimen view">
+              <div class="game-visual-tag">CAC VISUAL FEED</div>
+            </div>
+            <div class="game-visual-foot">
+              <span>Signal: Stable</span>
+              <span>Capture: Live</span>
+              <span>Noise: 2%</span>
+            </div>
+          </div>
+        </section>
 
-      <div class="game-test">
-        <h2 id="gameTestTitle" class="game-title">TEST 1</h2>
-        <p id="gameTestFocus" class="game-focus">Focus:</p>
-      </div>
+        <main class="game-card">
+          <div class="game-meta">
+            <div class="game-label">Object</div>
+            <div id="gameObjectName" class="game-value">CAC-B04-312</div>
+            <div class="game-label">Test</div>
+            <div id="gameTestNumber" class="game-value">1</div>
+          </div>
 
-      <div class="game-action-card">
-        <div class="game-action-meta">
-          <span id="gameActionIndex">Action 1 of 5</span>
-          <span id="gameActionUnlock">Unredacts:</span>
-        </div>
-        <p id="gameActionText" class="game-action-text">Action details</p>
-        <div class="game-actions">
-          <button id="gameGoodBtn" class="game-action game-pass" type="button">GOOD</button>
-          <button id="gameBadBtn" class="game-action game-fail" type="button">BAD</button>
-        </div>
-        <p id="gameBadResult" class="game-result">Result if BAD:</p>
+          <div class="game-test">
+            <h2 id="gameTestTitle" class="game-title">TEST 1</h2>
+            <p id="gameTestFocus" class="game-focus">Focus:</p>
+          </div>
+
+          <div class="game-action-card">
+            <div class="game-action-meta">
+              <span id="gameActionIndex">Action 1 of 5</span>
+              <span id="gameActionUnlock">Unredacts:</span>
+            </div>
+            <p id="gameActionText" class="game-action-text">Action details</p>
+            <div class="game-actions">
+              <button id="gameGoodBtn" class="game-action game-pass" type="button">GOOD</button>
+              <button id="gameBadBtn" class="game-action game-fail" type="button">BAD</button>
+            </div>
+            <p id="gameBadResult" class="game-result">Result if BAD:</p>
+          </div>
+        </main>
       </div>
-    </main>
+    </div>
   </div>
 
+  <script src="script.js"></script>
   <script>
     (function () {
       const params = new URLSearchParams(window.location.search);

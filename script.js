@@ -43,9 +43,9 @@
   
   let audioReady = false;
   const INTRO_FADE_MS = 1200;
-  const INTRO_VOLUME = 0.1;
+  const INTRO_VOLUME = 0.07;
   const SWITCH_FADE_MS = 800;
-  const LOGIN_VOLUME = 0.4;
+  const LOGIN_VOLUME = 0.28;
   const LOGIN_FADE_IN_MS = 800;
   const LOGIN_FADE_OUT_MS = 1400;
   let loginAudioStarted = false;
@@ -450,7 +450,7 @@
 
       let terminalInitialized = false;
       let terminalBooted = false;
-      const DEFAULT_MUSIC_VOLUME = 0.4;
+      const DEFAULT_MUSIC_VOLUME = 0.28;
 
       function safePlay(audioEl) {
         if (!audioEl) return;
