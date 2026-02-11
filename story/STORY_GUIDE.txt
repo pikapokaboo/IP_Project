@@ -1,0 +1,62 @@
+VISUAL NOVEL STORY GUIDE
+
+1) WHERE TO WRITE
+- Edit: story/default-story.json
+- Or create a new file and open with:
+  game.html?story=story/your-file.json
+- Automatic test routing (when no story=... is provided):
+  object b04-312 + test 1..4 -> story/obj1-test1.json .. story/obj1-test4.json
+  object a17-049 + test 1..4 -> story/obj2-test1.json .. story/obj2-test4.json
+
+2) HOW TO ADD ASSETS
+- Put image/audio files in your folders (example: assets/bg, assets/chars, assets/audio).
+- In "assets", map a short key to each file path.
+Example:
+  "assets": {
+    "bg_lab": "assets/bg/lab.jpg",
+    "char_alex": "assets/chars/alex.png"
+  }
+- Then use the key in scenes:
+  { "bg": "bg_lab", "charLeft": "char_alex" }
+
+3) MAIN BUILDING BLOCKS
+- Dialogue:
+  { "say": "alex", "text": "Hello." }
+- Narration:
+  { "narrate": "The lights flicker." }
+- Background / characters / music:
+  { "bg": "bg_lab", "charLeft": "char_alex", "music": "bgm_main" }
+- Hide characters:
+  { "hideChars": true }
+  { "hideChars": ["left", "right"] }
+- Jump to another label:
+  { "jump": "chapter2" }
+- Choice:
+  {
+    "choice": "What now?",
+    "options": [
+      { "text": "Open the door", "jump": "door_route" },
+      { "text": "Run away", "jump": "run_route" }
+    ]
+  }
+- Callable commands (any step or inside a choice option):
+  { "call": "passSequence" }
+  { "call": "failSequence" }
+  { "call": "goHome" }
+  Advanced:
+  { "call": { "name": "passSequence", "text": "PASS recorded.", "jumpHome": true, "delayMs": 1200 } }
+  Supported call names:
+  passSequence / pass_sequence / pass
+  failSequence / fail_sequence / fail
+  goHome / go_home / returnHome / return_home
+- End scene:
+  { "end": { "result": "pass", "text": "Ending text" } }
+  result can be: pass, fail, or none
+
+4) LABELS
+- Labels are scene blocks under "labels".
+- "meta.start" decides where story begins.
+
+5) IMPORTANT
+- JSON format must be valid (commas and quotes matter).
+- If story file breaks, game page shows a Story Load Error with details.

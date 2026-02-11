@@ -2,161 +2,48 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>The Archivist - Game</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Archivist - Visual Novel</title>
   <link rel="stylesheet" href="style.css" />
 </head>
+<body class="page vn-page">
+  <main class="vn-stage" aria-live="polite">
+    <div id="vnBackground" class="vn-background" role="img" aria-label="Scene background"></div>
 
-<body class="page">
-  <main class="game-card">
-    <div class="game-meta">
-      <div class="game-label">Object</div>
-      <div id="gameObjectName" class="game-value">CAC-B04-312</div>
-      <div class="game-label">Test</div>
-      <div id="gameTestNumber" class="game-value">1</div>
+    <div class="vn-characters" aria-hidden="true">
+      <img id="vnCharLeft" class="vn-character vn-character-left" alt="" />
+      <img id="vnCharCenter" class="vn-character vn-character-center" alt="" />
+      <img id="vnCharRight" class="vn-character vn-character-right" alt="" />
     </div>
 
-    <div class="game-actions">
-      <button id="gamePassBtn" class="game-action game-pass" type="button">PASS</button>
-      <button id="gameFailBtn" class="game-action game-fail" type="button">FAIL</button>
-    </div>
+    <header class="vn-topbar">
+      <div>
+        <div class="vn-top-label">Visual Novel Mode</div>
+        <h1 id="vnStoryTitle" class="vn-title">Loading story...</h1>
+      </div>
+      <div class="vn-top-actions">
+        <button id="vnAutoplayBtn" class="vn-btn" type="button" aria-pressed="false">Autoplay</button>
+        <button id="vnSkipBtn" class="vn-btn" type="button" aria-pressed="false">Skip</button>
+        <button id="vnRestartBtn" class="vn-btn" type="button">Restart</button>
+        <a class="vn-btn" href="home.html?skipHomeIntro=1">Exit</a>
+      </div>
+    </header>
+
+    <section id="vnChoices" class="vn-choices" aria-label="Choices"></section>
+
+    <section id="vnDialogBox" class="vn-dialog" role="button" tabindex="0" aria-label="Dialogue box. Click to continue.">
+      <div id="vnSpeaker" class="vn-speaker">...</div>
+      <div id="vnText" class="vn-text">Loading...</div>
+      <div class="vn-hint">Click, Enter, or Space to continue</div>
+    </section>
+
+    <section id="vnError" class="vn-error" hidden>
+      <h2>Story Load Error</h2>
+      <p id="vnErrorText"></p>
+      <p class="vn-error-help">Check your story file path and JSON format.</p>
+    </section>
   </main>
 
-  <script src="script.js"></script>
-  <script>
-    (function () {
-      const params = new URLSearchParams(window.location.search);
-      const rawObject = (params.get("object") || "b04-312").toLowerCase();
-      const objectMap = {
-        "b04-312": "CAC-B04-312",
-        "a17-049": "CAC-A17-049"
-      };
-      const MAX_TEST = 4;
-      const TEST_PROGRESS_KEY = "testProgress";
-      const FAIL_PROGRESS_KEY = "failProgress";
-      const ACHIEVEMENTS_KEY = "achievementsProgress";
-
-      function loadProgress() {
-        try {
-          const stored = localStorage.getItem(TEST_PROGRESS_KEY);
-          return stored ? JSON.parse(stored) : {};
-        } catch {
-          return {};
-        }
-      }
-
-      function saveProgress(progress) {
-        localStorage.setItem(TEST_PROGRESS_KEY, JSON.stringify(progress));
-      }
-
-      function loadFailProgress() {
-        try {
-          const stored = localStorage.getItem(FAIL_PROGRESS_KEY);
-          return stored ? JSON.parse(stored) : {};
-        } catch {
-          return {};
-        }
-      }
-
-      function saveFailProgress(failProgress) {
-        localStorage.setItem(FAIL_PROGRESS_KEY, JSON.stringify(failProgress));
-      }
-
-      function loadAchievements() {
-        try {
-          const stored = localStorage.getItem(ACHIEVEMENTS_KEY);
-          return stored ? JSON.parse(stored) : {};
-        } catch {
-          return {};
-        }
-      }
-
-      function saveAchievements(achievements) {
-        localStorage.setItem(ACHIEVEMENTS_KEY, JSON.stringify(achievements));
-      }
-
-      const objectKey = objectMap[rawObject] ? rawObject : "b04-312";
-      localStorage.setItem("lastTestedCase", objectKey);
-      const progress = loadProgress();
-      const testNumber = Number(progress[objectKey]) || 1;
-      const objectName = objectMap[objectKey];
-
-      const objectEl = document.getElementById("gameObjectName");
-      const testEl = document.getElementById("gameTestNumber");
-      const passBtn = document.getElementById("gamePassBtn");
-      const failBtn = document.getElementById("gameFailBtn");
-
-      if (objectEl) objectEl.textContent = objectName;
-      if (testEl) testEl.textContent = String(testNumber);
-
-      function goHome() {
-        sessionStorage.setItem("skipHomeIntro", "true");
-        window.location.href = "home.html?skipHomeIntro=1";
-      }
-
-      function updateAchievementsOnPass(currentTest, currentObject) {
-        const achievements = loadAchievements();
-        if (!achievements.clockingOut) achievements.clockingOut = true;
-        if (currentObject === "b04-312" && currentTest >= 4) achievements.digitallyTraditional = true;
-        if (currentObject === "a17-049" && currentTest >= 4) achievements.rollCamera = true;
-        if (achievements.digitallyTraditional && achievements.rollCamera) {
-          achievements.congratulations = true;
-        }
-        saveAchievements(achievements);
-      }
-
-      function updateAchievementsOnFail(currentObject) {
-        const achievements = loadAchievements();
-        if (currentObject === "b04-312" && !achievements.stomachKnowledge) {
-          achievements.stomachKnowledge = true;
-        }
-        if (currentObject === "a17-049" && !achievements.intoNewWorld) {
-          achievements.intoNewWorld = true;
-        }
-        saveAchievements(achievements);
-      }
-
-      function passTest() {
-        if (testNumber >= MAX_TEST) {
-          progress[objectKey] = MAX_TEST + 1;
-        } else {
-          const next = Math.min(MAX_TEST, testNumber + 1);
-          progress[objectKey] = next;
-        }
-        saveProgress(progress);
-        updateAchievementsOnPass(testNumber, objectKey);
-        goHome();
-      }
-
-      function failTest() {
-        progress[objectKey] = testNumber;
-        saveProgress(progress);
-        const failProgress = loadFailProgress();
-        const objectFails = failProgress[objectKey] || {};
-        const currentFails = Number(objectFails[testNumber]) || 0;
-        objectFails[testNumber] = Math.min(5, currentFails + 1);
-        failProgress[objectKey] = objectFails;
-        saveFailProgress(failProgress);
-        updateAchievementsOnFail(objectKey);
-        goHome();
-      }
-
-      if (passBtn) {
-        passBtn.addEventListener("click", () => {
-          passTest();
-        });
-      }
-
-      if (failBtn) {
-        failBtn.addEventListener("click", () => {
-          failBtn.disabled = true;
-          if (passBtn) passBtn.disabled = true;
-          setTimeout(() => {
-            failTest();
-          }, 300);
-        });
-      }
-    })();
-  </script>
+  <script src="game-engine.js"></script>
 </body>
 </html>

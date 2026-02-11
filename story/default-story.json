@@ -1,0 +1,44 @@
+{
+  "meta": {
+    "title": "CAC-B04-312 // Test Session",
+    "start": "start"
+  },
+  "assets": {
+    "bg_lab": "assets/bg/lab.jpg",
+    "bg_archive": "assets/bg/archive.jpg",
+    "archivist": "assets/chars/archivist.png",
+    "subject": "assets/chars/subject.png",
+    "bgm_loop": "assets/audio/tense_loop.mp3",
+    "sfx_click": "assets/audio/click.wav"
+  },
+  "characters": {
+    "sys": { "name": "System", "color": "#ffb9b9" },
+    "arch": { "name": "Archivist", "color": "#ffe1e1" },
+    "obj": { "name": "Entity", "color": "#ffd1d1" }
+  },
+  "labels": {
+    "start": [
+      { "bg": "bg_lab", "music": "bgm_loop", "charLeft": "archivist", "charRight": "subject" },
+      { "say": "sys", "text": "Containment feed online. Begin behavioral test." },
+      { "say": "arch", "text": "Subject is unstable. I need a response." },
+      {
+        "choice": "Choose your action",
+        "options": [
+          { "text": "Proceed with containment protocol", "jump": "pass_route" },
+          { "text": "Break protocol and shut down test", "jump": "fail_route" }
+        ]
+      }
+    ],
+    "pass_route": [
+      { "bg": "bg_archive", "sfx": "sfx_click" },
+      { "say": "sys", "text": "Protocol accepted. Containment stable." },
+      { "say": "arch", "text": "Logging successful completion." },
+      { "call": { "name": "passSequence", "text": "Test result: PASS. Returning to terminal...", "jumpHome": true } }
+    ],
+    "fail_route": [
+      { "sfx": "sfx_click", "hideChars": true },
+      { "narrate": "The room falls silent. You abort the sequence." },
+      { "call": { "name": "failSequence", "text": "Test result: FAIL. Returning to terminal...", "jumpHome": true } }
+    ]
+  }
+}

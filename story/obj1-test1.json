@@ -1,0 +1,101 @@
+{
+    "meta":  {
+                 "title":  "CAC-B04-312 // Test 1",
+                 "start":  "start"
+             },
+    "assets":  {
+                   "bg_lab":  "assets/bg/lab.jpg",
+                   "bg_archive":  "assets/bg/archive.jpg",
+                   "archivist":  "assets/chars/archivist.png",
+                   "subject":  "assets/chars/subject.png",
+                   "bgm_loop":  "assets/audio/tense_loop.mp3",
+                   "sfx_click":  "assets/audio/click.wav"
+               },
+    "characters":  {
+                       "sys":  {
+                                   "name":  "System",
+                                   "color":  "#ffb9b9"
+                               },
+                       "arch":  {
+                                    "name":  "Archivist",
+                                    "color":  "#ffe1e1"
+                                },
+                       "obj":  {
+                                   "name":  "Entity",
+                                   "color":  "#ffd1d1"
+                               }
+                   },
+    "labels":  {
+                   "start":  [
+                                 {
+                                     "bg":  "bg_lab",
+                                     "music":  "bgm_loop",
+                                     "charLeft":  "archivist",
+                                     "charRight":  "subject"
+                                 },
+                                 {
+                                     "say":  "sys",
+                                     "text":  "Containment feed online. Initial compliance check."
+                                 },
+                                 {
+                                     "say":  "arch",
+                                     "text":  "Proceed with your test decision."
+                                 },
+                                 {
+                                     "choice":  "Choose your action",
+                                     "options":  [
+                                                     {
+                                                         "text":  "Mark PASS",
+                                                         "call":  {
+                                                                      "name":  "passSequence",
+                                                                      "text":  "Test 1 marked PASS. Returning to terminal...",
+                                                                      "jumpHome":  true
+                                                                  }
+                                                     },
+                                                     {
+                                                         "text":  "Mark FAIL",
+                                                         "call":  {
+                                                                      "name":  "failSequence",
+                                                                      "text":  "Test 1 marked FAIL. Returning to terminal...",
+                                                                      "jumpHome":  true
+                                                                  }
+                                                     },
+                                                     {
+                                                         "text":  "Review one more line",
+                                                         "jump":  "review"
+                                                     }
+                                                 ]
+                                 }
+                             ],
+                   "review":  [
+                                  {
+                                      "bg":  "bg_archive",
+                                      "sfx":  "sfx_click"
+                                  },
+                                  {
+                                      "narrate":  "You pause, re-check notes, and return to judgement."
+                                  },
+                                  {
+                                      "choice":  "Final decision",
+                                      "options":  [
+                                                      {
+                                                          "text":  "Finalize PASS",
+                                                          "call":  {
+                                                                       "name":  "passSequence",
+                                                                       "text":  "Test 1 marked PASS. Returning to terminal...",
+                                                                       "jumpHome":  true
+                                                                   }
+                                                      },
+                                                      {
+                                                          "text":  "Finalize FAIL",
+                                                          "call":  {
+                                                                       "name":  "failSequence",
+                                                                       "text":  "Test 1 marked FAIL. Returning to terminal...",
+                                                                       "jumpHome":  true
+                                                                   }
+                                                      }
+                                                  ]
+                                  }
+                              ]
+               }
+}

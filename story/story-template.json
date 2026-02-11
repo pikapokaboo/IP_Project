@@ -1,0 +1,34 @@
+{
+  "meta": {
+    "title": "YOUR STORY TITLE",
+    "start": "start"
+  },
+  "assets": {
+    "bg_room": "assets/bg/room.jpg",
+    "char_alex": "assets/chars/alex.png",
+    "music_main": "assets/audio/main.mp3"
+  },
+  "characters": {
+    "alex": { "name": "Alex", "color": "#ffe1e1" },
+    "sys": { "name": "System", "color": "#ffb9b9" }
+  },
+  "labels": {
+    "start": [
+      { "bg": "bg_room", "music": "music_main", "charLeft": "char_alex" },
+      { "say": "alex", "text": "This is dialogue." },
+      { "narrate": "This is narration without a speaker." },
+      {
+        "choice": "Pick one",
+        "options": [
+          { "text": "Mark this test as PASS", "call": { "name": "passSequence", "text": "PASS recorded.", "jumpHome": true } },
+          { "text": "Mark this test as FAIL", "call": { "name": "failSequence", "text": "FAIL recorded.", "jumpHome": true } },
+          { "text": "Go to a custom scene instead", "jump": "custom_scene" }
+        ]
+      }
+    ],
+    "custom_scene": [
+      { "say": "sys", "text": "You can still use end blocks if you want." },
+      { "end": { "result": "none", "text": "Custom scene finished." } }
+    ]
+  }
+}
