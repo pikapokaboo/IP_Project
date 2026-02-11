@@ -1175,16 +1175,24 @@
         if (objectStatus) objectStatus.textContent = data.status;
         loadObjectDescription(caseId);
         if (objectModelNote) {
-          if (caseId === "b04-312") {
-            if (!objectModelNote.querySelector("iframe")) {
+          const modelCase = objectModelNote.getAttribute("data-model-case");
+          if (modelCase !== caseId) {
+            if (caseId === "b04-312") {
               objectModelNote.innerHTML = `
                 <div class="sketchfab-embed-wrapper">
                   <iframe title="CRT Monitor and Keyboard" frameborder="0" allowfullscreen mozallowfullscreen="true" webkitallowfullscreen="true" allow="autoplay; fullscreen; xr-spatial-tracking" xr-spatial-tracking execution-while-out-of-viewport execution-while-not-rendered web-share src="https://sketchfab.com/models/29476b2bb15246bfb9e5309a62097cf1/embed?autospin=1&autostart=1&camera=0&transparent=1&ui_theme=dark&ui_controls=0&ui_infos=0&ui_help=0&ui_hint=0&ui_settings=0&ui_stop=0&ui_watermark=0&ui_vr=0&ui_fullscreen=0&ui_annotations=0"></iframe>
                 </div>
               `;
+            } else if (caseId === "a17-049") {
+              objectModelNote.innerHTML = `
+                <div class="sketchfab-embed-wrapper">
+                  <iframe title="Worn Camcorder" frameborder="0" allowfullscreen mozallowfullscreen="true" webkitallowfullscreen="true" allow="autoplay; fullscreen; xr-spatial-tracking" xr-spatial-tracking execution-while-out-of-viewport execution-while-not-rendered web-share src="https://sketchfab.com/models/ba08f1926e5e4324a021eedf0e0dbf4d/embed?autospin=1&autostart=1&camera=0&transparent=1&ui_hint=0"></iframe>
+                </div>
+              `;
+            } else {
+              objectModelNote.innerHTML = `3D Model Turntable<span>${data.modelNote}</span>`;
             }
-          } else {
-            objectModelNote.innerHTML = `3D Model Turntable<span>${data.modelNote}</span>`;
+            objectModelNote.setAttribute("data-model-case", caseId);
           }
         }
       };
