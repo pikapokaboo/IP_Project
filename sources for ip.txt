@@ -13,3 +13,4 @@ achievement sound: https://www.youtube.com/watch?v=tgo30hh86Wg
 visual novel audio: https://music.youtube.com/watch?v=AKjxL_aMf1Q
 door sliding audio: https://www.youtube.com/watch?v=Vd_DuLJJv5s
 footsteps: https://www.youtube.com/watch?v=mPgGg4MJKKc
+blip: Sound Effect by Driken Stan from Pixabay

@@ -60,6 +60,7 @@
 
   const storyPath = params.get("story") || getDefaultStoryPath();
   const currentUsername = localStorage.getItem("currentUser") || "Archivist";
+  const DEFAULT_TEXT_BLIP_SRC = "audio/blip.mp3";
 
   const state = {
     story: null,
@@ -76,7 +77,9 @@
     isTyping: false,
     typingTimer: null,
     typingFullText: "",
-    typingIndex: 0
+    typingIndex: 0,
+    activeTextBlips: [],
+    lastTextBlipAt: 0
   };
 
   const charElements = {
@@ -343,6 +346,62 @@
     return base;
   }
 
+  function stopTextBlips() {
+    state.activeTextBlips.forEach((audio) => {
+      audio.pause();
+      audio.currentTime = 0;
+    });
+    state.activeTextBlips = [];
+  }
+
+  function getTextBlipSettings() {
+    const meta = state.story && state.story.meta ? state.story.meta : {};
+    if (meta.textBlip === false) return null;
+    const src = resolveAsset(meta.textBlip || DEFAULT_TEXT_BLIP_SRC);
+    if (!src) return null;
+    const volume = Number.isFinite(Number(meta.textBlipVolume))
+      ? Math.min(1, Math.max(0, Number(meta.textBlipVolume)))
+      : 0.12;
+    const rate = Number.isFinite(Number(meta.textBlipRate))
+      ? Math.min(2.5, Math.max(0.3, Number(meta.textBlipRate)))
+      : 1;
+    const step = Number.isFinite(Number(meta.textBlipEvery))
+      ? Math.max(1, Math.round(Number(meta.textBlipEvery)))
+      : 2;
+    return { src, volume, rate, step };
+  }
+
+  function shouldPlayTextBlip(char, step) {
+    if (!char) return false;
+    if (!/[A-Za-z0-9]/.test(char)) return false;
+    if (state.typingIndex % step !== 0) return false;
+    const now = performance.now();
+    if (now - state.lastTextBlipAt < 20) return false;
+    state.lastTextBlipAt = now;
+    return true;
+  }
+
+  function playTextBlipForChar(char) {
+    if (state.skipMode || !state.isTyping) return;
+    const settings = getTextBlipSettings();
+    if (!settings) return;
+    if (!shouldPlayTextBlip(char, settings.step)) return;
+
+    const audio = new Audio(settings.src);
+    audio.volume = settings.volume;
+    audio.playbackRate = settings.rate;
+    state.activeTextBlips.push(audio);
+    audio.addEventListener("ended", () => {
+      state.activeTextBlips = state.activeTextBlips.filter((item) => item !== audio);
+    });
+    const attempt = audio.play();
+    if (attempt && typeof attempt.catch === "function") {
+      attempt.catch(() => {
+        state.activeTextBlips = state.activeTextBlips.filter((item) => item !== audio);
+      });
+    }
+  }
+
   function finishTyping() {
     if (!state.isTyping) return;
     clearTypingTimer();
@@ -354,6 +413,7 @@
 
   function startTyping(text, instant) {
     clearTypingTimer();
+    stopTextBlips();
     state.typingFullText = text || "";
     state.typingIndex = 0;
 
@@ -372,14 +432,15 @@
       if (!state.isTyping) return;
       state.typingIndex += 1;
       textEl.textContent = state.typingFullText.slice(0, state.typingIndex);
+      const currentChar = state.typingFullText[state.typingIndex - 1];
+      playTextBlipForChar(currentChar);
       if (state.typingIndex >= state.typingFullText.length) {
         state.isTyping = false;
         state.typingTimer = null;
         queuePlaybackAdvance();
         return;
       }
-      const nextChar = state.typingFullText[state.typingIndex - 1];
-      state.typingTimer = window.setTimeout(tick, getTypeDelayForChar(nextChar, cps));
+      state.typingTimer = window.setTimeout(tick, getTypeDelayForChar(currentChar, cps));
     };
 
     state.typingTimer = window.setTimeout(tick, 12);
@@ -782,6 +843,7 @@
     stopMusic();
     stopSfx(true);
     clearTypingTimer();
+    stopTextBlips();
     state.isTyping = false;
     state.typingIndex = 0;
     state.typingFullText = "";
@@ -804,6 +866,7 @@
   window.addEventListener("beforeunload", () => {
     clearPlaybackTimer();
     clearTypingTimer();
+    stopTextBlips();
     cutsceneVideoEl.pause();
     cutsceneVideoEl.currentTime = 0;
     cutsceneAudioEl.pause();
