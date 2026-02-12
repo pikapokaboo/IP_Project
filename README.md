@@ -1,184 +1,142 @@
-# Your Project’s Name
+# [Your Project Name]
 
-## Overview
-
-[Write one or two strong paragraphs introducing your project.]
-
-Explain:
-- What the project is
-- Who it is for
-- What problem it solves
-- Why it’s interesting or unique
-
-Think of this as your **sales pitch**. If someone lands on your GitHub, this is the part that convinces them to keep reading.
+[One to two paragraphs overview of your project.]  
+[Explain what the app does, who it is for, and why it is useful/interesting.]  
+[This should be your sales pitch.]
 
 ---
 
 ## Design Process
 
-### Target Audience
+### Target Users
+- [User Group 1]
+- [User Group 2]
+- [User Group 3]
 
-This website is designed for:
-- [Primary user type]
-- [Secondary user type]
-
-They want to:
+### User Goals
 - [Goal 1]
 - [Goal 2]
 - [Goal 3]
 
-This project helps them achieve these goals by:
-- [Short explanation of how your solution works]
-
----
+### How This Project Meets Those Goals
+- [Design decision 1 and why]
+- [Design decision 2 and why]
+- [Design decision 3 and why]
 
 ### User Stories
-
-Below are the key user stories that guided the development of this project:
-
-- As a **[user type]**, I want to **[perform an action]**, so that I can **[achieve a goal]**.
 - As a **[user type]**, I want to **[perform an action]**, so that I can **[achieve a goal]**.
 - As a **[user type]**, I want to **[perform an action]**, so that I can **[achieve a goal]**.
 - As a **[user type]**, I want to **[perform an action]**, so that I can **[achieve a goal]**.
 
----
-
-### Wireframes & Mockups
-
-Wireframes and design assets can be found here:
-
-- `/wireframes` folder (PDF exports)
-- `/adobe-xd` folder (XD file)
-- Adobe XD Share URL: [Insert link here]
-
-Briefly explain how the design evolved from wireframe to final product.
+### Wireframes / Mockups / Diagrams
+- Wireframes PDF: `[path/to/file.pdf]`
+- Adobe XD folder: `[path/to/xd-folder]`
+- Adobe XD share URL: `[paste url here]`
+- Other diagrams: `[path/to/diagram]`
 
 ---
 
 ## Features
 
 ### Existing Features
-
-- **Feature 1** – Allows users to [do X] by [how it works].
-- **Feature 2** – Enables users to [do X] through [mechanism].
-- **Feature 3** – Provides [functionality] to help users [goal].
-- **Responsive Design** – Adapts layout for mobile, tablet, and desktop screens.
-- **Form Validation** – Ensures users input correct data before submission.
-
----
+- **Feature 1** - allows users to [X], by [Y].
+- **Feature 2** - allows users to [X], by [Y].
+- **Feature 3** - allows users to [X], by [Y].
+- **Feature 4** - allows users to [X], by [Y].
 
 ### Features Left to Implement
-
 - [Future feature idea 1]
 - [Future feature idea 2]
-- [Performance improvements]
-- [Additional integrations]
+- [Future feature idea 3]
 
 ---
 
 ## Technologies Used
 
-### HTML5
-Used to structure the content of the website.  
-https://developer.mozilla.org/en-US/docs/Web/HTML
+- **HTML5** - [https://developer.mozilla.org/en-US/docs/Web/HTML](https://developer.mozilla.org/en-US/docs/Web/HTML)  
+  Used for structuring all web page content.
 
-### CSS3
-Used for styling and responsive layout design.  
-https://developer.mozilla.org/en-US/docs/Web/CSS
+- **CSS3** - [https://developer.mozilla.org/en-US/docs/Web/CSS](https://developer.mozilla.org/en-US/docs/Web/CSS)  
+  Used for styling, layout, and responsive design.
 
-### JavaScript
-Used for interactivity and dynamic content.  
-https://developer.mozilla.org/en-US/docs/Web/JavaScript
+- **JavaScript (ES6)** - [https://developer.mozilla.org/en-US/docs/Web/JavaScript](https://developer.mozilla.org/en-US/docs/Web/JavaScript)  
+  Used for app logic, interactions, and dynamic features.
 
-### JQuery
-Used to simplify DOM manipulation and event handling.  
-https://jquery.com
+- **[Library/Framework Name]** - [official link]  
+  Used for [reason].
 
-(Add Bootstrap, APIs, frameworks, libraries, etc. if applicable.)
+- **[Tool Name]** - [official link]  
+  Used for [reason].
 
 ---
 
 ## Assistive AI
 
-The following AI tools were used during development:
+Document all AI usage clearly to avoid mark deductions.
 
-### ChatGPT
-Used to:
-- Help debug JavaScript errors
-- Generate boilerplate code
-- Suggest responsive design improvements
-- Assist with API implementation
+### AI Usage Log
+| Tool | What it helped with | Output used? | What was changed by me | Evidence |
+|---|---|---|---|---|
+| ChatGPT / Gemini / etc. | [e.g. dialogue logic, bug fix, API integration] | [Yes/No/Partially] | [Explain edits/refinement] | `[path/to/screenshot]` |
+| [Tool Name] | [task] | [Yes/No/Partially] | [changes made] | `[path/to/screenshot]` |
 
-Screenshots of generated code and AI interactions are included in the `/ai-documentation` folder.
-
-(Add other AI tools if applicable.)
+### AI Screenshots
+- Screenshot 1: `[path/to/image]`
+- Screenshot 2: `[path/to/image]`
+- Screenshot 3: `[path/to/image]`
 
 ---
 
 ## Testing
 
-### Manual Testing
+### Manual Testing Scenarios
 
-#### Example: Contact Form
+#### [Feature Name / Page Name]
+1. Go to `[page/section]`.
+2. Perform `[test action]`.
+3. Verify that `[expected result]`.
 
-1. Navigate to the "Contact Us" page
-2. Submit the empty form → Verify required field error appears
-3. Enter an invalid email → Verify correct validation message appears
-4. Submit with valid inputs → Verify success message appears
+#### [Feature Name / Page Name]
+1. Go to `[page/section]`.
+2. Perform `[test action]`.
+3. Verify that `[expected result]`.
 
-Repeat similar test scenarios for:
-- Navigation
-- Authentication
-- Core features
-- Interactive components
+### User Story Testing
+- **User Story:** As a [user type], I want to [action], so that [goal].  
+  **Test:** [How you tested it]  
+  **Result:** [Pass/Fail + notes]
 
----
+- **User Story:** As a [user type], I want to [action], so that [goal].  
+  **Test:** [How you tested it]  
+  **Result:** [Pass/Fail + notes]
 
-### Browser Testing
+### Browser and Device Testing
+- Chrome: [Pass/Issues]
+- Edge: [Pass/Issues]
+- Firefox: [Pass/Issues]
+- Safari: [Pass/Issues]
+- Mobile (Android/iOS): [Pass/Issues]
+- Screen sizes tested: [e.g. 320px, 768px, 1024px, 1440px]
 
-Tested on:
-- Google Chrome
-- Mozilla Firefox
-- Microsoft Edge
-- Opera
+### Bugs / Known Issues
+- [Bug 1 description + status]
+- [Bug 2 description + status]
+- [Bug 3 description + status]
 
-All major functionality works as expected.
-
----
-
-### Responsiveness Testing
-
-Tested on:
-- Desktop (1920x1080)
-- Tablet (768px width)
-- Mobile (375px width)
-
-Layout adapts correctly using responsive CSS (Flexbox/Grid).
-
----
-
-### Known Bugs
-
-- [Bug description]
-- [Minor layout issue on specific screen size]
-- [Feature limitation]
+> If this section becomes too long, move it to `TESTING.md` and link it here.
 
 ---
 
 ## Credits
 
 ### Content
-- [If any text was sourced, cite here]
+- [Text/source attribution, e.g. references used]
 
 ### Media
-- Images obtained from: [Unsplash / Pexels / Custom assets]
-- Icons from: [FontAwesome / Flaticon]
+- [Images/audio/video source attribution]
 
----
+### Code / References
+- [Tutorial/documentation/reference URLs]
 
-## Acknowledgements
-
-Inspiration and references:
-- [Course materials]
-- [Tutorials]
-- [Other projects or tools]
+### Acknowledgements
+- [Inspiration, mentors, classmates, etc.]
