@@ -45,6 +45,8 @@ Example:
   { "hideChars": ["left", "right"] }
 - Jump to another label:
   { "jump": "chapter2" }
+- Wait/pause before continuing automatically:
+  { "waitMs": 1200 }
 - Choice:
   {
     "choice": "What now?",

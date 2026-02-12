@@ -2010,10 +2010,16 @@ body.vn-page {
   display: grid;
   place-items: center;
   background: #000;
+  opacity: 1;
+  transition: opacity 700ms ease;
 }
 
 .vn-cutscene[hidden] {
   display: none;
+}
+
+.vn-cutscene.fade-out {
+  opacity: 0;
 }
 
 .vn-cutscene-video {
@@ -2061,6 +2067,20 @@ body.vn-page {
 .vn-background::after {
   background: radial-gradient(circle at 50% 0%, rgba(255, 110, 110, 0.18), rgba(0, 0, 0, 0) 65%);
   opacity: 0.5;
+}
+
+.vn-bg-fade {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: #000;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 900ms ease;
+}
+
+.vn-bg-fade.show {
+  opacity: 1;
 }
 
 .vn-characters {

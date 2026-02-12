@@ -1,6 +1,8 @@
 (function initVisualNovelEngine() {
   const storyTitleEl = document.getElementById("vnStoryTitle");
+  const stageEl = document.querySelector(".vn-stage");
   const bgEl = document.getElementById("vnBackground");
+  const bgFadeEl = document.getElementById("vnBgFade");
   const charLeftEl = document.getElementById("vnCharLeft");
   const charCenterEl = document.getElementById("vnCharCenter");
   const charRightEl = document.getElementById("vnCharRight");
@@ -10,8 +12,6 @@
   const dialogBoxEl = document.getElementById("vnDialogBox");
   const cutsceneEl = document.getElementById("vnCutscene");
   const cutsceneVideoEl = document.getElementById("vnCutsceneVideo");
-  const cutsceneAudioEl = document.getElementById("vnCutsceneAudio");
-  const cutsceneFootstepsAudioEl = document.getElementById("vnCutsceneFootstepsAudio");
   const autoplayBtn = document.getElementById("vnAutoplayBtn");
   const skipBtn = document.getElementById("vnSkipBtn");
   const restartBtn = document.getElementById("vnRestartBtn");
@@ -20,15 +20,15 @@
 
   if (
     !storyTitleEl ||
+    !stageEl ||
     !bgEl ||
+    !bgFadeEl ||
     !speakerEl ||
     !textEl ||
     !choicesEl ||
     !dialogBoxEl ||
     !cutsceneEl ||
     !cutsceneVideoEl ||
-    !cutsceneAudioEl ||
-    !cutsceneFootstepsAudioEl ||
     !autoplayBtn ||
     !skipBtn ||
     !restartBtn ||
@@ -62,6 +62,9 @@
   const currentUsername = localStorage.getItem("currentUser") || "Archivist";
   const DEFAULT_TEXT_BLIP_SRC = "audio/blip.mp3";
   const CHOICE_CLICK_SFX_SRC = "audio/click.mp3";
+  const CUTSCENE_END_PAUSE_MS = 600;
+  const CUTSCENE_FADE_MS = 700;
+  const OPENING_BGM_LEAD_MS = 220;
 
   const state = {
     story: null,
@@ -80,7 +83,9 @@
     typingFullText: "",
     typingIndex: 0,
     activeTextBlips: [],
-    lastTextBlipAt: 0
+    lastTextBlipAt: 0,
+    waitTimer: null,
+    waitingForDelay: false
   };
 
   const charElements = {
@@ -208,6 +213,15 @@
     bgEl.style.backgroundImage = `url("${src}")`;
   }
 
+  function setBgFade(show, durationMs) {
+    if (Number.isFinite(Number(durationMs)) && Number(durationMs) >= 0) {
+      bgFadeEl.style.transitionDuration = `${Number(durationMs)}ms`;
+    } else {
+      bgFadeEl.style.transitionDuration = "";
+    }
+    bgFadeEl.classList.toggle("show", Boolean(show));
+  }
+
   function setCharacter(slot, assetRef) {
     const el = charElements[slot];
     if (!el) return;
@@ -303,7 +317,7 @@
 
   function playChoiceClickSfx() {
     const audio = new Audio(CHOICE_CLICK_SFX_SRC);
-    audio.volume = 0.225;
+    audio.volume = 1;
     const attempt = audio.play();
     if (attempt && typeof attempt.catch === "function") {
       attempt.catch(() => {});
@@ -478,6 +492,14 @@
     }
   }
 
+  function clearWaitTimer() {
+    if (state.waitTimer) {
+      window.clearTimeout(state.waitTimer);
+      state.waitTimer = null;
+    }
+    state.waitingForDelay = false;
+  }
+
   function updatePlaybackButtons() {
     autoplayBtn.setAttribute("aria-pressed", state.autoMode ? "true" : "false");
     skipBtn.setAttribute("aria-pressed", state.skipMode ? "true" : "false");
@@ -580,6 +602,12 @@
 
   function applyVisualCommands(step) {
     if (step.bg) setBackground(step.bg);
+    if (step.fadeToBlack || step.fadeOut || step.fadeOutBlack) {
+      setBgFade(true, step.fadeDurationMs);
+    }
+    if (step.clearFade || step.fadeIn) {
+      setBgFade(false, step.fadeDurationMs);
+    }
     if (Object.prototype.hasOwnProperty.call(step, "charLeft")) setCharacter("left", step.charLeft);
     if (Object.prototype.hasOwnProperty.call(step, "charCenter")) setCharacter("center", step.charCenter);
     if (Object.prototype.hasOwnProperty.call(step, "charRight")) setCharacter("right", step.charRight);
@@ -664,9 +692,9 @@
   }
 
   function runUntilStop() {
-    if (state.finished || state.waitingForChoice) return;
+    if (state.finished || state.waitingForChoice || state.waitingForDelay) return;
 
-    while (!state.finished && !state.waitingForChoice) {
+    while (!state.finished && !state.waitingForChoice && !state.waitingForDelay) {
       const step = readStepAtCursor();
       if (step === null) {
         handleEnd({ result: "none", text: "End of label reached." });
@@ -683,6 +711,20 @@
       }
 
       applyVisualCommands(step);
+
+      if (Object.prototype.hasOwnProperty.call(step, "waitMs")) {
+        const waitMs = Math.max(0, Number(step.waitMs) || 0);
+        if (waitMs > 0) {
+          clearWaitTimer();
+          state.waitingForDelay = true;
+          state.waitTimer = window.setTimeout(() => {
+            state.waitTimer = null;
+            state.waitingForDelay = false;
+            runUntilStop();
+          }, waitMs);
+          return;
+        }
+      }
 
       if (step.call) {
         const shouldStop = executeStoryCall(step.call);
@@ -725,7 +767,7 @@
       finishTyping();
       return;
     }
-    if (state.finished || state.waitingForChoice) return;
+    if (state.finished || state.waitingForChoice || state.waitingForDelay) return;
     clearPlaybackTimer();
     runUntilStop();
   }
@@ -753,14 +795,29 @@
     return story;
   }
 
+  function primeOpeningBgm() {
+    if (!state.story || !state.story.labels) return false;
+    const startLabel = state.story.meta.start || "start";
+    const steps = state.story.labels[startLabel] || [];
+    const beforeSrc = state.currentMusicSrc;
+
+    for (const step of steps) {
+      if (typeof step === "string") break;
+      if (!step || typeof step !== "object") continue;
+      if (step.say || step.text || step.narrate || step.choice || step.end || step.jump || step.call) {
+        break;
+      }
+      applyVisualCommands(step);
+    }
+
+    return Boolean(state.currentMusicSrc && state.currentMusicSrc !== beforeSrc);
+  }
+
   async function playPreTestCutscene() {
     cutsceneEl.hidden = false;
+    cutsceneEl.classList.remove("fade-out");
     cutsceneVideoEl.currentTime = 0;
     cutsceneVideoEl.pause();
-    cutsceneAudioEl.currentTime = 0;
-    cutsceneAudioEl.pause();
-    cutsceneFootstepsAudioEl.currentTime = 0;
-    cutsceneFootstepsAudioEl.pause();
 
     return new Promise((resolve) => {
       let finished = false;
@@ -769,27 +826,17 @@
         if (finished) return;
         finished = true;
         cutsceneVideoEl.pause();
-        cutsceneAudioEl.pause();
-        cutsceneFootstepsAudioEl.pause();
-        cutsceneEl.hidden = true;
-        resolve();
+        window.setTimeout(() => {
+          cutsceneEl.classList.add("fade-out");
+          window.setTimeout(() => {
+            cutsceneEl.hidden = true;
+            cutsceneEl.classList.remove("fade-out");
+            resolve();
+          }, CUTSCENE_FADE_MS);
+        }, CUTSCENE_END_PAUSE_MS);
       }
 
       function handleVideoClick() {
-        const playFootsteps = () => {
-          const footstepsAttempt = cutsceneFootstepsAudioEl.play();
-          if (footstepsAttempt && typeof footstepsAttempt.catch === "function") {
-            footstepsAttempt.catch(() => {});
-          }
-        };
-
-        cutsceneAudioEl.addEventListener("ended", playFootsteps, { once: true });
-        const audioAttempt = cutsceneAudioEl.play();
-        if (audioAttempt && typeof audioAttempt.catch === "function") {
-          audioAttempt.catch(() => {
-            playFootsteps();
-          });
-        }
         const videoAttempt = cutsceneVideoEl.play();
         if (videoAttempt && typeof videoAttempt.catch === "function") {
           videoAttempt.catch(() => {
@@ -807,12 +854,16 @@
   async function boot() {
     try {
       hideError();
+      setBgFade(false, 0);
       localStorage.setItem("lastTestedCase", objectKey);
       await playPreTestCutscene();
 
       state.story = await loadStory(storyPath);
       storyTitleEl.textContent = state.story.meta.title || "Untitled Story";
       jumpTo(state.story.meta.start || "start");
+      if (primeOpeningBgm()) {
+        await new Promise((resolve) => window.setTimeout(resolve, OPENING_BGM_LEAD_MS));
+      }
       setDialogue("System", "Story loaded.", "#ffb9b9");
       runUntilStop();
     } catch (error) {
@@ -859,8 +910,10 @@
     state.typingIndex = 0;
     state.typingFullText = "";
     clearPlaybackTimer();
+    clearWaitTimer();
     state.finished = false;
     state.waitingForChoice = false;
+    setBgFade(false, 0);
     clearChoices();
     jumpTo(state.story.meta.start || "start");
     runUntilStop();
@@ -877,13 +930,10 @@
   window.addEventListener("beforeunload", () => {
     clearPlaybackTimer();
     clearTypingTimer();
+    clearWaitTimer();
     stopTextBlips();
     cutsceneVideoEl.pause();
     cutsceneVideoEl.currentTime = 0;
-    cutsceneAudioEl.pause();
-    cutsceneAudioEl.currentTime = 0;
-    cutsceneFootstepsAudioEl.pause();
-    cutsceneFootstepsAudioEl.currentTime = 0;
     stopMusic();
     stopSfx(true);
   });

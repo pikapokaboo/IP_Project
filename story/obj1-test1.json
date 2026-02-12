@@ -264,7 +264,8 @@
       { "say": "you", "text": "And start pretending it's what?" },
       { "narrate": "She shoots you a pointed look." },
       { "say": "ellenor", "text": "There are consequences to the mistakes you make. Something will notice them." },
-      { "narrate": "Fade out." },
+      { "fadeToBlack": true, "fadeDurationMs": 1100 },
+      { "waitMs": 1200 },
       { "call": { "name": "passSequence", "text": "Test 1 marked PASS. Returning to terminal...", "jumpHome": true } }
     ]
   }

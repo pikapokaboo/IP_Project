@@ -451,6 +451,7 @@
       let terminalInitialized = false;
       let terminalBooted = false;
       const DEFAULT_MUSIC_VOLUME = 0.28;
+      const TERMINAL_CLICK_GAIN = 3;
 
       function safePlay(audioEl) {
         if (!audioEl) return;
@@ -478,7 +479,7 @@
         if (homeMusicAudio) homeMusicAudio.volume = volume;
         if (homeLoadingAudio) homeLoadingAudio.volume = volume;
         if (homeBootupAudio) homeBootupAudio.volume = volume;
-        if (terminalClickAudio) terminalClickAudio.volume = volume;
+        if (terminalClickAudio) terminalClickAudio.volume = Math.min(1, volume * TERMINAL_CLICK_GAIN);
       }
 
       const savedMusicVolume = localStorage.getItem("homeMusicVolume");
