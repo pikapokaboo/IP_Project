@@ -47,6 +47,8 @@
     waitingForChoice: false,
     finished: false,
     currentMusicSrc: "",
+    currentBgmAudio: null,
+    activeSfx: [],
     autoMode: false,
     skipMode: false,
     playbackTimer: null
@@ -202,24 +204,25 @@
   }
 
   function stopMusic() {
-    const activeAudio = document.querySelector("audio[data-vn-music='true']");
-    if (activeAudio) {
-      activeAudio.pause();
-      activeAudio.remove();
+    if (state.currentBgmAudio) {
+      state.currentBgmAudio.pause();
+      state.currentBgmAudio.remove();
+      state.currentBgmAudio = null;
     }
     state.currentMusicSrc = "";
   }
 
-  function playMusic(assetRef) {
-    const src = resolveAsset(assetRef);
+  function playMusic(config) {
+    const cfg = typeof config === "string" ? { play: config } : (config || {});
+    const src = resolveAsset(cfg.play || cfg.src || cfg.music || config);
     if (!src || state.currentMusicSrc === src) return;
 
     stopMusic();
 
     const audio = document.createElement("audio");
     audio.dataset.vnMusic = "true";
-    audio.loop = true;
-    audio.volume = 0.3;
+    audio.loop = cfg.loop !== false;
+    audio.volume = Number.isFinite(Number(cfg.volume)) ? Math.min(1, Math.max(0, Number(cfg.volume))) : 0.3;
     audio.src = src;
     document.body.appendChild(audio);
 
@@ -228,14 +231,41 @@
       attempt.catch(() => {});
     }
 
+    state.currentBgmAudio = audio;
     state.currentMusicSrc = src;
   }
 
-  function playSfx(assetRef) {
-    const src = resolveAsset(assetRef);
+  function stopSfx(target) {
+    const ids = Array.isArray(target) ? target : [target];
+    const stopAll = !target || target === true;
+    state.activeSfx = state.activeSfx.filter((entry) => {
+      const shouldStop = stopAll || ids.includes(entry.id);
+      if (shouldStop) {
+        entry.audio.pause();
+        entry.audio.currentTime = 0;
+      }
+      return !shouldStop;
+    });
+  }
+
+  function playSfx(config) {
+    const cfg = typeof config === "string" ? { play: config } : (config || {});
+    const src = resolveAsset(cfg.play || cfg.src || config);
     if (!src) return;
+
+    if (cfg.stop) {
+      stopSfx(cfg.id || true);
+      return;
+    }
+
     const audio = new Audio(src);
-    audio.volume = 0.45;
+    audio.loop = Boolean(cfg.loop);
+    audio.volume = Number.isFinite(Number(cfg.volume)) ? Math.min(1, Math.max(0, Number(cfg.volume))) : 0.45;
+    const entry = { id: cfg.id || null, audio };
+    state.activeSfx.push(entry);
+    audio.addEventListener("ended", () => {
+      state.activeSfx = state.activeSfx.filter((item) => item !== entry);
+    });
     const attempt = audio.play();
     if (attempt && typeof attempt.catch === "function") {
       attempt.catch(() => {});
@@ -380,8 +410,10 @@
     if (Object.prototype.hasOwnProperty.call(step, "charRight")) setCharacter("right", step.charRight);
     if (step.hideChars) hideCharacters(step.hideChars === true ? null : step.hideChars);
     if (step.music) playMusic(step.music);
-    if (step.stopMusic) stopMusic();
+    if (step.bgm) playMusic(step.bgm);
+    if (step.stopMusic || step.stopBgm) stopMusic();
     if (step.sfx) playSfx(step.sfx);
+    if (step.stopSfx) stopSfx(step.stopSfx);
   }
 
   function handleEnd(endConfig) {
@@ -516,6 +548,7 @@
   }
 
   function advance() {
+    if (!state.story) return;
     if (state.finished || state.waitingForChoice) return;
     clearPlaybackTimer();
     runUntilStop();
@@ -559,7 +592,17 @@
     }
   }
 
-  dialogBoxEl.addEventListener("click", advance);
+  function isInteractiveTarget(target) {
+    if (!target || typeof target.closest !== "function") return false;
+    if (target.closest("#vnDialogBox")) return false;
+    return Boolean(target.closest("button, a, input, select, textarea, label, [role='button']"));
+  }
+
+  document.addEventListener("click", (event) => {
+    if (isInteractiveTarget(event.target)) return;
+    advance();
+  });
+
   dialogBoxEl.addEventListener("keydown", (event) => {
     if (event.key === "Enter" || event.key === " ") {
       event.preventDefault();
@@ -581,6 +624,7 @@
       return;
     }
     stopMusic();
+    stopSfx(true);
     clearPlaybackTimer();
     state.finished = false;
     state.waitingForChoice = false;
@@ -600,6 +644,7 @@
   window.addEventListener("beforeunload", () => {
     clearPlaybackTimer();
     stopMusic();
+    stopSfx(true);
   });
 
   boot();

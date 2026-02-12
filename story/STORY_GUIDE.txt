@@ -26,6 +26,20 @@ Example:
   { "narrate": "The lights flicker." }
 - Background / characters / music:
   { "bg": "bg_lab", "charLeft": "char_alex", "music": "bgm_main" }
+- Audio (easy start/stop):
+  Background music:
+  { "bgm": "bgm_main" }
+  { "bgm": { "play": "bgm_main", "volume": 0.3, "loop": true } }
+  { "stopBgm": true }
+  Sound effects:
+  { "sfx": "sfx_door" }
+  { "sfx": { "play": "sfx_alarm", "volume": 0.7 } }
+  Optional looping SFX with an id:
+  { "sfx": { "play": "sfx_alarm", "id": "alarm", "loop": true } }
+  Stop all SFX:
+  { "stopSfx": true }
+  Stop one looping SFX id:
+  { "stopSfx": "alarm" }
 - Hide characters:
   { "hideChars": true }
   { "hideChars": ["left", "right"] }

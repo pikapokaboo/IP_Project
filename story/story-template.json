@@ -6,7 +6,8 @@
   "assets": {
     "bg_room": "assets/bg/room.jpg",
     "char_alex": "assets/chars/alex.png",
-    "music_main": "assets/audio/main.mp3"
+    "music_main": "assets/audio/main.mp3",
+    "sfx_door": "assets/audio/door.wav"
   },
   "characters": {
     "alex": { "name": "Alex", "color": "#ffe1e1" },
@@ -14,8 +15,9 @@
   },
   "labels": {
     "start": [
-      { "bg": "bg_room", "music": "music_main", "charLeft": "char_alex" },
+      { "bg": "bg_room", "bgm": { "play": "music_main", "volume": 0.3, "loop": true }, "charLeft": "char_alex" },
       { "say": "alex", "text": "This is dialogue." },
+      { "sfx": "sfx_door" },
       { "narrate": "This is narration without a speaker." },
       {
         "choice": "Pick one",
@@ -27,6 +29,7 @@
       }
     ],
     "custom_scene": [
+      { "stopBgm": true },
       { "say": "sys", "text": "You can still use end blocks if you want." },
       { "end": { "result": "none", "text": "Custom scene finished." } }
     ]
