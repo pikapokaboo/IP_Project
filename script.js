@@ -1,3 +1,31 @@
+const TEST_PROGRESS_KEY = "testProgress";
+const FAIL_PROGRESS_KEY = "failProgress";
+const ACHIEVEMENTS_KEY = "achievementsProgress";
+const LAST_TESTED_CASE_KEY = "lastTestedCase";
+
+function getAccountScopeId() {
+  const accountId = (localStorage.getItem("currentAccountId") || "").trim();
+  if (accountId) return `acct:${accountId}`;
+  const username = (localStorage.getItem("currentUser") || "archivist").trim().toLowerCase();
+  return `user:${username || "archivist"}`;
+}
+
+function getScopedStorageKey(baseKey) {
+  return `${baseKey}:${getAccountScopeId()}`;
+}
+
+function getPrevAchievementsSessionKey() {
+  return `prevAchievements:${getAccountScopeId()}`;
+}
+
+function clearScopedProgress() {
+  localStorage.removeItem(getScopedStorageKey(TEST_PROGRESS_KEY));
+  localStorage.removeItem(getScopedStorageKey(FAIL_PROGRESS_KEY));
+  localStorage.removeItem(getScopedStorageKey(ACHIEVEMENTS_KEY));
+  localStorage.removeItem(getScopedStorageKey(LAST_TESTED_CASE_KEY));
+  sessionStorage.removeItem(getPrevAchievementsSessionKey());
+}
+
 (function initIndexPage() {
   const disclaimer = document.getElementById("disclaimer");
   if (!disclaimer) return;
@@ -299,6 +327,8 @@
   
   function devLogin(username) {
     localStorage.setItem("currentUser", username);
+    localStorage.setItem("currentAccountId", `dev:${username}`);
+    localStorage.setItem("currentAccountLetterSigned", "true");
     playLoadingThenRedirect();
   }
   
@@ -405,8 +435,14 @@
   
       const passwordHash = await sha256(pass);
       if (passwordHash !== account.passwordHash) return showFeedback("Wrong password.");
-  
+
       localStorage.setItem("currentUser", account.username);
+      localStorage.setItem("currentAccountId", account?._id || account.username);
+      const signed = account?.letterSigned === true;
+      localStorage.setItem("currentAccountLetterSigned", signed ? "true" : "false");
+      if (!signed) {
+        clearScopedProgress();
+      }
       shouldReleaseBusy = false;
       playLoadingThenRedirect();
     } catch (err) {
@@ -494,16 +530,6 @@
         });
       }
 
-      if (resetProgressBtn) {
-        resetProgressBtn.addEventListener("click", () => {
-          localStorage.removeItem("testProgress");
-          localStorage.removeItem("failProgress");
-          localStorage.removeItem("achievementsProgress");
-          sessionStorage.removeItem("prevAchievements");
-          window.location.reload();
-        });
-      }
-
       function getAchievementKeys() {
         return [
           "clockingOut",
@@ -517,7 +543,7 @@
 
       function loadAchievements() {
         try {
-          const stored = localStorage.getItem("achievementsProgress");
+          const stored = localStorage.getItem(getScopedStorageKey(ACHIEVEMENTS_KEY));
           return stored ? JSON.parse(stored) : {};
         } catch {
           return {};
@@ -525,7 +551,7 @@
       }
 
       function saveAchievements(achievements) {
-        localStorage.setItem("achievementsProgress", JSON.stringify(achievements));
+        localStorage.setItem(getScopedStorageKey(ACHIEVEMENTS_KEY), JSON.stringify(achievements));
       }
 
       function getAchievementMeta(key) {
@@ -588,7 +614,7 @@
           achievementCount.textContent = `Unlocked: ${unlocked} / ${total}`;
         }
 
-        const prevJson = sessionStorage.getItem("prevAchievements");
+        const prevJson = sessionStorage.getItem(getPrevAchievementsSessionKey());
         let prev = {};
         try { prev = prevJson ? JSON.parse(prevJson) : {}; } catch { prev = {}; }
         const newlyUnlocked = getAchievementKeys().filter((key) => achievements[key] && !prev[key]);
@@ -596,7 +622,7 @@
           popupQueue = popupQueue.concat(newlyUnlocked);
           dequeuePopup();
         }
-        sessionStorage.setItem("prevAchievements", JSON.stringify(achievements));
+        sessionStorage.setItem(getPrevAchievementsSessionKey(), JSON.stringify(achievements));
       }
 
       function primeHomeAudio() {
@@ -641,6 +667,18 @@
       const sigLine = document.getElementById("sigLine");
       const devMode = localStorage.getItem("devMode") === "true";
 
+      if (resetProgressBtn) {
+        if (devMode) {
+          resetProgressBtn.hidden = false;
+          resetProgressBtn.addEventListener("click", () => {
+            clearScopedProgress();
+            window.location.reload();
+          });
+        } else {
+          resetProgressBtn.hidden = true;
+        }
+      }
+
       let dragging = false;
       let startX = 0;
       let penStartTx = 0;
@@ -648,7 +686,7 @@
       let signed = false;
       let bounds = { minTx: 0, maxTx: 0 };
       const PEN_EXTRA_END_PX = 40;
-      let skipLetter = skipHomeIntro;
+      let skipLetter = devMode && skipHomeIntro;
       let accountId = null;
       let accountCache = null;
       let letterStarted = false;
@@ -694,6 +732,11 @@
           const account = await findAccount(username);
           accountCache = account;
           accountId = account?._id || null;
+          if (account) {
+            localStorage.setItem("currentAccountId", accountId || account.username);
+            const apiSigned = account.letterSigned === true;
+            localStorage.setItem("currentAccountLetterSigned", apiSigned ? "true" : "false");
+          }
           if (account && account.letterSigned == null) {
             try {
               await restdbFetch(`${COLLECTION}/${accountId}`, {
@@ -711,6 +754,9 @@
             overlay.style.display = "none";
             showTerminal();
             return;
+          }
+          if (account) {
+            clearScopedProgress();
           }
           startLetter();
         } catch {
@@ -733,6 +779,7 @@
               method: "PATCH",
               body: JSON.stringify({ letterSigned: true })
             });
+            localStorage.setItem("currentAccountLetterSigned", "true");
           } catch (err) {
             console.warn("RestDB PATCH failed while marking letterSigned:", err);
             if (accountCache) {
@@ -742,6 +789,7 @@
                 method: "PUT",
                 body: JSON.stringify(updated)
               });
+              localStorage.setItem("currentAccountLetterSigned", "true");
             }
           }
         } catch {
@@ -813,13 +861,16 @@
         }, 2000);
       }
 
-      if (skipHomeIntro) {
-        overlay.classList.add("dismiss");
-        overlay.style.display = "none";
-        showTerminal();
+      if (devMode) {
+        if (skipHomeIntro) {
+          overlay.classList.add("dismiss");
+          overlay.style.display = "none";
+          showTerminal();
+        } else {
+          startLetter();
+        }
       } else {
         loadLetterState(user);
-        if (devMode) startLetter();
       }
 
       window.addEventListener("resize", () => {
@@ -956,7 +1007,7 @@
 
       function loadTestProgress() {
         try {
-          const stored = localStorage.getItem("testProgress");
+          const stored = localStorage.getItem(getScopedStorageKey(TEST_PROGRESS_KEY));
           return stored ? JSON.parse(stored) : {};
         } catch {
           return {};
@@ -965,7 +1016,7 @@
 
       function loadFailProgress() {
         try {
-          const stored = localStorage.getItem("failProgress");
+          const stored = localStorage.getItem(getScopedStorageKey(FAIL_PROGRESS_KEY));
           return stored ? JSON.parse(stored) : {};
         } catch {
           return {};
@@ -981,7 +1032,7 @@
       }
 
       function updateLastTestedIndicators() {
-        const storedLast = localStorage.getItem("lastTestedCase");
+        const storedLast = localStorage.getItem(getScopedStorageKey(LAST_TESTED_CASE_KEY));
         const fallbackCase = activeArchiveCase || "b04-312";
         const caseId = archiveCases[storedLast] ? storedLast : fallbackCase;
         const data = archiveCases[caseId];

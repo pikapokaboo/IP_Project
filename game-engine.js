@@ -50,6 +50,18 @@
   const TEST_PROGRESS_KEY = "testProgress";
   const FAIL_PROGRESS_KEY = "failProgress";
   const ACHIEVEMENTS_KEY = "achievementsProgress";
+  const LAST_TESTED_CASE_KEY = "lastTestedCase";
+
+  function getAccountScopeId() {
+    const accountId = (localStorage.getItem("currentAccountId") || "").trim();
+    if (accountId) return `acct:${accountId}`;
+    const username = (localStorage.getItem("currentUser") || "archivist").trim().toLowerCase();
+    return `user:${username || "archivist"}`;
+  }
+
+  function getScopedStorageKey(baseKey) {
+    return `${baseKey}:${getAccountScopeId()}`;
+  }
 
   function getDefaultStoryPath() {
     const requestedTest = Number.parseInt(params.get("test") || "", 10);
@@ -109,7 +121,7 @@
 
   function loadProgress() {
     try {
-      const stored = localStorage.getItem(TEST_PROGRESS_KEY);
+      const stored = localStorage.getItem(getScopedStorageKey(TEST_PROGRESS_KEY));
       return stored ? JSON.parse(stored) : {};
     } catch {
       return {};
@@ -117,12 +129,12 @@
   }
 
   function saveProgress(progress) {
-    localStorage.setItem(TEST_PROGRESS_KEY, JSON.stringify(progress));
+    localStorage.setItem(getScopedStorageKey(TEST_PROGRESS_KEY), JSON.stringify(progress));
   }
 
   function loadFailProgress() {
     try {
-      const stored = localStorage.getItem(FAIL_PROGRESS_KEY);
+      const stored = localStorage.getItem(getScopedStorageKey(FAIL_PROGRESS_KEY));
       return stored ? JSON.parse(stored) : {};
     } catch {
       return {};
@@ -130,12 +142,12 @@
   }
 
   function saveFailProgress(failProgress) {
-    localStorage.setItem(FAIL_PROGRESS_KEY, JSON.stringify(failProgress));
+    localStorage.setItem(getScopedStorageKey(FAIL_PROGRESS_KEY), JSON.stringify(failProgress));
   }
 
   function loadAchievements() {
     try {
-      const stored = localStorage.getItem(ACHIEVEMENTS_KEY);
+      const stored = localStorage.getItem(getScopedStorageKey(ACHIEVEMENTS_KEY));
       return stored ? JSON.parse(stored) : {};
     } catch {
       return {};
@@ -143,7 +155,7 @@
   }
 
   function saveAchievements(achievements) {
-    localStorage.setItem(ACHIEVEMENTS_KEY, JSON.stringify(achievements));
+    localStorage.setItem(getScopedStorageKey(ACHIEVEMENTS_KEY), JSON.stringify(achievements));
   }
 
   function goHome() {
@@ -855,7 +867,7 @@
     try {
       hideError();
       setBgFade(false, 0);
-      localStorage.setItem("lastTestedCase", objectKey);
+      localStorage.setItem(getScopedStorageKey(LAST_TESTED_CASE_KEY), objectKey);
       await playPreTestCutscene();
 
       state.story = await loadStory(storyPath);
