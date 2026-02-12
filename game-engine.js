@@ -61,6 +61,7 @@
   const storyPath = params.get("story") || getDefaultStoryPath();
   const currentUsername = localStorage.getItem("currentUser") || "Archivist";
   const DEFAULT_TEXT_BLIP_SRC = "audio/blip.mp3";
+  const CHOICE_CLICK_SFX_SRC = "audio/click.mp3";
 
   const state = {
     story: null,
@@ -294,6 +295,15 @@
     audio.addEventListener("ended", () => {
       state.activeSfx = state.activeSfx.filter((item) => item !== entry);
     });
+    const attempt = audio.play();
+    if (attempt && typeof attempt.catch === "function") {
+      attempt.catch(() => {});
+    }
+  }
+
+  function playChoiceClickSfx() {
+    const audio = new Audio(CHOICE_CLICK_SFX_SRC);
+    audio.volume = 0.225;
     const attempt = audio.play();
     if (attempt && typeof attempt.catch === "function") {
       attempt.catch(() => {});
@@ -546,6 +556,7 @@
       btn.type = "button";
       btn.textContent = option.text || "Continue";
       btn.addEventListener("click", () => {
+        playChoiceClickSfx();
         clearChoices();
         if (option.set && typeof option.set === "object") {
           Object.keys(option.set).forEach((key) => {
