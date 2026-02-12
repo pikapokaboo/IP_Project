@@ -2003,6 +2003,28 @@ body.vn-page {
   isolation: isolate;
 }
 
+.vn-cutscene {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  display: grid;
+  place-items: center;
+  background: #000;
+}
+
+.vn-cutscene[hidden] {
+  display: none;
+}
+
+.vn-cutscene-video {
+  width: 100vw;
+  height: 100vh;
+  object-fit: contain;
+  display: block;
+  background: #000;
+  cursor: pointer;
+}
+
 .vn-background {
   position: absolute;
   inset: 0;
@@ -2172,6 +2194,7 @@ body.vn-page {
   background: linear-gradient(180deg, rgba(12, 4, 6, 0.95), rgba(8, 3, 5, 0.93));
   box-shadow: 0 20px 42px rgba(0, 0, 0, 0.44);
   padding: 14px 16px 10px;
+  min-height: 154px;
   cursor: pointer;
   user-select: none;
   z-index: 5;
@@ -2183,15 +2206,21 @@ body.vn-page {
 }
 
 .vn-speaker {
-  display: inline-block;
+  display: block;
+  width: 100%;
   font-size: 0.78rem;
   text-transform: uppercase;
   letter-spacing: 0.2em;
-  margin-bottom: 8px;
-  padding: 4px 8px;
-  border-radius: 6px;
-  border: 1px solid rgba(255, 92, 92, 0.45);
-  background: rgba(80, 10, 16, 0.45);
+  margin-bottom: 10px;
+  padding: 0 2px 8px;
+  min-height: 27px;
+  text-align: left;
+  border-bottom: 1px solid rgba(255, 92, 92, 0.32);
+  color: rgba(255, 210, 210, 0.92);
+}
+
+.vn-speaker.is-empty {
+  opacity: 0.45;
 }
 
 .vn-text {

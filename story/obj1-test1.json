@@ -9,9 +9,9 @@
     "bg_sunlight_peek": "Images/Sunlight Peek.png",
     "bg_sunlight_aggro": "Images/Sunlight Aggro.png",
     "bg_default_aggro": "Images/Default Aggro.png",
-    "archivist": "assets/chars/archivist.png",
-    "subject": "assets/chars/subject.png",
-    "bgm_loop": "assets/audio/tense_loop.mp3"
+    "archivist": "chars/archivist.png",
+    "subject": "chars/subject.png",
+    "bgm_loop": "audio/tense_loop.mp3"
   },
   "characters": {
     "sys": { "name": "SYSTEM", "color": "#ffb9b9" },
@@ -24,7 +24,7 @@
     "start": [
       { "bg": "bg_default", "music": "bgm_loop", "charLeft": "archivist", "charRight": "subject" },
       { "say": "sys", "text": "TEST 1 AUTHORIZED\nENVIRONMENTAL CONTAINMENT TRIAL\nObjective: Establish baseline environmental tolerances." },
-      { "narrate": "(The monitor sits dark and inert. Its glass reflects only vague shapes.)" },
+      { "narrate": "The monitor sits dark and inert. Its glass reflects only vague shapes." },
       { "say": "you", "text": "So this is the first test, the first assignment." },
       { "say": "ellenor", "text": "Yes. You will be working with Artifact CAC-B04-312." },
       { "say": "ellenor", "text": "Don't worry. It doesn't bite." },
@@ -42,8 +42,8 @@
       {
         "choice": "Lighting control",
         "options": [
-          { "text": "A) Leave the lighting at its current level", "jump": "good_1" },
-          { "text": "B) Turn on the overhead lights", "jump": "bad_1" }
+          { "text": "Leave the lighting at its current level", "jump": "good_1" },
+          { "text": "Turn on the overhead lights", "jump": "bad_1" }
         ]
       }
     ],
@@ -67,7 +67,7 @@
       { "narrate": "You see the monitor start to shake. You hear loud screeching from inside the containment room." },
       { "bg": "bg_bright_aggro" },
       { "say": "sys", "text": "Artifact aggravated, raising alert level." },
-      { "narrate": "(Ellenor stares at you.)" },
+      { "narrate": "Ellenor stares at you." },
       { "say": "ellenor", "text": "Sometimes making the right choice is not doing anything. Remember well." },
       { "say": "ellenor", "text": "Head on out, we have to clean out the area first." },
       { "narrate": "You walk out." },
@@ -86,8 +86,8 @@
       {
         "choice": "Shutter control",
         "options": [
-          { "text": "A) Close the shutter completely", "jump": "good_2" },
-          { "text": "B) Allow sunlight to enter the room", "jump": "bad_2" }
+          { "text": "Close the shutter completely", "jump": "good_2" },
+          { "text": "Allow sunlight to enter the room", "jump": "bad_2" }
         ]
       }
     ],
@@ -113,7 +113,7 @@
       { "narrate": "The light crawls up the table and slowly, surely reaches the artifact." },
       { "bg": "bg_sunlight_aggro" },
       { "say": "artifact", "text": "SCREEEEEEEEEEEEEECH" },
-      { "narrate": "(You see something pressing against the computer screen.)" },
+      { "narrate": "You see something pressing against the computer screen." },
       { "say": "sys", "text": "Artifact aggravated, raising alert level." },
       { "narrate": "Ellenor stares at you." },
       { "say": "ellenor", "text": "Does this place seem bright to you?" },
@@ -135,8 +135,8 @@
       {
         "choice": "Audio control",
         "options": [
-          { "text": "A) Disable all external audio equipment", "jump": "good_3" },
-          { "text": "B) Allow ambient audio to continue", "jump": "bad_3" }
+          { "text": "Disable all external audio equipment", "jump": "good_3" },
+          { "text": "Allow ambient audio to continue", "jump": "bad_3" }
         ]
       }
     ],
@@ -169,47 +169,47 @@
     ],
 
     "segment_4_intro": [
-      { "narrate": "(A power console lights up beside the table.)" },
+      { "narrate": "A power console lights up beside the table." },
       { "say": "sys", "text": "Power routing under evaluation." },
       { "say": "sys", "text": "Continuous supply required to proceed." },
       { "say": "you", "text": "So if I am thinking correctly, it wouldn't like outages." },
       { "say": "ellenor", "text": "'Doesn't like' is generous. Think more... panic response." },
       { "say": "ellenor", "text": "You wouldn't like it if I unplugged your life support, would you?" },
-      { "narrate": "(The monitor remains still. Waiting.)" },
+      { "narrate": "The monitor remains still. Waiting." },
       {
         "choice": "Power route",
         "options": [
-          { "text": "A) Route power through uninterrupted supply", "jump": "good_4" },
-          { "text": "B) Switch to manual breaker", "jump": "bad_4" }
+          { "text": "Route power through uninterrupted supply", "jump": "good_4" },
+          { "text": "Switch to manual breaker", "jump": "bad_4" }
         ]
       }
     ],
 
     "good_4": [
-      { "narrate": "(You confirm the uninterrupted power routing.)" },
-      { "narrate": "(The console emits a soft confirmation chime.)" },
+      { "narrate": "You confirm the uninterrupted power routing." },
+      { "narrate": "The console emits a soft confirmation chime." },
       { "bg": "bg_default" },
       { "say": "sys", "text": "Power supply stabilized." },
-      { "narrate": "(The CRT emits a faint warmth. Not enough to be alarming.)" },
+      { "narrate": "The CRT emits a faint warmth. Not enough to be alarming." },
       { "say": "sys", "text": "ARCHIVAL FRAGMENT VERIFIED.\nUNREDACTED:\n\"Maintain continuous power.\"" },
       { "say": "you", "text": "It's warmer now." },
       { "say": "ellenor", "text": "Yeah. Warmth is the sign of life." },
-      { "narrate": "(She steps back half a pace.)" },
+      { "narrate": "She steps back half a pace." },
       { "jump": "segment_5_intro" }
     ],
 
     "bad_4": [
-      { "narrate": "(You switch power to be directed from the manual breaker.)" },
+      { "narrate": "You switch power to be directed from the manual breaker." },
       { "bg": "bg_default_aggro" },
       { "say": "sys", "text": "Power supply redirected, power source: manual breaker." },
-      { "narrate": "(A large spark erupts from the back of the computer.)" },
+      { "narrate": "A large spark erupts from the back of the computer." },
       { "say": "sys", "text": "Artifact aggravated, raising alert level." },
       { "say": "you", "text": "I think I made a mistake. Is it going to fry?" },
-      { "narrate": "(Ellenor stares at you.)" },
+      { "narrate": "Ellenor stares at you." },
       { "say": "ellenor", "text": "It'll be fine, after a while." },
       { "say": "ellenor", "text": "Head on out, we have to clean out the area first." },
-      { "narrate": "(You walk out.)" },
-      { "narrate": "(You don't recall reaching the exit before everything goes dark.)" },
+      { "narrate": "You walk out." },
+      { "narrate": "You don't recall reaching the exit before everything goes dark." },
       { "call": { "name": "failSequence", "text": "Test 1 marked FAIL.", "jumpHome": true } }
     ],
 
@@ -218,21 +218,21 @@
       { "say": "sys", "text": "Simulation authorized: temporary power interruption." },
       { "say": "you", "text": "Simulation?" },
       { "say": "ellenor", "text": "We pretend to cut power. Emphasis on pretend." },
-      { "narrate": "(A timer appears on the console.)" },
+      { "narrate": "A timer appears on the console." },
       {
         "choice": "Final condition",
         "options": [
-          { "text": "A) Restore power within 30 seconds", "jump": "good_5" },
-          { "text": "B) Allow outage to exceed 30 seconds", "jump": "bad_5" }
+          { "text": "Restore power within 30 seconds", "jump": "good_5" },
+          { "text": "Allow outage to exceed 30 seconds", "jump": "bad_5" }
         ]
       }
     ],
 
     "good_5": [
-      { "narrate": "(You cancel the outage restoration.)" },
-      { "narrate": "(The seconds tick by slowly.)" },
-      { "narrate": "(15...16...17)" },
-      { "narrate": "(28...29...30)" },
+      { "narrate": "You cancel the outage restoration." },
+      { "narrate": "The seconds tick by slowly." },
+      { "narrate": "15...16...17" },
+      { "narrate": "28...29...30" },
       { "say": "sys", "text": "Artifact aggravated, raising alert level." },
       { "say": "ellenor", "text": "Congratulations." },
       { "say": "you", "text": "On what?" },
@@ -241,12 +241,12 @@
     ],
 
     "bad_5": [
-      { "narrate": "(You restore power almost immediately.)" },
-      { "narrate": "(The timer stops at 12 seconds.)" },
-      { "narrate": "(The warmth fades back to baseline.)" },
+      { "narrate": "You restore power almost immediately." },
+      { "narrate": "The timer stops at 12 seconds." },
+      { "narrate": "The warmth fades back to baseline." },
       { "say": "sys", "text": "Power interruption within safe tolerance." },
       { "say": "sys", "text": "ARCHIVAL FRAGMENT VERIFIED.\nUNREDACTED:\n\"Power loss beyond 30 seconds triggers aggressive activity.\"" },
-      { "narrate": "(A quiet breath escapes you - you don't remember holding it.)" },
+      { "narrate": "A quiet breath escapes you - you don't remember holding it." },
       { "say": "ellenor", "text": "Congratulations." },
       { "say": "you", "text": "On what?" },
       { "say": "ellenor", "text": "Test 1 is done. Keep this up and you'll keep your job and life." },
@@ -255,16 +255,16 @@
 
     "success_end": [
       { "say": "sys", "text": "TEST 1 COMPLETE\nARCHIVE CLEARANCE UPDATED\nCURRENT CLEARANCE: 25%" },
-      { "narrate": "(The monitor remains dark. Calm.)" },
-      { "narrate": "(As you turn to leave, you catch a reflection in the glass.)" },
-      { "narrate": "(Not of yourself - just the room.)" },
-      { "narrate": "(Still.)" },
-      { "narrate": "(You swear you can hear something rumbling softly.)" },
+      { "narrate": "The monitor remains dark. Calm." },
+      { "narrate": "As you turn to leave, you catch a reflection in the glass." },
+      { "narrate": "Not of yourself - just the room." },
+      { "narrate": "Still." },
+      { "narrate": "You swear you can hear something rumbling softly." },
       { "say": "ellenor", "text": "We're going to head on to the next test. We can stop pretending it's just an object." },
       { "say": "you", "text": "And start pretending it's what?" },
-      { "narrate": "(She shoots you a pointed look.)" },
+      { "narrate": "She shoots you a pointed look." },
       { "say": "ellenor", "text": "There are consequences to the mistakes you make. Something will notice them." },
-      { "narrate": "(Fade out.)" },
+      { "narrate": "Fade out." },
       { "call": { "name": "passSequence", "text": "Test 1 marked PASS. Returning to terminal...", "jumpHome": true } }
     ]
   }

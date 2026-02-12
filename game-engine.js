@@ -8,13 +8,33 @@
   const textEl = document.getElementById("vnText");
   const choicesEl = document.getElementById("vnChoices");
   const dialogBoxEl = document.getElementById("vnDialogBox");
+  const cutsceneEl = document.getElementById("vnCutscene");
+  const cutsceneVideoEl = document.getElementById("vnCutsceneVideo");
+  const cutsceneAudioEl = document.getElementById("vnCutsceneAudio");
+  const cutsceneFootstepsAudioEl = document.getElementById("vnCutsceneFootstepsAudio");
   const autoplayBtn = document.getElementById("vnAutoplayBtn");
   const skipBtn = document.getElementById("vnSkipBtn");
   const restartBtn = document.getElementById("vnRestartBtn");
   const errorWrapEl = document.getElementById("vnError");
   const errorTextEl = document.getElementById("vnErrorText");
 
-  if (!storyTitleEl || !bgEl || !speakerEl || !textEl || !choicesEl || !dialogBoxEl || !autoplayBtn || !skipBtn || !restartBtn || !errorWrapEl || !errorTextEl) {
+  if (
+    !storyTitleEl ||
+    !bgEl ||
+    !speakerEl ||
+    !textEl ||
+    !choicesEl ||
+    !dialogBoxEl ||
+    !cutsceneEl ||
+    !cutsceneVideoEl ||
+    !cutsceneAudioEl ||
+    !cutsceneFootstepsAudioEl ||
+    !autoplayBtn ||
+    !skipBtn ||
+    !restartBtn ||
+    !errorWrapEl ||
+    !errorTextEl
+  ) {
     return;
   }
 
@@ -39,6 +59,7 @@
   }
 
   const storyPath = params.get("story") || getDefaultStoryPath();
+  const currentUsername = localStorage.getItem("currentUser") || "Archivist";
 
   const state = {
     story: null,
@@ -51,7 +72,11 @@
     activeSfx: [],
     autoMode: false,
     skipMode: false,
-    playbackTimer: null
+    playbackTimer: null,
+    isTyping: false,
+    typingTimer: null,
+    typingFullText: "",
+    typingIndex: 0
   };
 
   const charElements = {
@@ -273,23 +298,101 @@
   }
 
   function getSpeakerData(speakerKeyOrName) {
-    if (!speakerKeyOrName) return { name: "Narrator", color: "#ffdede" };
+    if (!speakerKeyOrName) return { name: "", color: "#ffdede" };
+    const rawKey = String(speakerKeyOrName).trim();
+    const normalizedKey = rawKey.toLowerCase();
+
+    if (normalizedKey === "you") {
+      return { name: currentUsername, color: "#ffe9e9" };
+    }
 
     const fromCharacters = state.story.characters && state.story.characters[speakerKeyOrName];
     if (fromCharacters) {
+      const characterName = String(fromCharacters.name || speakerKeyOrName).trim();
       return {
-        name: fromCharacters.name || speakerKeyOrName,
+        name: characterName.toLowerCase() === "you" ? currentUsername : characterName,
         color: fromCharacters.color || "#ffdede"
       };
     }
 
-    return { name: String(speakerKeyOrName), color: "#ffdede" };
+    return { name: rawKey, color: "#ffdede" };
+  }
+
+  function resolveStoryText(rawText) {
+    const safeText = rawText == null ? "" : String(rawText);
+    return safeText.replace(/<username>/gi, currentUsername);
+  }
+
+  function clearTypingTimer() {
+    if (state.typingTimer) {
+      window.clearTimeout(state.typingTimer);
+      state.typingTimer = null;
+    }
+  }
+
+  function getTypingSpeed() {
+    const metaSpeed = Number(state.story && state.story.meta ? state.story.meta.typeSpeed : 0);
+    if (Number.isFinite(metaSpeed) && metaSpeed > 0) return metaSpeed;
+    return 38;
+  }
+
+  function getTypeDelayForChar(char, cps) {
+    const base = Math.max(8, Math.round(1000 / cps));
+    if (char === "\n") return base * 2;
+    if (/[.,!?;:]/.test(char)) return base * 4;
+    return base;
+  }
+
+  function finishTyping() {
+    if (!state.isTyping) return;
+    clearTypingTimer();
+    state.isTyping = false;
+    state.typingIndex = state.typingFullText.length;
+    textEl.textContent = state.typingFullText;
+    queuePlaybackAdvance();
+  }
+
+  function startTyping(text, instant) {
+    clearTypingTimer();
+    state.typingFullText = text || "";
+    state.typingIndex = 0;
+
+    if (instant || !state.typingFullText) {
+      state.isTyping = false;
+      textEl.textContent = state.typingFullText;
+      queuePlaybackAdvance();
+      return;
+    }
+
+    state.isTyping = true;
+    textEl.textContent = "";
+    const cps = getTypingSpeed();
+
+    const tick = () => {
+      if (!state.isTyping) return;
+      state.typingIndex += 1;
+      textEl.textContent = state.typingFullText.slice(0, state.typingIndex);
+      if (state.typingIndex >= state.typingFullText.length) {
+        state.isTyping = false;
+        state.typingTimer = null;
+        queuePlaybackAdvance();
+        return;
+      }
+      const nextChar = state.typingFullText[state.typingIndex - 1];
+      state.typingTimer = window.setTimeout(tick, getTypeDelayForChar(nextChar, cps));
+    };
+
+    state.typingTimer = window.setTimeout(tick, 12);
   }
 
   function setDialogue(speakerName, text, speakerColor) {
-    speakerEl.textContent = speakerName || "Narrator";
+    const hasSpeaker = Boolean(speakerName && String(speakerName).trim());
+    speakerEl.textContent = hasSpeaker ? String(speakerName) : "\u00a0";
     speakerEl.style.color = speakerColor || "#ffdede";
-    textEl.textContent = text || "";
+    speakerEl.style.opacity = hasSpeaker ? "1" : "0.45";
+    speakerEl.setAttribute("aria-hidden", hasSpeaker ? "false" : "true");
+    speakerEl.classList.toggle("is-empty", !hasSpeaker);
+    startTyping(resolveStoryText(text || ""), state.skipMode);
   }
 
   function clearChoices() {
@@ -499,8 +602,7 @@
       }
 
       if (typeof step === "string") {
-        setDialogue("Narrator", step, "#ffdede");
-        queuePlaybackAdvance();
+        setDialogue("", step, "#ffdede");
         return;
       }
 
@@ -535,13 +637,11 @@
       if (step.say || step.text) {
         const speaker = getSpeakerData(step.say);
         setDialogue(speaker.name, step.text || "", speaker.color);
-        queuePlaybackAdvance();
         return;
       }
 
       if (step.narrate) {
-        setDialogue("Narrator", step.narrate, "#ffdede");
-        queuePlaybackAdvance();
+        setDialogue("", step.narrate, "#ffdede");
         return;
       }
     }
@@ -549,6 +649,10 @@
 
   function advance() {
     if (!state.story) return;
+    if (state.isTyping) {
+      finishTyping();
+      return;
+    }
     if (state.finished || state.waitingForChoice) return;
     clearPlaybackTimer();
     runUntilStop();
@@ -577,10 +681,62 @@
     return story;
   }
 
+  async function playPreTestCutscene() {
+    cutsceneEl.hidden = false;
+    cutsceneVideoEl.currentTime = 0;
+    cutsceneVideoEl.pause();
+    cutsceneAudioEl.currentTime = 0;
+    cutsceneAudioEl.pause();
+    cutsceneFootstepsAudioEl.currentTime = 0;
+    cutsceneFootstepsAudioEl.pause();
+
+    return new Promise((resolve) => {
+      let finished = false;
+
+      function finishCutscene() {
+        if (finished) return;
+        finished = true;
+        cutsceneVideoEl.pause();
+        cutsceneAudioEl.pause();
+        cutsceneFootstepsAudioEl.pause();
+        cutsceneEl.hidden = true;
+        resolve();
+      }
+
+      function handleVideoClick() {
+        const playFootsteps = () => {
+          const footstepsAttempt = cutsceneFootstepsAudioEl.play();
+          if (footstepsAttempt && typeof footstepsAttempt.catch === "function") {
+            footstepsAttempt.catch(() => {});
+          }
+        };
+
+        cutsceneAudioEl.addEventListener("ended", playFootsteps, { once: true });
+        const audioAttempt = cutsceneAudioEl.play();
+        if (audioAttempt && typeof audioAttempt.catch === "function") {
+          audioAttempt.catch(() => {
+            playFootsteps();
+          });
+        }
+        const videoAttempt = cutsceneVideoEl.play();
+        if (videoAttempt && typeof videoAttempt.catch === "function") {
+          videoAttempt.catch(() => {
+            finishCutscene();
+          });
+        }
+      }
+
+      cutsceneVideoEl.addEventListener("click", handleVideoClick, { once: true });
+      cutsceneVideoEl.addEventListener("ended", finishCutscene, { once: true });
+      cutsceneVideoEl.addEventListener("error", finishCutscene, { once: true });
+    });
+  }
+
   async function boot() {
     try {
       hideError();
       localStorage.setItem("lastTestedCase", objectKey);
+      await playPreTestCutscene();
 
       state.story = await loadStory(storyPath);
       storyTitleEl.textContent = state.story.meta.title || "Untitled Story";
@@ -625,6 +781,10 @@
     }
     stopMusic();
     stopSfx(true);
+    clearTypingTimer();
+    state.isTyping = false;
+    state.typingIndex = 0;
+    state.typingFullText = "";
     clearPlaybackTimer();
     state.finished = false;
     state.waitingForChoice = false;
@@ -643,6 +803,13 @@
 
   window.addEventListener("beforeunload", () => {
     clearPlaybackTimer();
+    clearTypingTimer();
+    cutsceneVideoEl.pause();
+    cutsceneVideoEl.currentTime = 0;
+    cutsceneAudioEl.pause();
+    cutsceneAudioEl.currentTime = 0;
+    cutsceneFootstepsAudioEl.pause();
+    cutsceneFootstepsAudioEl.currentTime = 0;
     stopMusic();
     stopSfx(true);
   });
