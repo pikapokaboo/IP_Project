@@ -269,11 +269,30 @@ Responsive notes:
 
 ## Credits
 
-### Content
-- [Text/source attribution, e.g. references used]
+### Audio
+- Footsteps: https://pixabay.com/users/freesound_community-46691455/
+- Sliding Door: https://pixabay.com/sound-effects/film-special-effects-sliding-noise-v2-83483/
+- Login Music: https://www.youtube.com/watch?v=YJaeH8ffl_M
+- Warning and Logo sounds: https://www.youtube.com/watch?v=WglZpEeyMso
+- Loading Audio: https://www.youtube.com/watch?v=qUdDz1PUUls
+- Boot Up Sound: https://www.youtube.com/watch?v=7FiFBKINg1k
+- Home Screen Music: https://www.youtube.com/watch?v=5oF5lS0sajs&list=PLfP6i5T0-DkI74kb_BWxYNZRjIvF1D4Lp
+- Button Click Audio: https://www.youtube.com/watch?v=KFNhJnp7eQ0
+- Achievement Audio: https://www.youtube.com/watch?v=tgo30hh86Wg
+- Visual Novel Audio: https://music.youtube.com/watch?v=AKjxL_aMf1Q
+- Blip: Sound Effect by Driken Stan from Pixabay
 
-### Media
-- [Images/audio/video source attribution]
+### Icons
+- Patreon Icon: https://www.clipartmax.com/middle/m2H7m2i8i8m2N4G6_transparent-patreon-logo-patreon-png/
+- Ko-fi Icon: https://uxwing.com/ko-fi-icon/
+- Itch.io Icon: https://icon-icons.com/icon/itch/146025
+
+### Artworks
+- Login Page Artwork: https://www.pinterest.com/pin/68046644341682061/
+
+### Lottie Animation
+- Loading Animation: https://lottiefiles.com/free-animation/hidden-folder-D5J1s78Way
+
 
 ### Code / References
 - [Tutorial/documentation/reference URLs]
