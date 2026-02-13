@@ -97,7 +97,8 @@
     activeTextBlips: [],
     lastTextBlipAt: 0,
     waitTimer: null,
-    waitingForDelay: false
+    waitingForDelay: false,
+    waitingForHomeAdvance: false
   };
 
   const charElements = {
@@ -225,11 +226,23 @@
     bgEl.style.backgroundImage = `url("${src}")`;
   }
 
-  function setBgFade(show, durationMs) {
+  function setBgFade(show, durationMs, options) {
     if (Number.isFinite(Number(durationMs)) && Number(durationMs) >= 0) {
       bgFadeEl.style.transitionDuration = `${Number(durationMs)}ms`;
     } else {
       bgFadeEl.style.transitionDuration = "";
+    }
+    const cfg = options && typeof options === "object" ? options : {};
+    if (cfg.color) {
+      bgFadeEl.style.background = String(cfg.color);
+    } else {
+      bgFadeEl.style.background = "";
+    }
+    if (Number.isFinite(Number(cfg.opacity))) {
+      const opacity = Math.min(1, Math.max(0, Number(cfg.opacity)));
+      bgFadeEl.style.setProperty("--vn-bg-fade-opacity", String(opacity));
+    } else {
+      bgFadeEl.style.removeProperty("--vn-bg-fade-opacity");
     }
     bgFadeEl.classList.toggle("show", Boolean(show));
   }
@@ -614,11 +627,26 @@
 
   function applyVisualCommands(step) {
     if (step.bg) setBackground(step.bg);
+    if (step.grayOverlay) {
+      setBgFade(true, step.fadeDurationMs, {
+        color: "rgba(70, 70, 70, 0.9)",
+        opacity: 0.88
+      });
+    }
+    if (step.overlay && typeof step.overlay === "object") {
+      setBgFade(true, step.fadeDurationMs, {
+        color: step.overlay.color,
+        opacity: step.overlay.opacity
+      });
+    }
     if (step.fadeToBlack || step.fadeOut || step.fadeOutBlack) {
       setBgFade(true, step.fadeDurationMs);
     }
     if (step.clearFade || step.fadeIn) {
-      setBgFade(false, step.fadeDurationMs);
+      setBgFade(false, step.fadeDurationMs, step.overlay && typeof step.overlay === "object" ? {
+        color: step.overlay.color,
+        opacity: step.overlay.opacity
+      } : null);
     }
     if (Object.prototype.hasOwnProperty.call(step, "charLeft")) setCharacter("left", step.charLeft);
     if (Object.prototype.hasOwnProperty.call(step, "charCenter")) setCharacter("center", step.charCenter);
@@ -644,9 +672,13 @@
     if (result === "fail") failTest();
 
     if (cfg.jumpHome !== false && (result === "pass" || result === "fail")) {
-      window.setTimeout(() => {
-        goHome();
-      }, 1200);
+      if (cfg.jumpHomeAfterClick === false) {
+        window.setTimeout(() => {
+          goHome();
+        }, Number(cfg.delayMs) || 1200);
+      } else {
+        state.waitingForHomeAdvance = true;
+      }
     }
   }
 
@@ -665,9 +697,13 @@
       if (cfg.text) setDialogue("System", cfg.text, "#ffb9b9");
       if (cfg.jumpHome) {
         state.finished = true;
-        window.setTimeout(() => {
-          goHome();
-        }, Number(cfg.delayMs) || 1200);
+        if (cfg.jumpHomeAfterClick === false) {
+          window.setTimeout(() => {
+            goHome();
+          }, Number(cfg.delayMs) || 1200);
+        } else {
+          state.waitingForHomeAdvance = true;
+        }
         return true;
       }
       return false;
@@ -678,9 +714,13 @@
       if (cfg.text) setDialogue("System", cfg.text, "#ffb9b9");
       if (cfg.jumpHome) {
         state.finished = true;
-        window.setTimeout(() => {
-          goHome();
-        }, Number(cfg.delayMs) || 1200);
+        if (cfg.jumpHomeAfterClick === false) {
+          window.setTimeout(() => {
+            goHome();
+          }, Number(cfg.delayMs) || 1200);
+        } else {
+          state.waitingForHomeAdvance = true;
+        }
         return true;
       }
       return false;
@@ -775,6 +815,11 @@
 
   function advance() {
     if (!state.story) return;
+    if (state.waitingForHomeAdvance) {
+      state.waitingForHomeAdvance = false;
+      goHome();
+      return;
+    }
     if (state.isTyping) {
       finishTyping();
       return;
@@ -924,6 +969,7 @@
     clearPlaybackTimer();
     clearWaitTimer();
     state.finished = false;
+    state.waitingForHomeAdvance = false;
     state.waitingForChoice = false;
     setBgFade(false, 0);
     clearChoices();
@@ -944,6 +990,7 @@
     clearTypingTimer();
     clearWaitTimer();
     stopTextBlips();
+    state.waitingForHomeAdvance = false;
     cutsceneVideoEl.pause();
     cutsceneVideoEl.currentTime = 0;
     stopMusic();

@@ -9,6 +9,7 @@
     "bg_sunlight_peek": "Images/Sunlight Peek.png",
     "bg_sunlight_aggro": "Images/Sunlight Aggro.png",
     "bg_default_aggro": "Images/Default Aggro.png",
+    "bg_aggro_v2": "Images/Aggro V2.png",
     "archivist": "chars/archivist.png",
     "subject": "chars/subject.png",
     "bgm_loop": "audio/tense_loop.mp3"
@@ -159,7 +160,7 @@
 
     "bad_3": [
       { "narrate": "You allow the speakers to continue." },
-      { "bg": "bg_default_aggro" },
+      { "bg": "bg_aggro_v2" },
       { "narrate": "The CRT screeches. You see the orange tendrils all press up against the screen." },
       { "narrate": "You can feel its attempts to try and block out all the sound." },
       { "say": "ellenor", "text": "Have you ever tried putting a microphone next to a speaker?" },
@@ -205,7 +206,7 @@
 
     "bad_4": [
       { "narrate": "You switch the power to be directed from the manual breaker" },
-      { "bg": "bg_default_aggro" },
+
       { "say": "sys", "text": "Power supply redirected, power source: manual breaker" },
       { "narrate": "A large spark erupts from the back of the computer" },
       { "say": "sys", "text": "Artifact aggravated, raising alert level" },
@@ -225,18 +226,20 @@
       { "say": "sys", "text": "Simulation authorized: temporary power interruption." },
       { "say": "you", "text": "Simulation?" },
       { "say": "ellenor", "text": "We pretend to cut power. Emphasis on pretend." },
+      { "grayOverlay": true, "fadeDurationMs": 650 },
       { "narrate": "A timer appears on the console." },
       {
         "choice": "Final condition",
         "options": [
-          { "text": "Restore power within 30 seconds", "jump": "bad_5" },
-          { "text": "Allow outage to exceed 30 seconds", "jump": "good_5" }
+          { "text": "Restore power within 30 seconds", "jump": "good_5" },
+          { "text": "Allow outage to exceed 30 seconds", "jump": "bad_5" }
         ]
       }
     ],
 
     "bad_5": [
       { "narrate": "You cancel the outage restoration." },
+      { "bg": "bg_default_aggro" },
       { "narrate": "The seconds tick by slowly." },
       { "narrate": "15...16...17" },
       { "narrate": "28...29...30" },
@@ -252,6 +255,7 @@
 
     "good_5": [
       { "narrate": "You restore power almost immediately." },
+      { "clearFade": true, "fadeDurationMs": 300 },
       { "narrate": "The timer stops at 12 seconds." },
       { "narrate": "The warmth fades back to baseline." },
       { "say": "sys", "text": "Power interruption within safe tolerance." },

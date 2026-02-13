@@ -2070,6 +2070,7 @@ body.vn-page {
 }
 
 .vn-bg-fade {
+  --vn-bg-fade-opacity: 1;
   position: absolute;
   inset: 0;
   z-index: -1;
@@ -2080,7 +2081,7 @@ body.vn-page {
 }
 
 .vn-bg-fade.show {
-  opacity: 1;
+  opacity: var(--vn-bg-fade-opacity);
 }
 
 .vn-characters {
