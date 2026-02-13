@@ -1,102 +1,27 @@
 {
-    "meta":  {
-                 "title":  "CAC-A17-049 // Test 3",
-                 "start":  "start"
-             },
-    "assets":  {
-                   "bg_lab":  "assets/bg/lab.jpg",
-                   "bg_archive":  "assets/bg/archive.jpg",
-                   "archivist":  "assets/chars/archivist.png",
-                   "subject":  "assets/chars/subject.png",
-                   "bgm_loop":  "audio/tense_loop.mp3",
-                   "sfx_click":  "assets/audio/click.wav"
-               },
-    "characters":  {
-                       "sys":  {
-                                   "name":  "System",
-                                   "color":  "#ffb9b9"
-                               },
-                       "arch":  {
-                                    "name":  "Archivist",
-                                    "color":  "#ffe1e1"
-                                },
-                       "obj":  {
-                                   "name":  "Entity",
-                                   "color":  "#ffd1d1"
-                               }
-                   },
-    "labels":  {
-                   "start":  [
-                                 {
-                                     "bg":  "bg_lab",
-                                     "music":  "bgm_loop",
-                                     "charLeft":  "archivist",
-                                     "charRight":  "subject"
-                                 },
-                                 {
-                                     "say":  "sys",
-                                     "text":  "Containment feed online. Observer memory audit."
-                                 },
-                                 {
-                                     "say":  "arch",
-                                     "text":  "Proceed with your test decision."
-                                 },
-                                 {
-                                     "choice":  "Choose your action",
-                                     "options":  [
-                                                     {
-                                                         "text":  "Mark PASS",
-                                                         "call":  {
-                                                                      "name":  "passSequence",
-                                                                      "text":  "Test 3 marked PASS. Returning to terminal...",
-                                                                      "jumpHome":  true
-                                                                  }
-                                                     },
-                                                     {
-                                                         "text":  "Mark FAIL",
-                                                         "call":  {
-                                                                      "name":  "failSequence",
-                                                                      "text":  "Test 3 marked FAIL. Returning to terminal...",
-                                                                      "jumpHome":  true
-                                                                  }
-                                                     },
-                                                     {
-                                                         "text":  "Review one more line",
-                                                         "jump":  "review"
-                                                     }
-                                                 ]
-                                 }
-                             ],
-                   "review":  [
-                                  {
-                                      "bg":  "bg_archive",
-                                      "sfx":  "sfx_click"
-                                  },
-                                  {
-                                      "narrate":  "You pause, re-check notes, and return to judgement."
-                                  },
-                                  {
-                                      "choice":  "Final decision",
-                                      "options":  [
-                                                      {
-                                                          "text":  "Finalize PASS",
-                                                          "call":  {
-                                                                       "name":  "passSequence",
-                                                                       "text":  "Test 3 marked PASS. Returning to terminal...",
-                                                                       "jumpHome":  true
-                                                                   }
-                                                      },
-                                                      {
-                                                          "text":  "Finalize FAIL",
-                                                          "call":  {
-                                                                       "name":  "failSequence",
-                                                                       "text":  "Test 3 marked FAIL. Returning to terminal...",
-                                                                       "jumpHome":  true
-                                                                   }
-                                                      }
-                                                  ]
-                                  }
-                              ]
-               }
+  "meta": {
+    "title": "OBJ2 TEST3 // WORK IN PROGRESS",
+    "start": "start"
+  },
+  "assets": {
+    "bg_default": "Images/Default.png",
+    "bgm_loop": "audio/tense_loop.mp3"
+  },
+  "characters": {
+    "sys": { "name": "SYSTEM", "color": "#ffb9b9" }
+  },
+  "labels": {
+    "start": [
+      { "bg": "bg_default", "music": "bgm_loop" },
+      { "say": "sys", "text": "This test is currently a WORK IN PROGRESS." },
+      { "narrate": "Use these options to test game flow while this content is being built." },
+      {
+        "choice": "Temporary test options",
+        "options": [
+          { "text": "PASS (testing)", "call": { "name": "passSequence", "text": "Temporary PASS selected.", "jumpHome": true } },
+          { "text": "FAIL (testing)", "call": { "name": "failSequence", "text": "Temporary FAIL selected.", "jumpHome": true } }
+        ]
+      }
+    ]
+  }
 }
-
