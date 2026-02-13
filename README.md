@@ -121,41 +121,149 @@ Document all AI usage clearly to avoid mark deductions.
 
 ## Testing
 
-### Manual Testing Scenarios
+### Test Method
+Most tests were performed manually because this project is heavily UI/story-flow based (visual novel interactions, branching choices, localStorage progression, and audio/animation timing).
 
-#### [Feature Name / Page Name]
-1. Go to `[page/section]`.
-2. Perform `[test action]`.
-3. Verify that `[expected result]`.
+### Manual Test Scenarios
 
-#### [Feature Name / Page Name]
-1. Go to `[page/section]`.
-2. Perform `[test action]`.
-3. Verify that `[expected result]`.
+#### 1. Login and Access Control
+- Go to `index.html`.
+- Enter valid login credentials.
+- Verify redirect to `home.html`.
+- Enter invalid credentials.
+- Verify error/feedback message appears.
+- Refresh and verify current user session is retained (if expected).
+
+Result: Pass (manual)
+
+#### 2. Signup Validation
+- Go to Sign Up.
+- Submit empty fields.
+- Verify validation message appears.
+- Submit mismatched passwords.
+- Verify mismatch message appears.
+- Submit valid new account data.
+- Verify account creation success message.
+
+Result: Pass (manual)
+
+#### 3. Intro and Warning Flow
+- Open `index.html`.
+- Verify warning/disclaimer appears.
+- Continue intro sequence.
+- Verify transition to login screen works without broken visuals/audio.
+
+Result: Pass (manual)
+
+#### 4. Home Navigation
+- Login and reach `home.html`.
+- Open each main section/tab (Objects, Archive, Achievements, etc.).
+- Verify all buttons and modals open/close correctly.
+- Verify `Start Testing` opens `game.html` with correct object/test params.
+
+Result: Pass (manual)
+
+#### 5. Visual Novel Story Progression
+- Start a test in `game.html`.
+- Click/press Enter/Space to advance dialogue.
+- Verify choices display when expected.
+- Choose different options and verify branching works.
+- Verify pass/fail sequence triggers correctly and returns to home when expected.
+
+Result: Pass (manual)
+
+#### 6. Progress Persistence
+- Complete/fail a test.
+- Return to home/archive.
+- Verify progress values, fail counters, and archive completion update correctly.
+- Refresh page and verify progress persists via localStorage.
+
+Result: Pass (manual)
+
+#### 7. Achievement Unlocks
+- Trigger known achievement conditions.
+- Verify achievement state updates in UI.
+- Reload page and verify unlock remains saved.
+
+Result: Pass (manual)
+
+#### 8. Object/Archive Unlock Conditions
+- Progress Object 1 until Object 2 should unlock.
+- Verify Object 2 visibility/availability updates correctly.
+- Verify locked content is hidden before unlock conditions are met.
+
+Result: Pass (manual)
+
+#### 9. Audio and Controls
+- Verify BGM/SFX plays at expected events.
+- Test volume slider and confirm changes apply.
+- Verify autoplay/skip/restart buttons work in VN mode.
+
+Result: Pass (manual)
 
 ### User Story Testing
-- **User Story:** As a [user type], I want to [action], so that [goal].  
-  **Test:** [How you tested it]  
-  **Result:** [Pass/Fail + notes]
 
-- **User Story:** As a [user type], I want to [action], so that [goal].  
-  **Test:** [How you tested it]  
-  **Result:** [Pass/Fail + notes]
+- **User Story:** As a new player, I want to see a clear intro and warning screen, so that I know the game tone and content before starting.  
+  **Test:** Opened `index.html`, verified warning screen appears first, then advanced through intro sequence to login screen.  
+  **Result:** Pass.
 
-### Browser and Device Testing
-- Chrome: [Pass/Issues]
-- Edge: [Pass/Issues]
-- Firefox: [Pass/Issues]
-- Safari: [Pass/Issues]
-- Mobile (Android/iOS): [Pass/Issues]
-- Screen sizes tested: [e.g. 320px, 768px, 1024px, 1440px]
+- **User Story:** As a player, I want to log in quickly, so that I can access my own progress and continue where I left off.  
+  **Test:** Logged in with valid credentials and verified redirect to `home.html`; attempted invalid credentials and verified feedback modal appears.  
+  **Result:** Pass.
 
-### Bugs / Known Issues
-- [Bug 1 description + status]
-- [Bug 2 description + status]
-- [Bug 3 description + status]
+- **User Story:** As a decision-making player, I want to choose between multiple containment actions, so that my choices meaningfully affect outcomes.  
+  **Test:** Started a test in `game.html`, selected different choice branches, and verified different labels/outcomes were triggered.  
+  **Result:** Pass.
 
-> If this section becomes too long, move it to `TESTING.md` and link it here.
+- **User Story:** As a strategy player, I want immediate pass/fail feedback after decisions, so that I can learn artifact behavior and improve.  
+  **Test:** Triggered both correct and incorrect choices in object tests and verified pass/fail call sequences with system feedback and return flow.  
+  **Result:** Pass.
+
+- **User Story:** As a completionist, I want to unlock protocol fragments and archive percentages, so that I can track my progress toward full completion.  
+  **Test:** Completed tests and checked archive tab updates (`Completion: x%`) and corresponding file content changes.  
+  **Result:** Pass.
+
+- **User Story:** As a returning player, I want my progress saved automatically, so that I do not lose completed tests or unlocks.  
+  **Test:** Completed a test, refreshed/reopened the app, and verified test progress, archive completion, and achievements remained saved via local storage.  
+  **Result:** Pass.
+
+### Browser and Screen Size Testing
+Tested on:
+- Chrome (Windows): Pass
+- Edge (Windows): Pass
+- Firefox (Windows): Minor UI spacing differences in some modal/card areas, core gameplay unaffected
+- Safari: Not tested yet
+- Mobile (Android/iOS): Limited testing; layout is usable but desktop provides best experience for full UI readability
+
+Screen sizes:
+- 1920x1080 desktop
+- 1366x768 laptop
+- 768x1024 tablet
+- 390x844 mobile
+
+Responsive notes:
+- Main navigation and story panels remain functional across tested sizes.
+- On smaller screens, long text blocks and modal content require more scrolling.
+- The game is best experienced on desktop/laptop due to dense narrative UI and multi-panel terminal layout.
+
+### Bugs Found / Known Issues
+- Bug: Story JSON/image path casing mismatch risk
+  - Steps to reproduce: Run the project on a case-sensitive environment and load a story with mixed-case asset names.
+  - Expected: All assets load consistently.
+  - Actual: Some assets may fail to load if filename case differs from JSON references.
+  - Status: Open (works on Windows, may break in strict case-sensitive deployments).
+
+- Bug: Intro/login timing can feel long for repeat sessions
+  - Steps to reproduce: Open `index.html` without skip parameter and wait through full intro sequence.
+  - Expected: Fast path for returning users.
+  - Actual: Intro animation sequence may delay reaching login/game flow.
+  - Status: Partially mitigated (`skipIntro`/`skipHomeIntro`), further UX tuning planned.
+
+- Bug: Mobile layout readability at small widths
+  - Steps to reproduce: Open on narrow screens (around 390px width), view terminal cards and long archive text.
+  - Expected: Comfortable reading without excessive scrolling.
+  - Actual: Dense UI sections require frequent scrolling and tighter reading space.
+  - Status: Open (functional but not yet fully optimized for mobile-first play).
 
 ---
 
