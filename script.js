@@ -51,7 +51,7 @@ function clearScopedProgress() {
   const introAudio = document.getElementById("introAudio");
   const loginAudio = document.getElementById("loginAudio");
   
-  const DEV_MODE = true;
+  const DEV_MODE = false;
   const DEV_ACCOUNT = { username: "dev", password: "dev123" };
   
   localStorage.setItem("devMode", DEV_MODE ? "true" : "false");
