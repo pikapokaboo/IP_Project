@@ -267,6 +267,12 @@ Responsive notes:
 
 ---
 
+### Individual Contribution
+Reyner: game.html, home.html, index.html, style.css
+Xing Yi: obj1-test1.json, helped with home.html
+
+---
+
 ## Credits
 
 ### Audio
@@ -293,9 +299,5 @@ Responsive notes:
 ### Lottie Animation
 - Loading Animation: https://lottiefiles.com/free-animation/hidden-folder-D5J1s78Way
 
-
-### Code / References
-- [Tutorial/documentation/reference URLs]
-
 ### Acknowledgements
-- [Inspiration, mentors, classmates, etc.]
+- Inspired by the SCP Foundation, SCP Secret Files
