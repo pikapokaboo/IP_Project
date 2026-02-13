@@ -111,11 +111,11 @@ Document all AI usage clearly to avoid mark deductions.
 
 ### AI Screenshots
 #### Screenshot 1
-- ![Screenshot 1](Screenshots/ChatGPT.png)
+![Screenshot 1](Screenshots/ChatGPT.png)
 #### Screenshot 2
-- ![Screenshot 2](Screenshots/gpt_sketchfab.png)
+![Screenshot 2](Screenshots/gpt_sketchfab.png)
 #### Screenshot 3
-- ![Screenshot 3](Screenshots/gpt_sketchfab_2.png)
+![Screenshot 3](Screenshots/gpt_sketchfab_2.png)
 
 ---
 
