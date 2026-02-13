@@ -8,7 +8,7 @@
                    "bg_archive":  "assets/bg/archive.jpg",
                    "archivist":  "assets/chars/archivist.png",
                    "subject":  "assets/chars/subject.png",
-                   "bgm_loop":  "assets/audio/tense_loop.mp3",
+                   "bgm_loop":  "audio/tense_loop.mp3",
                    "sfx_click":  "assets/audio/click.wav"
                },
     "characters":  {
@@ -99,3 +99,4 @@
                               ]
                }
 }
+

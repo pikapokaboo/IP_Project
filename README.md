@@ -77,7 +77,7 @@ Document all AI usage clearly to avoid mark deductions.
 ### AI Usage Log
 | Tool | What it helped with | Output used? | What was changed by me | Evidence |
 |---|---|---|---|---|
-| ChatGPT / Gemini / etc. | [e.g. dialogue logic, bug fix, API integration] | [Yes/No/Partially] | [Explain edits/refinement] | `[path/to/screenshot]` |
+| ChatGPT | Restdb login API | Partially | I used ChatGPT to give me some code alterations for the RestDB API and to give me a rough template for calling the API from RestDB | `Screenshots/ChatGPT.png` |
 | [Tool Name] | [task] | [Yes/No/Partially] | [changes made] | `[path/to/screenshot]` |
 
 ### AI Screenshots
