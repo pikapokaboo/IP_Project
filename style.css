@@ -294,7 +294,7 @@ body::before {
 @media (max-width: 899px) {
   html, body { width: 100%; overflow: hidden; }
   #artwork { display: none; }
-  #logo2 { --logo2-base-y: 80px; }
+  #logo2 { --logo2-base-y: 0px; }
   #logo2 .logo { max-width: min(85%, 560px); }
 
   .panel {
