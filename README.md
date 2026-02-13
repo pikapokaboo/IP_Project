@@ -1,4 +1,4 @@
-# Archivist
+# The Archivist
 
 Archivist is an interactive visual novel game where you, the player, investigates different artifacts that are not quite as they seem. Unlock a bit of their story and find out what they are.
 [Explain what the app does, who it is for, and why it is useful/interesting.]  
