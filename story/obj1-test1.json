@@ -72,6 +72,8 @@
       { "say": "ellenor", "text": "Head on out, we have to clean out the area first." },
       { "narrate": "You walk out." },
       { "narrate": "You don't recall reaching the exit before everything goes dark." },
+      { "fadeToBlack": true, "fadeDurationMs": 1100 },
+      { "waitMs": 1200 },
       { "call": { "name": "failSequence", "text": "Test 1 marked FAIL.", "jumpHome": true } }
     ],
 
@@ -120,6 +122,8 @@
       { "say": "you", "text": "Not particularly..." },
       { "say": "ellenor", "text": "Head on out, we have to clean out the area first." },
       { "narrate": "You walk out." },
+      { "fadeToBlack": true, "fadeDurationMs": 1100 },
+      { "waitMs": 1200 },
       { "narrate": "You don't recall reaching the exit before everything goes dark." },
       { "call": { "name": "failSequence", "text": "Test 1 marked FAIL.", "jumpHome": true } }
     ],
@@ -165,6 +169,8 @@
       { "say": "ellenor", "text": "Head on out, we have to clean out the area first." },
       { "narrate": "You walk out." },
       { "narrate": "You don't recall reaching the exit before everything goes dark." },
+      { "fadeToBlack": true, "fadeDurationMs": 1100 },
+      { "waitMs": 1200 },
       { "call": { "name": "failSequence", "text": "Test 1 marked FAIL.", "jumpHome": true } }
     ],
 
@@ -210,6 +216,8 @@
       { "say": "ellenor", "text": "Head on out, we have to clean out the area first." },
       { "narrate": "You walk out." },
       { "narrate": "You don't recall reaching the exit before everything goes dark." },
+      { "fadeToBlack": true, "fadeDurationMs": 1100 },
+      { "waitMs": 1200 },
       { "call": { "name": "failSequence", "text": "Test 1 marked FAIL.", "jumpHome": true } }
     ],
 
@@ -229,19 +237,7 @@
     ],
 
     "good_5": [
-      { "narrate": "You cancel the outage restoration." },
-      { "narrate": "The seconds tick by slowly." },
-      { "narrate": "15...16...17" },
-      { "narrate": "28...29...30" },
-      { "say": "sys", "text": "Artifact aggravated, raising alert level." },
-      { "say": "ellenor", "text": "Congratulations." },
-      { "say": "you", "text": "On what?" },
-      { "say": "ellenor", "text": "On not teaching it a new bad habit." },
-      { "jump": "success_end" }
-    ],
-
-    "bad_5": [
-      { "narrate": "You restore power almost immediately." },
+          { "narrate": "You restore power almost immediately." },
       { "narrate": "The timer stops at 12 seconds." },
       { "narrate": "The warmth fades back to baseline." },
       { "say": "sys", "text": "Power interruption within safe tolerance." },
@@ -250,6 +246,20 @@
       { "say": "ellenor", "text": "Congratulations." },
       { "say": "you", "text": "On what?" },
       { "say": "ellenor", "text": "Test 1 is done. Keep this up and you'll keep your job and life." },
+      { "jump": "success_end" }
+    ],
+
+    "bad_5": [
+      { "narrate": "You cancel the outage restoration." },
+      { "narrate": "The seconds tick by slowly." },
+      { "narrate": "15...16...17" },
+      { "narrate": "28...29...30" },
+      { "say": "sys", "text": "Artifact aggravated, raising alert level." },
+      { "say": "ellenor", "text": "Congratulations." },
+      { "say": "you", "text": "On what?" },
+      { "say": "ellenor", "text": "On not teaching it a new bad habit." },
+      { "fadeToBlack": true, "fadeDurationMs": 1100 },
+      { "waitMs": 1200 },
       { "call": { "name": "failSequence", "text": "Test 1 marked FAIL.", "jumpHome": true } }
     ],
 
