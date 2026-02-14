@@ -7,8 +7,8 @@ This project is designed for players who enjoy story-rich mystery games, branchi
 ---
 
 ## Links
-Github Repo: https://github.com/pikapokaboo/IP_Project
-Github Deployment: https://pikapokaboo.github.io/IP_Project/
+- Github Repo: https://github.com/pikapokaboo/IP_Project
+- Github Deployment: https://pikapokaboo.github.io/IP_Project/
 
 ---
 
