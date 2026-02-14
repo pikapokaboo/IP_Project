@@ -6,6 +6,12 @@ This project is designed for players who enjoy story-rich mystery games, branchi
 
 ---
 
+## Links
+Github Repo:
+Github Deployment: https://pikapokaboo.github.io/IP_Project/
+
+---
+
 ## Design Process
 The idea for this game was inspired by our collective fascination with the SCP framework and, more specifically, the intrigue of recording and containing objects and events where the origins are completely unknown. We wanted to incorporate this sense of controlled and methodical investigation, where players gradually uncover new levels of truth through observation, investigation, and decision-making. Our goal from the beginning was to build a game that was tense and immersive, with a high level of lore, as opposed to non-stop action.
 
