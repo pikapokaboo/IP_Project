@@ -45,12 +45,6 @@ As a team, we have a collective love of visual novels, and we decided to use thi
 - As a **casual player**, I want simple navigation between home, archive, and test modes, so that I can play without confusion.
 - As a **replay-oriented player**, I want to retry tests after failure, so that I can explore different paths and outcomes.
 
-### Wireframes / Mockups / Diagrams
-- Wireframes PDF: `[path/to/file.pdf]`
-- Adobe XD folder: `[path/to/xd-folder]`
-- Adobe XD share URL: `[paste url here]`
-- Other diagrams: `[path/to/diagram]`
-
 ---
 
 ## Features
@@ -267,7 +261,7 @@ Responsive notes:
 
 ---
 
-### Individual Contribution
+## Individual Contribution
 Reyner: game.html, home.html, index.html, style.css
 Xing Yi: obj1-test1.json, helped with home.html
 
