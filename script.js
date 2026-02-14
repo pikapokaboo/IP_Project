@@ -1,3 +1,4 @@
+// Scoped localStorage keys for gameplay progress and achievements.
 const TEST_PROGRESS_KEY = "testProgress";
 const FAIL_PROGRESS_KEY = "failProgress";
 const ACHIEVEMENTS_KEY = "achievementsProgress";
@@ -27,6 +28,7 @@ function clearScopedProgress() {
 }
 
 (function initIndexPage() {
+  // Guard so this initializer only runs on index.html.
   const disclaimer = document.getElementById("disclaimer");
   if (!disclaimer) return;
   const logo1 = document.getElementById("logo1");
@@ -59,6 +61,7 @@ function clearScopedProgress() {
   function show(el) { el.classList.add("show"); el.classList.remove("hide"); }
   function hide(el) { el.classList.add("hide"); el.classList.remove("show"); }
   
+  // Unified "busy" state for auth actions and loading overlay.
   function setBusy(isBusy) {
     loginSubmit.disabled = isBusy;
     signupSubmit.disabled = isBusy;
@@ -92,6 +95,7 @@ function clearScopedProgress() {
     audioEl.currentTime = 0;
   }
   
+  // Shared fade helper used for intro/login music transitions.
   function fadeTo(audioEl, targetVolume, durationMs, onDone) {
     if (!audioEl) return;
     const startVolume = audioEl.volume;
@@ -204,6 +208,7 @@ function clearScopedProgress() {
   
   let introStarted = false;
   function startIntroSequence() {
+    // Guard against duplicate timers if intro is triggered by both touch + click.
     if (introStarted) return;
     introStarted = true;
   
@@ -258,6 +263,7 @@ function clearScopedProgress() {
   const modalOverlays = document.querySelectorAll(".modal-overlay");
   
   function openModal(modalId) {
+    // Shared modal opener also resets scroll so each open starts at top.
     const modal = document.getElementById(modalId);
     if (!modal) return;
     modal.classList.add("show");
@@ -271,6 +277,7 @@ function clearScopedProgress() {
   }
   
   function closeModal(modal) {
+    // Remove body lock only when all modal overlays are closed.
     if (!modal) return;
     const active = document.activeElement;
     if (active && modal.contains(active)) active.blur();
@@ -281,6 +288,7 @@ function clearScopedProgress() {
   }
   
   function showFeedback(message, title = "Notice") {
+    // Centralized path for user-visible validation/server errors.
     if (!feedbackModal) return;
     if (feedbackTitle) feedbackTitle.textContent = title;
     if (feedbackText) feedbackText.textContent = message;
@@ -333,6 +341,7 @@ function clearScopedProgress() {
   }
   
   function playLoadingThenRedirect() {
+    // Keep transition timing consistent so loading animation always shows before navigation.
     if (loginAudio && !loginAudio.paused) {
       fadeOut(loginAudio, LOGIN_FADE_OUT_MS, () => {
         if (loadingOverlay) loadingOverlay.classList.add("show");
@@ -349,6 +358,7 @@ function clearScopedProgress() {
     }, 3000);
   }
   
+  // Thin RestDB wrapper: standard headers + normalized error messages.
   async function restdbFetch(path, options = {}) {
     const url = `${RESTDB_BASE}/${path}`;
   
@@ -454,6 +464,7 @@ function clearScopedProgress() {
 })();
 
 (function initHomePage() {
+  // Guard so this initializer only runs on home.html.
   if (!document.getElementById("terminalScene")) return;
 
       const user = localStorage.getItem("currentUser");
@@ -530,6 +541,7 @@ function clearScopedProgress() {
         });
       }
 
+      // Canonical list used by UI, save/load, and unlock checks.
       function getAchievementKeys() {
         return [
           "clockingOut",
@@ -992,6 +1004,7 @@ function clearScopedProgress() {
       const activeCaseBadge = document.getElementById("activeCaseBadge");
       const researchIntegrity = document.getElementById("researchIntegrity");
 
+      // Archive metadata used by the Archive tab renderer.
       const archiveCases = {
         "b04-312": {
           title: "CAC-B04-312: Contained CRT Entity",
@@ -1076,6 +1089,7 @@ function clearScopedProgress() {
       }
 
       const setArchiveCase = (caseId) => {
+        // Archive text comes from nearest 5% file (0/5/10...100) to match file naming.
         const data = archiveCases[caseId];
         if (!data) return;
         activeArchiveCase = caseId;
@@ -1105,6 +1119,7 @@ function clearScopedProgress() {
       });
 
       function updateArchiveAvailability() {
+        // Object 2 archive is intentionally gated until object 1 reaches test 4.
         const progress = loadTestProgress();
         const failProgress = loadFailProgress();
         const object1Test = Number(progress["b04-312"]) || 1;
@@ -1147,6 +1162,7 @@ function clearScopedProgress() {
       const objectDesc = document.getElementById("objectDesc");
       const objectModelNote = document.getElementById("objectModelNote");
 
+      // Object metadata used by the Object Testing tab renderer.
       const objectData = {
         "b04-312": {
           title: "CAC-B04-312: Contained CRT Entity",
@@ -1190,6 +1206,7 @@ function clearScopedProgress() {
 
       let activeObjectCase = null;
       async function loadObjectDescription(caseId) {
+        // Pull "ARTIFACT DESCRIPTION" block from current archive file as object summary text.
         if (!objectDesc) return;
         const data = objectData[caseId];
         const archiveCase = archiveCases[caseId];
@@ -1218,6 +1235,7 @@ function clearScopedProgress() {
       }
 
       const setObjectCase = (caseId) => {
+        // Switching object updates metadata and swaps embedded Sketchfab model.
         const data = objectData[caseId];
         if (!data) return;
         activeObjectCase = caseId;
@@ -1261,6 +1279,7 @@ function clearScopedProgress() {
       if (initialObject) setObjectCase(initialObject.getAttribute("data-case"));
 
       function updateObjectAvailability() {
+        // Testing queue shows only unlocked and not-yet-completed objects.
         const progress = loadTestProgress();
 
         const object1Test = Number(progress["b04-312"]) || 1;
@@ -1316,6 +1335,7 @@ function clearScopedProgress() {
 
       let progress = 0;
       const bootLog = document.getElementById("bootLog");
+      // Randomized terminal boot lines for flavor during loading.
       const bootLines = [
         "CHECKSUM OK",
         "MEMORY BANKS ONLINE",

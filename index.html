@@ -9,6 +9,7 @@
 </head>
 
 <body>
+  <!-- Intro sequence shown before authentication UI appears -->
   <div id="disclaimer" class="scene">
     <div class="disclaimer-box" role="dialog" aria-modal="true" aria-labelledby="warningTitle">
       <div id="warningTitle" class="disclaimer-title">WARNING</div>
@@ -30,6 +31,7 @@
     <img src="Images/artwork.png" alt="Artwork" />
   </div>
   <div id="loginScreen" class="scene">
+    <!-- Login form panel (default auth entry point) -->
     <div class="panel">
       <div class="content">
         <div class="login-label">Login</div>
@@ -48,6 +50,7 @@
     </div>
   </div>
   <div id="signupScreen" class="scene">
+    <!-- Sign-up form panel (account creation flow) -->
     <div class="panel">
       <div class="content">
         <div class="login-label">Sign Up</div>
@@ -67,6 +70,7 @@
     </div>
   </div>
   <div id="loadingOverlay" class="loading-overlay">
+    <!-- Blocking loader shown during async auth + page transition -->
     <lottie-player
       src="json/lottie.json"
       style="width: 280px; height: 280px; background: transparent"
@@ -75,6 +79,7 @@
     ></lottie-player>
   </div>
 
+  <!-- Shared feedback modal for auth/system messages -->
   <div id="feedbackModal" class="modal-overlay" aria-hidden="true">
     <div class="modal-panel feedback-panel" role="dialog" aria-modal="true" aria-labelledby="feedbackTitle">
       <div class="panel">
@@ -89,6 +94,7 @@
     </div>
   </div>
 
+  <!-- Optional support/donation info modal -->
   <div id="supportModal" class="modal-overlay" aria-hidden="true">
     <div class="modal-panel">
       <div class="panel">
@@ -134,6 +140,7 @@
     </div>
   </div>
 
+  <!-- Project credits modal -->
   <div id="creditsModal" class="modal-overlay" aria-hidden="true">
     <div class="modal-panel">
       <div class="panel">
@@ -191,9 +198,11 @@
     </div>
   </div>
 
+  <!-- Audio used by the intro/login sequence controller in script.js -->
   <audio id="introAudio" src="audio/intro.mp3" preload="auto"></audio>
   <audio id="loginAudio" src="audio/login.mp3" preload="auto" loop></audio>
 
+  <!-- Runtime order matters: config first, then page logic -->
   <script src="restdb-config.js"></script>
   <script src="script.js"></script>
 </body>

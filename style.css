@@ -1,3 +1,4 @@
+/* Global reset + base typography. */
 * { box-sizing: border-box; font-family: "Georgia", serif; }
 
 html, body {
@@ -54,6 +55,7 @@ body::before {
   z-index: 0;
 }
 
+/* Shared full-screen loader for async transitions. */
 .loading-overlay {
   position: fixed;
   inset: 0;
@@ -78,6 +80,7 @@ body::before {
   display: block;
 }
 
+/* Intro/login scenes are stacked and toggled via .show/.hide classes. */
 .scene {
   position: absolute;
   inset: 0;
@@ -93,6 +96,7 @@ body::before {
 .scene.show { opacity: 1; pointer-events: auto; }
 .scene.hide { opacity: 0; pointer-events: none; }
 
+/* Core theme tokens used across pages. */
 :root {
   --panel-w: min(92vw, 520px);
   --page-bg: radial-gradient(1200px 800px at 15% 20%, rgba(120, 10, 18, 0.18), rgba(0, 0, 0, 0) 60%),
@@ -323,6 +327,7 @@ body::before {
   }
 }
 
+/* Shared menu/card styles for support + credits modals. */
 .menu-header {
   width: 100%;
   display: flex;
@@ -417,6 +422,7 @@ body::before {
 
 .menu-divider { width: 100%; height: 1px; background: rgba(122, 0, 0, 0.45); margin: 8px 0; }
 
+/* Generic modal system used by index/home pages. */
 .modal-overlay {
   position: fixed;
   inset: 0;
@@ -549,6 +555,7 @@ body::before {
 }
 .menu-link img { width: 22px; height: 22px; object-fit: contain; opacity: 0.9; }
 
+/* Home page wrapper and terminal stage container. */
 .home-wrap { position: relative; min-height: 100vh; background: #000; overflow: hidden; }
 
 .terminal-stage {
@@ -801,6 +808,7 @@ body::before {
   filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.35));
 }
 
+/* CRT-style terminal theme for the home hub UI. */
 body.terminal-page {
   background: var(--page-bg);
   color: #f2b2b2;
@@ -1985,7 +1993,7 @@ body.terminal-loaded .terminal-content {
   color: #ffd0d0;
 }
 
-/* Visual Novel Engine */
+/* Visual Novel Engine (game.html) */
 body.vn-page {
   background: var(--page-bg);
   color: #ffdede;

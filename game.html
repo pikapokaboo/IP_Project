@@ -8,12 +8,14 @@
 </head>
 <body class="page vn-page">
   <main class="vn-stage" aria-live="polite">
+    <!-- Optional intro cutscene before the first dialogue step -->
     <section id="vnCutscene" class="vn-cutscene" aria-label="Pre-test cutscene">
       <video id="vnCutsceneVideo" class="vn-cutscene-video" preload="auto" playsinline>
         <source src="video/Full_Door_Ani.mp4" type="video/mp4" />
       </video>
     </section>
 
+    <!-- Layer stack: background + fade + character sprites -->
     <div id="vnBackground" class="vn-background" role="img" aria-label="Scene background"></div>
     <div id="vnBgFade" class="vn-bg-fade" aria-hidden="true"></div>
 
@@ -23,6 +25,7 @@
       <img id="vnCharRight" class="vn-character vn-character-right" alt="" />
     </div>
 
+    <!-- Story controls (autoplay/skip/restart/exit) -->
     <header class="vn-topbar">
       <div>
         <div class="vn-top-label">Visual Novel Mode</div>
@@ -36,8 +39,10 @@
       </div>
     </header>
 
+    <!-- Dynamic choice buttons are injected here by game-engine.js -->
     <section id="vnChoices" class="vn-choices" aria-label="Choices"></section>
 
+    <!-- Primary advance target: clicking/pressing key steps story forward -->
     <section id="vnDialogBox" class="vn-dialog" role="button" tabindex="0" aria-label="Dialogue box. Click to continue.">
       <div id="vnSpeaker" class="vn-speaker">...</div>
       <div id="vnText" class="vn-text">Loading...</div>
@@ -51,6 +56,7 @@
     </section>
   </main>
 
+  <!-- Standalone visual novel runtime -->
   <script src="game-engine.js"></script>
 </body>
 </html>

@@ -1,4 +1,5 @@
 (function initVisualNovelEngine() {
+  // DOM references required by the visual novel runtime.
   const storyTitleEl = document.getElementById("vnStoryTitle");
   const stageEl = document.querySelector(".vn-stage");
   const bgEl = document.getElementById("vnBackground");
@@ -38,6 +39,7 @@
     return;
   }
 
+  // URL params control object/test/story selection (for replay + debugging).
   const params = new URLSearchParams(window.location.search);
 
   const rawObject = (params.get("object") || "b04-312").toLowerCase();
@@ -64,6 +66,7 @@
   }
 
   function getDefaultStoryPath() {
+    // Clamp test number to supported files so deep links cannot request invalid test indices.
     const requestedTest = Number.parseInt(params.get("test") || "", 10);
     const safeTest = Number.isFinite(requestedTest) ? Math.min(MAX_TEST, Math.max(1, requestedTest)) : 1;
     const objectPrefix = objectKey === "a17-049" ? "obj2" : "obj1";
@@ -78,6 +81,7 @@
   const CUTSCENE_FADE_MS = 700;
   const OPENING_BGM_LEAD_MS = 220;
 
+  // Runtime state for story flow, audio, typing, and playback modes.
   const state = {
     story: null,
     currentLabel: "",
@@ -120,6 +124,7 @@
     choicesEl.hidden = false;
   }
 
+  // Account-scoped persistence helpers.
   function loadProgress() {
     try {
       const stored = localStorage.getItem(getScopedStorageKey(TEST_PROGRESS_KEY));
@@ -187,6 +192,7 @@
   }
 
   function passTest() {
+    // Progress value is "next test to play"; MAX_TEST + 1 means this object is completed.
     const progress = loadProgress();
     const current = Number(progress[objectKey]) || 1;
     if (current >= MAX_TEST) {
@@ -199,6 +205,7 @@
   }
 
   function failTest() {
+    // Fail does not advance the test; it only increments per-test fail counters (capped at 5).
     const progress = loadProgress();
     const current = Number(progress[objectKey]) || 1;
     progress[objectKey] = current;
@@ -220,6 +227,7 @@
     return value;
   }
 
+  // Visual/audio command handlers used by each story step.
   function setBackground(assetRef) {
     const src = resolveAsset(assetRef);
     if (!src) return;
@@ -227,6 +235,7 @@
   }
 
   function setBgFade(show, durationMs, options) {
+    // One reusable fade layer handles black fades and custom overlays from story JSON.
     if (Number.isFinite(Number(durationMs)) && Number(durationMs) >= 0) {
       bgFadeEl.style.transitionDuration = `${Number(durationMs)}ms`;
     } else {
@@ -281,6 +290,7 @@
   }
 
   function playMusic(config) {
+    // Keep one BGM channel active; skip restart when next track matches current source.
     const cfg = typeof config === "string" ? { play: config } : (config || {});
     const src = resolveAsset(cfg.play || cfg.src || cfg.music || config);
     if (!src || state.currentMusicSrc === src) return;
@@ -460,6 +470,7 @@
     queuePlaybackAdvance();
   }
 
+  // Typewriter effect with optional per-character blip SFX.
   function startTyping(text, instant) {
     clearTypingTimer();
     stopTextBlips();
@@ -582,6 +593,7 @@
   }
 
   function renderChoices(prompt, options) {
+    // Entering a choice state pauses auto-advance and forces explicit user selection.
     clearChoices();
     state.waitingForChoice = true;
     clearPlaybackTimer();
@@ -626,6 +638,7 @@
   }
 
   function applyVisualCommands(step) {
+    // Non-dialogue directives are applied first so visuals/audio are ready before text appears.
     if (step.bg) setBackground(step.bg);
     if (step.grayOverlay) {
       setBgFade(true, step.fadeDurationMs, {
@@ -660,6 +673,7 @@
   }
 
   function handleEnd(endConfig) {
+    // Unified end handler updates progression and optionally returns to home hub.
     const cfg = typeof endConfig === "string" ? { result: endConfig } : (endConfig || {});
     const endingText = cfg.text || "End.";
     setDialogue("System", endingText, "#ffb9b9");
@@ -682,6 +696,7 @@
     }
   }
 
+  // Built-in story "call" commands referenced from JSON scripts.
   function executeStoryCall(callConfig) {
     if (!callConfig) return false;
     const cfg = typeof callConfig === "string" ? { name: callConfig } : callConfig;
@@ -743,6 +758,7 @@
     return step;
   }
 
+  // Main interpreter loop: consume steps until user input/timer is required.
   function runUntilStop() {
     if (state.finished || state.waitingForChoice || state.waitingForDelay) return;
 
@@ -814,6 +830,7 @@
   }
 
   function advance() {
+    // Advance priority: resolve pending home jump > finish typing > process next script step.
     if (!state.story) return;
     if (state.waitingForHomeAdvance) {
       state.waitingForHomeAdvance = false;
@@ -830,6 +847,7 @@
   }
 
   async function loadStory(url) {
+    // Normalize optional sections so runtime can safely read keys without extra null checks.
     const response = await fetch(url, { cache: "no-store" });
     if (!response.ok) {
       throw new Error(`Could not load story file: ${url}`);
@@ -853,6 +871,7 @@
   }
 
   function primeOpeningBgm() {
+    // Some stories start with visual/audio-only setup steps before first dialogue line.
     if (!state.story || !state.story.labels) return false;
     const startLabel = state.story.meta.start || "start";
     const steps = state.story.labels[startLabel] || [];
@@ -871,6 +890,7 @@
   }
 
   async function playPreTestCutscene() {
+    // Cutscene starts on user click to satisfy autoplay restrictions in some browsers.
     cutsceneEl.hidden = false;
     cutsceneEl.classList.remove("fade-out");
     cutsceneVideoEl.currentTime = 0;
@@ -908,6 +928,7 @@
     });
   }
 
+  // Entry point: play cutscene, load story JSON, then start at first label.
   async function boot() {
     try {
       hideError();

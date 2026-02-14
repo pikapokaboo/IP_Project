@@ -10,6 +10,7 @@
 <body class="page">
   <div class="home-wrap">
 
+    <!-- First-time home experience: waiver letter before terminal access -->
     <div id="letterOverlay" class="letter-overlay" style="display: none;">
       <div class="letter-frame">
         <div class="letter-card">
@@ -86,7 +87,7 @@
       </div>
     </div>
 
-
+    <!-- Main hub scene (terminal UI, tabs, object testing, achievements) -->
     <div id="terminalScene" class="terminal-stage">
 <div class="terminal-shell">
     <div class="terminal-loading-screen" aria-live="polite">
@@ -328,14 +329,17 @@ AWAITING OPERATOR AUTHORIZATION...</pre>
     </div>
   </div>
 
+  <!-- Home hub audio channels managed from initHomePage() in script.js -->
   <audio id="homeLoadingAudio" src="audio/loading.mp3" preload="auto" loop></audio>
   <audio id="homeBootupAudio" src="audio/bootup.mp3" preload="auto"></audio>
   <audio id="homeMusicAudio" src="audio/home.mp3" preload="auto" loop></audio>
   <audio id="terminalClickAudio" src="audio/click.mp3" preload="auto"></audio>
   <audio id="achievementAudio" src="audio/achievement.mp3" preload="auto"></audio>
 
+  <!-- Hidden utility control for development/testing progress reset -->
   <button id="resetProgressBtn" class="reset-progress-btn" type="button" hidden>Reset Progress</button>
 
+  <!-- Toast popup used when new achievements are unlocked -->
   <div id="achievementPopup" class="achievement-popup" role="status" aria-live="polite" aria-atomic="true">
     <img id="achievementPopupIcon" class="achievement-popup-icon" src="" alt="" />
     <div class="achievement-popup-text">
@@ -344,6 +348,7 @@ AWAITING OPERATOR AUTHORIZATION...</pre>
     </div>
   </div>
 
+  <!-- Runtime order matters: config first, then shared page logic -->
   <script src="restdb-config.js"></script>
   <script src="script.js"></script>
 
